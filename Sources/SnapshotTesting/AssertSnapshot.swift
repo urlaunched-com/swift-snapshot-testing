@@ -278,15 +278,13 @@ public func verifySnapshot<Value, Format>(
             return nil
         }
 
-
         let artifactsUrl = ProcessInfo.processInfo.environment["SNAPSHOT_ARTIFACTS"]
             .map { URL(fileURLWithPath: $0, isDirectory: true) }
         ??
-        fileUrl.deletingLastPathComponent().appendingPathComponent("__Artifacts__")
+        recordingSnapshotFileUrl.deletingLastPathComponent()
 
-        let artifactsSubUrl = artifactsUrl.appendingPathComponent(fileName)
-        try fileManager.createDirectory(at: artifactsSubUrl, withIntermediateDirectories: true)
-        let failedSnapshotFileUrl = artifactsSubUrl.appendingPathComponent(snapshotFileUrl.lastPathComponent)
+        try fileManager.createDirectory(at: artifactsUrl, withIntermediateDirectories: true)
+        let failedSnapshotFileUrl = artifactsUrl.appendingPathComponent("__artifact__" + snapshotFileUrl.lastPathComponent)
         try snapshotting.diffing.toData(diffable).write(to: failedSnapshotFileUrl)
 
         if !attachments.isEmpty {
