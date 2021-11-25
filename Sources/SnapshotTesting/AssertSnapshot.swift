@@ -282,7 +282,7 @@ public func verifySnapshot<Value, Format>(
         let artifactsUrl = ProcessInfo.processInfo.environment["SNAPSHOT_ARTIFACTS"]
             .map { URL(fileURLWithPath: $0, isDirectory: true) }
         ??
-        recordingSnapshotDirectoryUrl.appendingPathComponent("__Artifacts__")
+        fileUrl.deletingLastPathComponent().appendingPathComponent("__Artifacts__")
 
         let artifactsSubUrl = artifactsUrl.appendingPathComponent(fileName)
         try fileManager.createDirectory(at: artifactsSubUrl, withIntermediateDirectories: true)
