@@ -181,7 +181,11 @@ public func verifySnapshot<Value, Format>(
       let fileUrl = URL(fileURLWithPath: "\(file)", isDirectory: false)
       let fileName = fileUrl.deletingPathExtension().lastPathComponent
 
-        let snapshotDirectoryUrl = ((recording ? nil : snapshotDirectory).map { URL(fileURLWithPath: $0, isDirectory: true) }
+      let recordingSnapshotDirectoryUrl = fileUrl.deletingLastPathComponent()
+            .appendingPathComponent("__Snapshots__")
+            .appendingPathComponent(fileName)
+
+      let snapshotDirectoryUrl = ((recording ? nil : snapshotDirectory).map { URL(fileURLWithPath: $0, isDirectory: true) }
         ?? fileUrl.deletingLastPathComponent())
           .appendingPathComponent("__Snapshots__")
           .appendingPathComponent(fileName)
@@ -199,9 +203,15 @@ public func verifySnapshot<Value, Format>(
       }
 
       let testName = sanitizePathComponent(testName)
+
+      let recordingSnapshotFileUrl = recordingSnapshotDirectoryUrl
+        .appendingPathComponent("\(testName).\(identifier)")
+        .appendingPathExtension(snapshotting.pathExtension ?? "")
+
       let snapshotFileUrl = snapshotDirectoryUrl
         .appendingPathComponent("\(testName).\(identifier)")
         .appendingPathExtension(snapshotting.pathExtension ?? "")
+
       let fileManager = FileManager.default
       try fileManager.createDirectory(at: snapshotDirectoryUrl, withIntermediateDirectories: true)
 
@@ -235,7 +245,7 @@ public func verifySnapshot<Value, Format>(
       }
       
       guard !recording, fileManager.fileExists(atPath: snapshotFileUrl.path) else {
-        try snapshotting.diffing.toData(diffable).write(to: snapshotFileUrl)
+        try snapshotting.diffing.toData(diffable).write(to: recordingSnapshotFileUrl)
         return recording
           ? """
             Record mode is on. Turn record mode off and re-run "\(testName)" to test against the newly-recorded snapshot.
