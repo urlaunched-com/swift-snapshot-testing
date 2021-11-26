@@ -7,6 +7,10 @@ extension Snapshotting where Value == UIViewController, Format == UIImage {
     return .image()
   }
 
+  public static func image(scale: CGFloat) -> Snapshotting {
+    return .image(precision: 1, scale: scale)
+  }
+
   /// A snapshot strategy for comparing view controller views based on pixel equality.
   ///
   /// - Parameters:
@@ -58,6 +62,26 @@ extension Snapshotting where Value == UIViewController, Format == UIImage {
         )
       }
   }
+
+    public static func image(
+        drawHierarchyInKeyWindow: Bool = false,
+        precision: Float = 1,
+        size: CGSize? = nil,
+        scale: CGFloat,
+        traits: UITraitCollection = .init()
+    )
+    -> Snapshotting {
+
+        return SimplySnapshotting.image(precision: precision, scale: scale).asyncPullback { viewController in
+            snapshotView(
+                config: .init(safeArea: .zero, size: size, traits: traits),
+                drawHierarchyInKeyWindow: drawHierarchyInKeyWindow,
+                traits: .init(),
+                view: viewController.view,
+                viewController: viewController
+            )
+        }
+    }
 }
 
 extension Snapshotting where Value == UIViewController, Format == String {

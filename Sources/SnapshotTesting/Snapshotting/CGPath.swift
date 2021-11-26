@@ -6,7 +6,6 @@ extension Snapshotting where Value == CGPath, Format == NSImage {
   public static var image: Snapshotting {
     return .image()
   }
-
   /// A snapshot strategy for comparing bezier paths based on pixel equality.
   ///
   /// - Parameter precision: The percentage of pixels that must match.
