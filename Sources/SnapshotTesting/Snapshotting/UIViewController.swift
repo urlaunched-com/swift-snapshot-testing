@@ -8,7 +8,7 @@ extension Snapshotting where Value == UIViewController, Format == UIImage {
   }
 
   public static func image(scale: CGFloat) -> Snapshotting {
-      return .image(drawHierarchyInKeyWindow: true, precision: 1, scale: scale)
+      return .image(drawHierarchyInKeyWindow: true, precision: 1, scale: scale, traits: .init(displayScale: scale))
   }
 
   /// A snapshot strategy for comparing view controller views based on pixel equality.
