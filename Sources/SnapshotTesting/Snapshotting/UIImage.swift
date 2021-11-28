@@ -24,7 +24,7 @@ extension Diffing where Value == UIImage {
       fromData: { UIImage(data: $0, scale: imageScale)! }
     ) { old, new in
       guard !compare(old, new, precision: precision) else { return nil }
-      let difference = SnapshotTesting.diff(old, new)
+      let difference = SnapshotTesting.diff(old, new, scale: imageScale)
       let message = new.size == old.size
         ? "Newly-taken snapshot does not match reference."
         : "Newly-taken snapshot@\(new.size) does not match reference@\(old.size)."
@@ -127,10 +127,10 @@ private func context(for cgImage: CGImage, bytesPerRow: Int, data: UnsafeMutable
   return context
 }
 
-private func diff(_ old: UIImage, _ new: UIImage) -> UIImage {
+private func diff(_ old: UIImage, _ new: UIImage, scale: CGFloat) -> UIImage {
   let width = max(old.size.width, new.size.width)
   let height = max(old.size.height, new.size.height)
-  UIGraphicsBeginImageContextWithOptions(CGSize(width: width, height: height), true, 0)
+  UIGraphicsBeginImageContextWithOptions(CGSize(width: width, height: height), true, scale)
   new.draw(at: .zero)
   old.draw(at: .zero, blendMode: .difference, alpha: 1)
   let differenceImage = UIGraphicsGetImageFromCurrentImageContext()!
