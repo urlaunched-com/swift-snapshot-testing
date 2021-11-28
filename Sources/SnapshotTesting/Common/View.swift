@@ -355,7 +355,7 @@ extension UITraitCollection {
     -> UITraitCollection {
       let base: [UITraitCollection] = [
 //        .init(displayGamut: .SRGB),
-//        .init(displayScale: 2),
+        .init(displayScale: 2),
         .init(forceTouchCapability: .available),
         .init(layoutDirection: .leftToRight),
         .init(preferredContentSizeCategory: .medium),
@@ -383,7 +383,7 @@ extension UITraitCollection {
     -> UITraitCollection {
       let base: [UITraitCollection] = [
 //        .init(displayGamut: .P3),
-//        .init(displayScale: 2),
+        .init(displayScale: 2),
         .init(forceTouchCapability: .available),
         .init(layoutDirection: .leftToRight),
         .init(preferredContentSizeCategory: .medium),
@@ -411,7 +411,7 @@ extension UITraitCollection {
     -> UITraitCollection {
       let base: [UITraitCollection] = [
 //        .init(displayGamut: .P3),
-//        .init(displayScale: 3),
+        .init(displayScale: 3),
         .init(forceTouchCapability: .available),
         .init(layoutDirection: .leftToRight),
         .init(preferredContentSizeCategory: .medium),
@@ -439,7 +439,7 @@ extension UITraitCollection {
     -> UITraitCollection {
       let base: [UITraitCollection] = [
 //        .init(displayGamut: .P3),
-//        .init(displayScale: 3),
+        .init(displayScale: 3),
         .init(forceTouchCapability: .available),
         .init(layoutDirection: .leftToRight),
         .init(preferredContentSizeCategory: .medium),
@@ -467,7 +467,7 @@ extension UITraitCollection {
     -> UITraitCollection {
       let base: [UITraitCollection] = [
 //        .init(displayGamut: .P3),
-//        .init(displayScale: 2),
+        .init(displayScale: 2),
         .init(forceTouchCapability: .unavailable),
         .init(layoutDirection: .leftToRight),
         .init(preferredContentSizeCategory: .medium),
@@ -495,7 +495,7 @@ extension UITraitCollection {
     -> UITraitCollection {
       let base: [UITraitCollection] = [
 //        .init(displayGamut: .P3),
-//        .init(displayScale: 3),
+        .init(displayScale: 3),
         .init(forceTouchCapability: .available),
         .init(layoutDirection: .leftToRight),
         .init(preferredContentSizeCategory: .medium),
@@ -530,7 +530,7 @@ extension UITraitCollection {
 
   private static let iPad = UITraitCollection(
     traitsFrom: [
-//      .init(displayScale: 2),
+      .init(displayScale: 2),
       .init(horizontalSizeClass: .regular),
       .init(verticalSizeClass: .regular),
       .init(userInterfaceIdiom: .pad)
