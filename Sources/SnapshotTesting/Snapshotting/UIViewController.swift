@@ -28,7 +28,7 @@ extension Snapshotting where Value == UIViewController, Format == UIImage {
 
       return SimplySnapshotting.image(precision: precision, scale: traits.displayScale).asyncPullback { viewController in
         snapshotView(
-          config: size.map { .init(safeArea: config.safeArea, size: $0, traits: config.traits) } ?? config,
+          config: size.map { .init(safeArea: config.safeArea, size: $0, traits: config.traits, name: "\($0)") } ?? config,
           drawHierarchyInKeyWindow: false,
           traits: traits,
           view: viewController.view,
@@ -54,7 +54,7 @@ extension Snapshotting where Value == UIViewController, Format == UIImage {
 
       return SimplySnapshotting.image(precision: precision, scale: traits.displayScale).asyncPullback { viewController in
         snapshotView(
-          config: .init(safeArea: .zero, size: size, traits: traits),
+          config: .init(safeArea: .zero, size: size, traits: traits, name: String(describing: size)),
           drawHierarchyInKeyWindow: drawHierarchyInKeyWindow,
           traits: .init(),
           view: viewController.view,
@@ -74,7 +74,7 @@ extension Snapshotting where Value == UIViewController, Format == UIImage {
 
         return SimplySnapshotting.image(precision: precision, scale: scale).asyncPullback { viewController in
             snapshotView(
-                config: .init(safeArea: .zero, size: size, traits: traits),
+                config: .init(safeArea: .zero, size: size, traits: traits, name: String(describing: size)),
                 drawHierarchyInKeyWindow: drawHierarchyInKeyWindow,
                 traits: .init(displayScale: scale),
                 view: viewController.view,
@@ -89,7 +89,7 @@ extension Snapshotting where Value == UIViewController, Format == String {
   public static var hierarchy: Snapshotting {
     return Snapshotting<String, String>.lines.pullback { viewController in
       let dispose = prepareView(
-        config: .init(),
+        config: .init(name: "hierarchy"),
         drawHierarchyInKeyWindow: false,
         traits: .init(),
         view: viewController.view,
@@ -114,14 +114,14 @@ extension Snapshotting where Value == UIViewController, Format == String {
   ///   - size: A view size override.
   ///   - traits: A trait collection override.
   public static func recursiveDescription(
-    on config: ViewImageConfig = .init(),
+    on config: ViewImageConfig = .init(name: "recursiveDescription"),
     size: CGSize? = nil,
     traits: UITraitCollection = .init()
     )
     -> Snapshotting<UIViewController, String> {
       return SimplySnapshotting.lines.pullback { viewController in
         let dispose = prepareView(
-          config: .init(safeArea: config.safeArea, size: size ?? config.size, traits: config.traits),
+          config: .init(safeArea: config.safeArea, size: size ?? config.size, traits: config.traits, name: String(describing: size ?? config.size)),
           drawHierarchyInKeyWindow: false,
           traits: traits,
           view: viewController.view,

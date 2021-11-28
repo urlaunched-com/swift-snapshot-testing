@@ -45,10 +45,10 @@ extension Snapshotting where Value: SwiftUI.View, Format == UIImage {
         config = deviceConfig
       #endif
       case .sizeThatFits:
-        config = .init(safeArea: .zero, size: nil, traits: traits)
+        config = .init(safeArea: .zero, size: nil, traits: traits, name: "sizeThatFits")
       case let .fixed(width: width, height: height):
         let size = CGSize(width: width, height: height)
-        config = .init(safeArea: .zero, size: size, traits: traits)
+        config = .init(safeArea: .zero, size: size, traits: traits, name: "\(size)")
       }
 
       return SimplySnapshotting.image(precision: precision, scale: traits.displayScale).asyncPullback { view in

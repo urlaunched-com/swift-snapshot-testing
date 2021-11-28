@@ -13,6 +13,8 @@ import WebKit
 
 #if os(iOS) || os(tvOS)
 public struct ViewImageConfig {
+  public var name: String
+
   public enum Orientation {
     case landscape
     case portrait
@@ -40,11 +42,13 @@ public struct ViewImageConfig {
   public init(
     safeArea: UIEdgeInsets = .zero,
     size: CGSize? = nil,
-    traits: UITraitCollection = .init()
+    traits: UITraitCollection = .init(),
+    name: String
     ) {
     self.safeArea = safeArea
     self.size = size
     self.traits = traits
+    self.name = name
   }
 
   #if os(iOS)
@@ -61,7 +65,7 @@ public struct ViewImageConfig {
       safeArea = .init(top: 20, left: 0, bottom: 0, right: 0)
       size = .init(width: 320, height: 568)
     }
-    return .init(safeArea: safeArea, size: size, traits: .iPhoneSe(orientation))
+    return .init(safeArea: safeArea, size: size, traits: .iPhoneSe(orientation), name: "iPhoneSe_\(orientation)")
   }
 
   public static let iPhone8 = ViewImageConfig.iPhone8(.portrait)
@@ -77,7 +81,7 @@ public struct ViewImageConfig {
       safeArea = .init(top: 20, left: 0, bottom: 0, right: 0)
       size = .init(width: 375, height: 667)
     }
-    return .init(safeArea: safeArea, size: size, traits: .iPhone8(orientation))
+    return .init(safeArea: safeArea, size: size, traits: .iPhone8(orientation), name: "iPhone8_\(orientation)")
   }
 
   public static let iPhone8Plus = ViewImageConfig.iPhone8Plus(.portrait)
@@ -93,7 +97,7 @@ public struct ViewImageConfig {
       safeArea = .init(top: 20, left: 0, bottom: 0, right: 0)
       size = .init(width: 414, height: 736)
     }
-    return .init(safeArea: safeArea, size: size, traits: .iPhone8Plus(orientation))
+    return .init(safeArea: safeArea, size: size, traits: .iPhone8Plus(orientation), name: "iPhone8Plus_\(orientation)")
   }
 
   public static let iPhoneX = ViewImageConfig.iPhoneX(.portrait)
@@ -109,7 +113,7 @@ public struct ViewImageConfig {
       safeArea = .init(top: 44, left: 0, bottom: 34, right: 0)
       size = .init(width: 375, height: 812)
     }
-    return .init(safeArea: safeArea, size: size, traits: .iPhoneX(orientation))
+    return .init(safeArea: safeArea, size: size, traits: .iPhoneX(orientation), name: "iPhoneX_\(orientation)")
   }
 
   public static let iPhoneXsMax = ViewImageConfig.iPhoneXsMax(.portrait)
@@ -125,7 +129,7 @@ public struct ViewImageConfig {
       safeArea = .init(top: 44, left: 0, bottom: 34, right: 0)
       size = .init(width: 414, height: 896)
     }
-    return .init(safeArea: safeArea, size: size, traits: .iPhoneXsMax(orientation))
+    return .init(safeArea: safeArea, size: size, traits: .iPhoneXsMax(orientation), name: "iPhoneXsMax_\(orientation)")
   }
 
   @available(iOS 11.0, *)
@@ -143,7 +147,7 @@ public struct ViewImageConfig {
       safeArea = .init(top: 44, left: 0, bottom: 34, right: 0)
       size = .init(width: 414, height: 896)
     }
-    return .init(safeArea: safeArea, size: size, traits: .iPhoneXr(orientation))
+    return .init(safeArea: safeArea, size: size, traits: .iPhoneXr(orientation), name: "iPhoneXr_\(orientation)")
   }
 
   public static let iPadMini = ViewImageConfig.iPadMini(.landscape)
@@ -189,7 +193,7 @@ public struct ViewImageConfig {
         traits = .iPadMini
       }
     }
-    return .init(safeArea: .init(top: 20, left: 0, bottom: 0, right: 0), size: size, traits: traits)
+    return .init(safeArea: .init(top: 20, left: 0, bottom: 0, right: 0), size: size, traits: traits, name: "iPadMini_\(orientation)")
   }
 
   public static let iPadPro10_5 = ViewImageConfig.iPadPro10_5(.landscape)
@@ -235,7 +239,7 @@ public struct ViewImageConfig {
         traits = .iPadPro10_5
       }
     }
-    return .init(safeArea: .init(top: 20, left: 0, bottom: 0, right: 0), size: size, traits: traits)
+    return .init(safeArea: .init(top: 20, left: 0, bottom: 0, right: 0), size: size, traits: traits, name: "iPadPro10_5_\(orientation)")
   }
 
   public static let iPadPro11 = ViewImageConfig.iPadPro11(.landscape)
@@ -281,7 +285,7 @@ public struct ViewImageConfig {
         traits = .iPadPro11
       }
     }
-    return .init(safeArea: .init(top: 24, left: 0, bottom: 20, right: 0), size: size, traits: traits)
+    return .init(safeArea: .init(top: 24, left: 0, bottom: 20, right: 0), size: size, traits: traits, name: "iPadPro11_\(orientation)")
   }
 
   public static let iPadPro12_9 = ViewImageConfig.iPadPro12_9(.landscape)
@@ -329,7 +333,7 @@ public struct ViewImageConfig {
       }
 
     }
-    return .init(safeArea: .init(top: 20, left: 0, bottom: 0, right: 0), size: size, traits: traits)
+    return .init(safeArea: .init(top: 20, left: 0, bottom: 0, right: 0), size: size, traits: traits, name: "iPadPro12_9_\(orientation)")
   }
   #elseif os(tvOS)
   public static let tv = ViewImageConfig(
@@ -699,7 +703,7 @@ func prepareView(
     window.frame.size = size
   } else {
     window = Window(
-      config: .init(safeArea: config.safeArea, size: config.size ?? size, traits: traits),
+      config: .init(safeArea: config.safeArea, size: config.size ?? size, traits: traits, name: config.name),
       viewController: viewController
     )
   }
