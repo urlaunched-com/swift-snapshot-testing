@@ -26,11 +26,11 @@ extension Snapshotting where Value == UIViewController, Format == UIImage {
     )
     -> Snapshotting {
 
-      return SimplySnapshotting.image(precision: precision, scale: traits.displayScale).asyncPullback { viewController in
+    return SimplySnapshotting.image(precision: precision, scale: config.traits.displayScale).asyncPullback { viewController in
         snapshotView(
           config: size.map { .init(safeArea: config.safeArea, size: $0, traits: config.traits, name: "\($0)") } ?? config,
           drawHierarchyInKeyWindow: false,
-          traits: traits,
+          traits: config.traits,
           view: viewController.view,
           viewController: viewController
         )
