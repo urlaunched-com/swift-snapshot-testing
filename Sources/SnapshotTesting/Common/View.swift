@@ -846,7 +846,7 @@ func snapshotView(
     let initialFrame = view.frame
     let dispose = prepareView(
       config: config,
-      drawHierarchyInKeyWindow: drawHierarchyInKeyWindow,
+      drawHierarchyInKeyWindow: false,//drawHierarchyInKeyWindow,
       traits: traits,
       view: view,
       viewController: viewController
