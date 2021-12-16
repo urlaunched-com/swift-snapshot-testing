@@ -913,18 +913,15 @@ private func add(traits: UITraitCollection, viewController: UIViewController, to
 
   window.rootViewController = viewController
 
-  rootViewController.beginAppearanceTransition(true, animated: false)
-  rootViewController.endAppearanceTransition()
-
-  rootViewController.view.setNeedsLayout()
-  rootViewController.view.layoutIfNeeded()
+    viewController.beginAppearanceTransition(true, animated: false)
+    viewController.endAppearanceTransition()
 
   viewController.view.setNeedsLayout()
   viewController.view.layoutIfNeeded()
 
   return {
-    rootViewController.beginAppearanceTransition(false, animated: false)
-    rootViewController.endAppearanceTransition()
+      viewController.beginAppearanceTransition(false, animated: false)
+      viewController.endAppearanceTransition()
     window.rootViewController = nil
   }
 }
