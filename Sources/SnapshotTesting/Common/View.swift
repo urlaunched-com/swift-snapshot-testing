@@ -98,7 +98,7 @@ public struct ViewImageConfig {
 
   public static let iPhone8 = ViewImageConfig.iPhone8(.portrait)
 
-  public static func iPhone8(_ orientation: Orientation) -> ViewImageConfig {
+  public static func iPhone8(_ orientation: Orientation, options: Options = .none) -> ViewImageConfig {
     var safeArea: UIEdgeInsets
     let size: CGSize
     switch orientation {
@@ -126,7 +126,7 @@ public struct ViewImageConfig {
 
   public static let iPhone8Plus = ViewImageConfig.iPhone8Plus(.portrait)
 
-  public static func iPhone8Plus(_ orientation: Orientation) -> ViewImageConfig {
+  public static func iPhone8Plus(_ orientation: Orientation, options: Options = .none) -> ViewImageConfig {
     var safeArea: UIEdgeInsets
     let size: CGSize
     switch orientation {
@@ -154,8 +154,8 @@ public struct ViewImageConfig {
 
   public static let iPhoneX = ViewImageConfig.iPhoneX(.portrait)
 
-  public static func iPhoneX(_ orientation: Orientation) -> ViewImageConfig {
-    let safeArea: UIEdgeInsets
+  public static func iPhoneX(_ orientation: Orientation, options: Options = .none) -> ViewImageConfig {
+    var safeArea: UIEdgeInsets
     let size: CGSize
     switch orientation {
     case .landscape:
@@ -182,7 +182,7 @@ public struct ViewImageConfig {
 
   public static let iPhoneXsMax = ViewImageConfig.iPhoneXsMax(.portrait)
 
-  public static func iPhoneXsMax(_ orientation: Orientation) -> ViewImageConfig {
+  public static func iPhoneXsMax(_ orientation: Orientation, options: Options = .none) -> ViewImageConfig {
     var safeArea: UIEdgeInsets
     let size: CGSize
     switch orientation {
@@ -212,7 +212,7 @@ public struct ViewImageConfig {
   public static let iPhoneXr = ViewImageConfig.iPhoneXr(.portrait)
 
   @available(iOS 11.0, *)
-  public static func iPhoneXr(_ orientation: Orientation) -> ViewImageConfig {
+  public static func iPhoneXr(_ orientation: Orientation, options: Options = .none) -> ViewImageConfig {
     var safeArea: UIEdgeInsets
     let size: CGSize
     switch orientation {
