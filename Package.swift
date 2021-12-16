@@ -1,11 +1,11 @@
-// swift-tools-version:5.0
+// swift-tools-version:5.5
 import Foundation
 import PackageDescription
 
 let package = Package(
   name: "SnapshotTesting",
   platforms: [
-    .iOS(.v11),
+    .iOS(.v13),
     .macOS(.v10_10),
     .tvOS(.v10)
   ],

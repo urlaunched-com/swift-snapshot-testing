@@ -12,8 +12,22 @@ import WebKit
 #endif
 
 #if os(iOS) || os(tvOS)
+
 public struct ViewImageConfig {
+    public struct Options: OptionSet {
+        public init(rawValue: Int) {
+            self.rawValue = rawValue
+        }
+
+        public let rawValue: Int
+
+        public static let none = Options(rawValue: 1 << 0)
+        public static let navigationBarLargeTitle = Options(rawValue: 1 << 1)
+        public static let navigationBarInline = Options(rawValue: 1 << 2)
+    }
+
   public var name: String
+    public var options: Options
 
   public enum Orientation {
     case landscape
@@ -43,26 +57,40 @@ public struct ViewImageConfig {
     safeArea: UIEdgeInsets = .zero,
     size: CGSize? = nil,
     traits: UITraitCollection = .init(),
-    name: String
+    name: String,
+    options: Options = .none
     ) {
     self.safeArea = safeArea
     self.size = size
     self.traits = traits
     self.name = name
+    self.options = options
   }
 
   #if os(iOS)
   public static let iPhoneSe = ViewImageConfig.iPhoneSe(.portrait)
 
-  public static func iPhoneSe(_ orientation: Orientation) -> ViewImageConfig {
-    let safeArea: UIEdgeInsets
+    public static func iPhoneSe(_ orientation: Orientation, options: Options = .none) -> ViewImageConfig {
+    var safeArea: UIEdgeInsets
     let size: CGSize
     switch orientation {
     case .landscape:
-      safeArea = .zero
+        safeArea = .zero
+
+        if options.contains(.navigationBarInline) || options.contains(.navigationBarLargeTitle) {
+            safeArea.top += 32
+        }
+
       size = .init(width: 568, height: 320)
     case .portrait:
       safeArea = .init(top: 20, left: 0, bottom: 0, right: 0)
+
+        if options.contains(.navigationBarInline) {
+            safeArea.top += 44
+        } else if options.contains(.navigationBarLargeTitle) {
+            safeArea.top += 44 + 52
+        }
+
       size = .init(width: 320, height: 568)
     }
     return .init(safeArea: safeArea, size: size, traits: .iPhoneSe(orientation), name: "iPhoneSe_\(orientation)")
@@ -71,14 +99,26 @@ public struct ViewImageConfig {
   public static let iPhone8 = ViewImageConfig.iPhone8(.portrait)
 
   public static func iPhone8(_ orientation: Orientation) -> ViewImageConfig {
-    let safeArea: UIEdgeInsets
+    var safeArea: UIEdgeInsets
     let size: CGSize
     switch orientation {
     case .landscape:
       safeArea = .zero
+
+        if options.contains(.navigationBarInline) || options.contains(.navigationBarLargeTitle) {
+            safeArea.top += 32
+        }
+
       size = .init(width: 667, height: 375)
     case .portrait:
       safeArea = .init(top: 20, left: 0, bottom: 0, right: 0)
+
+        if options.contains(.navigationBarInline) {
+            safeArea.top += 44
+        } else if options.contains(.navigationBarLargeTitle) {
+            safeArea.top += 44 + 52
+        }
+
       size = .init(width: 375, height: 667)
     }
     return .init(safeArea: safeArea, size: size, traits: .iPhone8(orientation), name: "iPhone8_\(orientation)")
@@ -87,14 +127,26 @@ public struct ViewImageConfig {
   public static let iPhone8Plus = ViewImageConfig.iPhone8Plus(.portrait)
 
   public static func iPhone8Plus(_ orientation: Orientation) -> ViewImageConfig {
-    let safeArea: UIEdgeInsets
+    var safeArea: UIEdgeInsets
     let size: CGSize
     switch orientation {
     case .landscape:
       safeArea = .zero
+
+        if options.contains(.navigationBarInline) || options.contains(.navigationBarLargeTitle) {
+            safeArea.top += 32
+        }
+
       size = .init(width: 736, height: 414)
     case .portrait:
       safeArea = .init(top: 20, left: 0, bottom: 0, right: 0)
+
+        if options.contains(.navigationBarInline) {
+            safeArea.top += 44
+        } else if options.contains(.navigationBarLargeTitle) {
+            safeArea.top += 44 + 52
+        }
+
       size = .init(width: 414, height: 736)
     }
     return .init(safeArea: safeArea, size: size, traits: .iPhone8Plus(orientation), name: "iPhone8Plus_\(orientation)")
@@ -108,9 +160,21 @@ public struct ViewImageConfig {
     switch orientation {
     case .landscape:
       safeArea = .init(top: 0, left: 44, bottom: 24, right: 44)
+
+        if options.contains(.navigationBarInline) || options.contains(.navigationBarLargeTitle) {
+            safeArea.top += 32
+        }
+
       size = .init(width: 812, height: 375)
     case .portrait:
       safeArea = .init(top: 44, left: 0, bottom: 34, right: 0)
+
+        if options.contains(.navigationBarInline) {
+            safeArea.top += 44
+        } else if options.contains(.navigationBarLargeTitle) {
+            safeArea.top += 44 + 52
+        }
+
       size = .init(width: 375, height: 812)
     }
     return .init(safeArea: safeArea, size: size, traits: .iPhoneX(orientation), name: "iPhoneX_\(orientation)")
@@ -119,14 +183,26 @@ public struct ViewImageConfig {
   public static let iPhoneXsMax = ViewImageConfig.iPhoneXsMax(.portrait)
 
   public static func iPhoneXsMax(_ orientation: Orientation) -> ViewImageConfig {
-    let safeArea: UIEdgeInsets
+    var safeArea: UIEdgeInsets
     let size: CGSize
     switch orientation {
     case .landscape:
       safeArea = .init(top: 0, left: 44, bottom: 24, right: 44)
+
+        if options.contains(.navigationBarInline) || options.contains(.navigationBarLargeTitle) {
+            safeArea.top += 32
+        }
+
       size = .init(width: 896, height: 414)
     case .portrait:
       safeArea = .init(top: 44, left: 0, bottom: 34, right: 0)
+
+        if options.contains(.navigationBarInline) {
+            safeArea.top += 44
+        } else if options.contains(.navigationBarLargeTitle) {
+            safeArea.top += 44 + 52
+        }
+
       size = .init(width: 414, height: 896)
     }
     return .init(safeArea: safeArea, size: size, traits: .iPhoneXsMax(orientation), name: "iPhoneXsMax_\(orientation)")
@@ -137,14 +213,26 @@ public struct ViewImageConfig {
 
   @available(iOS 11.0, *)
   public static func iPhoneXr(_ orientation: Orientation) -> ViewImageConfig {
-    let safeArea: UIEdgeInsets
+    var safeArea: UIEdgeInsets
     let size: CGSize
     switch orientation {
     case .landscape:
       safeArea = .init(top: 0, left: 44, bottom: 24, right: 44)
+
+        if options.contains(.navigationBarInline) || options.contains(.navigationBarLargeTitle) {
+            safeArea.top += 32
+        }
+
       size = .init(width: 896, height: 414)
     case .portrait:
       safeArea = .init(top: 44, left: 0, bottom: 34, right: 0)
+
+        if options.contains(.navigationBarInline) {
+            safeArea.top += 44
+        } else if options.contains(.navigationBarLargeTitle) {
+            safeArea.top += 44 + 52
+        }
+
       size = .init(width: 414, height: 896)
     }
     return .init(safeArea: safeArea, size: size, traits: .iPhoneXr(orientation), name: "iPhoneXr_\(orientation)")
