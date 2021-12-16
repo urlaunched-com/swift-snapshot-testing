@@ -68,6 +68,34 @@ public struct ViewImageConfig {
   }
 
   #if os(iOS)
+
+    public static let iPhone13 = ViewImageConfig.iPhone13()
+    public static func iPhone13(_ orientation: Orientation = .portrait, options: Options = .none) -> ViewImageConfig {
+        var safeArea: UIEdgeInsets
+        let size: CGSize
+        switch orientation {
+        case .landscape:
+            safeArea = .init(top: 0, left: 47, bottom: 21, right: 47)
+
+            if options.contains(.navigationBarInline) || options.contains(.navigationBarLargeTitle) {
+                safeArea.top += 32
+            }
+
+            size = .init(width: 844, height: 390)
+        case .portrait:
+            safeArea = .init(top: 47, left: 0, bottom: 34, right: 0)
+
+            if options.contains(.navigationBarInline) {
+                safeArea.top += 44
+            } else if options.contains(.navigationBarLargeTitle) {
+                safeArea.top += 44 + 52
+            }
+
+            size = .init(width: 390, height: 844)
+        }
+        return .init(safeArea: safeArea, size: size, traits: .iPhoneX(orientation), name: "iPhoneX_\(orientation)")
+    }
+
   public static let iPhoneSe = ViewImageConfig.iPhoneSe(.portrait)
 
     public static func iPhoneSe(_ orientation: Orientation, options: Options = .none) -> ViewImageConfig {
