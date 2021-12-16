@@ -963,6 +963,11 @@ private final class Window: UIWindow {
     self.isHidden = false
   }
 
+    override var traitCollection: UITraitCollection {
+        let superTraits = super.traitCollection
+        return config.traits
+    }
+
   required init?(coder aDecoder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }
