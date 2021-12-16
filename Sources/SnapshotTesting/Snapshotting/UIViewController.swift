@@ -20,6 +20,7 @@ extension Snapshotting where Value == UIViewController, Format == UIImage {
   ///   - traits: A trait collection override.
   public static func image(
     on config: ViewImageConfig,
+    drawHierarchyInKeyWindow: Bool = true,
     precision: Float = 1,
     size: CGSize? = nil,
     traits: UITraitCollection = .init()
@@ -29,7 +30,7 @@ extension Snapshotting where Value == UIViewController, Format == UIImage {
     return SimplySnapshotting.image(precision: precision, scale: config.traits.displayScale).asyncPullback { viewController in
         snapshotView(
           config: size.map { .init(safeArea: config.safeArea, size: $0, traits: config.traits, name: "\($0)") } ?? config,
-          drawHierarchyInKeyWindow: false,
+          drawHierarchyInKeyWindow: drawHierarchyInKeyWindow,
           traits: config.traits,
           view: viewController.view,
           viewController: viewController
