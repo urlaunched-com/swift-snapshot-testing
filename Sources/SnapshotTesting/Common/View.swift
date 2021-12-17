@@ -93,7 +93,61 @@ public struct ViewImageConfig {
 
             size = .init(width: 390, height: 844)
         }
-        return .init(safeArea: safeArea, size: size, traits: .iPhoneX(orientation), name: "iPhoneX_\(orientation)")
+        return .init(safeArea: safeArea, size: size, traits: .iPhone13(orientation), name: "iPhone13_\(orientation)")
+    }
+
+    public static let iPhone13Mini = ViewImageConfig.iPhone13Mini()
+    public static func iPhone13Mini(_ orientation: Orientation = .portrait, options: Options = .none) -> ViewImageConfig {
+        var safeArea: UIEdgeInsets
+        let size: CGSize
+        switch orientation {
+        case .landscape:
+            safeArea = .init(top: 0, left: 50, bottom: 21, right: 50)
+
+            if options.contains(.navigationBarInline) || options.contains(.navigationBarLargeTitle) {
+                safeArea.top += 32
+            }
+
+            size = .init(width: 812, height: 375)
+        case .portrait:
+            safeArea = .init(top: 50, left: 0, bottom: 34, right: 0)
+
+            if options.contains(.navigationBarInline) {
+                safeArea.top += 44
+            } else if options.contains(.navigationBarLargeTitle) {
+                safeArea.top += 44 + 52
+            }
+
+            size = .init(width: 375, height: 812)
+        }
+        return .init(safeArea: safeArea, size: size, traits: .iPhone13Mini(orientation), name: "iPhone13Mini_\(orientation)")
+    }
+
+    public static let iPhone13ProMax = ViewImageConfig.iPhone13ProMax()
+    public static func iPhone13ProMax(_ orientation: Orientation = .portrait, options: Options = .none) -> ViewImageConfig {
+        var safeArea: UIEdgeInsets
+        let size: CGSize
+        switch orientation {
+        case .landscape:
+            safeArea = .init(top: 0, left: 47, bottom: 21, right: 47)
+
+            if options.contains(.navigationBarInline) || options.contains(.navigationBarLargeTitle) {
+                safeArea.top += 32
+            }
+
+            size = .init(width: 926, height: 428)
+        case .portrait:
+            safeArea = .init(top: 47, left: 0, bottom: 34, right: 0)
+
+            if options.contains(.navigationBarInline) {
+                safeArea.top += 44
+            } else if options.contains(.navigationBarLargeTitle) {
+                safeArea.top += 44 + 52
+            }
+
+            size = .init(width: 428, height: 926)
+        }
+        return .init(safeArea: safeArea, size: size, traits: .iPhone13ProMax(orientation), name: "iPhone13ProMax_\(orientation)")
     }
 
   public static let iPhoneSe = ViewImageConfig.iPhoneSe(.portrait)
@@ -123,6 +177,34 @@ public struct ViewImageConfig {
     }
     return .init(safeArea: safeArea, size: size, traits: .iPhoneSe(orientation), name: "iPhoneSe_\(orientation)")
   }
+
+    public static let iPhoneSe2 = ViewImageConfig.iPhoneSe2(.portrait)
+
+    public static func iPhoneSe2(_ orientation: Orientation, options: Options = .none) -> ViewImageConfig {
+        var safeArea: UIEdgeInsets
+        let size: CGSize
+        switch orientation {
+        case .landscape:
+            safeArea = .zero
+
+            if options.contains(.navigationBarInline) || options.contains(.navigationBarLargeTitle) {
+                safeArea.top += 32
+            }
+
+            size = .init(width: 667, height: 375)
+        case .portrait:
+            safeArea = .init(top: 20, left: 0, bottom: 0, right: 0)
+
+            if options.contains(.navigationBarInline) {
+                safeArea.top += 44
+            } else if options.contains(.navigationBarLargeTitle) {
+                safeArea.top += 44 + 52
+            }
+
+            size = .init(width: 375, height: 667)
+        }
+        return .init(safeArea: safeArea, size: size, traits: .iPhoneSe2(orientation), name: "iPhoneSE2_\(orientation)")
+    }
 
   public static let iPhone8 = ViewImageConfig.iPhone8(.portrait)
 
@@ -495,14 +577,42 @@ extension UITraitCollection {
       }
   }
 
+    public static func iPhoneSE2(_ orientation: ViewImageConfig.Orientation)
+    -> UITraitCollection {
+        let base: [UITraitCollection] = [
+            .init(displayGamut: .P3),
+            .init(displayScale: 2),
+            .init(forceTouchCapability: .unavailable),
+            .init(layoutDirection: .leftToRight),
+            .init(preferredContentSizeCategory: .large),
+            .init(userInterfaceIdiom: .phone)
+        ]
+        switch orientation {
+        case .landscape:
+            return .init(
+                traitsFrom: base + [
+                    .init(horizontalSizeClass: .compact),
+                    .init(verticalSizeClass: .compact)
+                ]
+            )
+        case .portrait:
+            return .init(
+                traitsFrom: base + [
+                    .init(horizontalSizeClass: .compact),
+                    .init(verticalSizeClass: .regular),
+                ]
+            )
+        }
+    }
+
   public static func iPhone8(_ orientation: ViewImageConfig.Orientation)
     -> UITraitCollection {
       let base: [UITraitCollection] = [
-//        .init(displayGamut: .P3),
+        .init(displayGamut: .P3),
         .init(displayScale: 2),
         .init(forceTouchCapability: .available),
         .init(layoutDirection: .leftToRight),
-        .init(preferredContentSizeCategory: .medium),
+        .init(preferredContentSizeCategory: .large),
         .init(userInterfaceIdiom: .phone)
       ]
       switch orientation {
@@ -526,11 +636,11 @@ extension UITraitCollection {
   public static func iPhone8Plus(_ orientation: ViewImageConfig.Orientation)
     -> UITraitCollection {
       let base: [UITraitCollection] = [
-//        .init(displayGamut: .P3),
+        .init(displayGamut: .P3),
         .init(displayScale: 3),
         .init(forceTouchCapability: .available),
         .init(layoutDirection: .leftToRight),
-        .init(preferredContentSizeCategory: .medium),
+        .init(preferredContentSizeCategory: .large),
         .init(userInterfaceIdiom: .phone)
       ]
       switch orientation {
@@ -578,6 +688,90 @@ extension UITraitCollection {
         )
       }
   }
+
+    public static func iPhone13(_ orientation: ViewImageConfig.Orientation)
+    -> UITraitCollection {
+        let base: [UITraitCollection] = [
+            .init(displayGamut: .P3),
+            .init(displayScale: 3),
+            .init(forceTouchCapability: .unavailable),
+            .init(layoutDirection: .leftToRight),
+            .init(preferredContentSizeCategory: .large),
+            .init(userInterfaceIdiom: .phone)
+        ]
+        switch orientation {
+        case .landscape:
+            return .init(
+                traitsFrom: base + [
+                    .init(horizontalSizeClass: .compact),
+                    .init(verticalSizeClass: .compact)
+                ]
+            )
+        case .portrait:
+            return .init(
+                traitsFrom: base + [
+                    .init(horizontalSizeClass: .compact),
+                    .init(verticalSizeClass: .regular)
+                ]
+            )
+        }
+    }
+
+    public static func iPhone13Mini(_ orientation: ViewImageConfig.Orientation)
+    -> UITraitCollection {
+        let base: [UITraitCollection] = [
+            .init(displayGamut: .P3),
+            .init(displayScale: 3),
+            .init(forceTouchCapability: .unavailable),
+            .init(layoutDirection: .leftToRight),
+            .init(preferredContentSizeCategory: .large),
+            .init(userInterfaceIdiom: .phone)
+        ]
+        switch orientation {
+        case .landscape:
+            return .init(
+                traitsFrom: base + [
+                    .init(horizontalSizeClass: .compact),
+                    .init(verticalSizeClass: .compact)
+                ]
+            )
+        case .portrait:
+            return .init(
+                traitsFrom: base + [
+                    .init(horizontalSizeClass: .compact),
+                    .init(verticalSizeClass: .regular)
+                ]
+            )
+        }
+    }
+
+    public static func iPhone13ProMax(_ orientation: ViewImageConfig.Orientation)
+    -> UITraitCollection {
+        let base: [UITraitCollection] = [
+            .init(displayGamut: .P3),
+            .init(displayScale: 3),
+            .init(forceTouchCapability: .unavailable),
+            .init(layoutDirection: .leftToRight),
+            .init(preferredContentSizeCategory: .large),
+            .init(userInterfaceIdiom: .phone)
+        ]
+        switch orientation {
+        case .landscape:
+            return .init(
+                traitsFrom: base + [
+                    .init(horizontalSizeClass: .regular),
+                    .init(verticalSizeClass: .compact)
+                ]
+            )
+        case .portrait:
+            return .init(
+                traitsFrom: base + [
+                    .init(horizontalSizeClass: .compact),
+                    .init(verticalSizeClass: .regular)
+                ]
+            )
+        }
+    }
 
   public static func iPhoneXr(_ orientation: ViewImageConfig.Orientation)
     -> UITraitCollection {
@@ -884,33 +1078,6 @@ func renderer(bounds: CGRect, for traits: UITraitCollection) -> UIGraphicsImageR
 }
 
 private func add(traits: UITraitCollection, viewController: UIViewController, to window: UIWindow) -> () -> Void {
-//  let rootViewController: UIViewController
-//  if viewController != window.rootViewController {
-//    rootViewController = UIViewController()
-//    rootViewController.view.backgroundColor = .clear
-//    rootViewController.view.frame = window.frame
-//    rootViewController.view.translatesAutoresizingMaskIntoConstraints =
-//      viewController.view.translatesAutoresizingMaskIntoConstraints
-//    rootViewController.preferredContentSize = rootViewController.view.frame.size
-//    viewController.view.frame = rootViewController.view.frame
-//    rootViewController.view.addSubview(viewController.view)
-//    if viewController.view.translatesAutoresizingMaskIntoConstraints {
-//      viewController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-//    } else {
-//      NSLayoutConstraint.activate([
-//        viewController.view.topAnchor.constraint(equalTo: rootViewController.view.topAnchor),
-//        viewController.view.bottomAnchor.constraint(equalTo: rootViewController.view.bottomAnchor),
-//        viewController.view.leadingAnchor.constraint(equalTo: rootViewController.view.leadingAnchor),
-//        viewController.view.trailingAnchor.constraint(equalTo: rootViewController.view.trailingAnchor),
-//      ])
-//    }
-//    rootViewController.addChild(viewController)
-//  } else {
-//    rootViewController = viewController
-//  }
-//  rootViewController.setOverrideTraitCollection(traits, forChild: viewController)
-//  viewController.didMove(toParent: rootViewController)
-
   window.rootViewController = viewController
 
     viewController.beginAppearanceTransition(true, animated: false)
