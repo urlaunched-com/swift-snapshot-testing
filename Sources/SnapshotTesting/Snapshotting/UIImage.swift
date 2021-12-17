@@ -155,7 +155,7 @@ func computeImageDifference(image1: UIImage, image2: UIImage) -> UIImage? {
     guard let cgImage = context.createCGImage(output, from: output.extent) else {
         return nil
     }
-    return UIImage(cgImage: cgImage)
+    return UIImage(cgImage: cgImage, scale: image1.scale, orientation: image1.imageOrientation)
 }
 
 private func context(for cgImage: CGImage, bytesPerRow: Int, data: UnsafeMutableRawPointer? = nil) -> CGContext? {
