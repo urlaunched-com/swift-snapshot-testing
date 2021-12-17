@@ -178,9 +178,8 @@ public struct ViewImageConfig {
     return .init(safeArea: safeArea, size: size, traits: .iPhoneSe(orientation), name: "iPhoneSe_\(orientation)")
   }
 
-    public static let iPhoneSe2 = ViewImageConfig.iPhoneSe2(.portrait)
-
-    public static func iPhoneSe2(_ orientation: Orientation, options: Options = .none) -> ViewImageConfig {
+    public static let iPhoneSE2 = ViewImageConfig.iPhoneSE2(.portrait)
+    public static func iPhoneSE2(_ orientation: Orientation, options: Options = .none) -> ViewImageConfig {
         var safeArea: UIEdgeInsets
         let size: CGSize
         switch orientation {
@@ -203,7 +202,7 @@ public struct ViewImageConfig {
 
             size = .init(width: 375, height: 667)
         }
-        return .init(safeArea: safeArea, size: size, traits: .iPhoneSe2(orientation), name: "iPhoneSE2_\(orientation)")
+        return .init(safeArea: safeArea, size: size, traits: .iPhoneSE2(orientation), name: "iPhoneSE2_\(orientation)")
     }
 
   public static let iPhone8 = ViewImageConfig.iPhone8(.portrait)
