@@ -80,6 +80,9 @@ private func compare(_ old: UIImage, _ new: UIImage, precision: Float) -> Bool {
   guard oldCgImage.height != 0 else { return false }
   guard newCgImage.height != 0 else { return false }
   guard oldCgImage.height == newCgImage.height else { return false }
+
+    computeImageDifference(image1: old, image2: new)
+
   // Values between images may differ due to padding to multiple of 64 bytes per row,
   // because of that a freshly taken view snapshot may differ from one stored as PNG.
   // At this point we're sure that size of both images is the same, so we can go with minimal `bytesPerRow` value
@@ -107,6 +110,52 @@ private func compare(_ old: UIImage, _ new: UIImage, precision: Float) -> Bool {
     if Float(differentPixelCount) / Float(byteCount) > threshold { return false}
   }
   return true
+}
+
+//func getPixelData(from uiimage: UIImage) -> CFData? {
+//    if let cgImage = uiimage.cgImage {
+//        let provider = cgImage.dataProvider
+//        let providerData = provider?.data
+//        return providerData
+//    }
+//
+//    guard let ciImage = uiimage.ciImage else {
+//        return nil
+//    }
+//
+//    let convertedCGImage = convertCGImageToCGImage(inputImage: ciImage)
+//    return convertedCGImage?.dataProvider?.data
+//}
+//
+//func convertCGImageToCGImage(inputImage: CIImage) -> CGImage? {
+//    let context = CIContext(options: nil)
+//    return context.createCGImage(inputImage, from: inputImage.extent)
+//}
+
+import CoreImage
+import CoreImage.CIFilterBuiltins
+
+func computeImageDifference(image1: UIImage, image2: UIImage) -> UIImage? {
+    guard
+        let ciImage1 = CIImage(image: image1),
+        let ciImage2 = CIImage(image: image2)
+    else {
+        return nil
+    }
+
+    let filter = CIFilter.colorAbsoluteDifference()
+    filter.inputImage = ciImage1
+    filter.inputImage2 = ciImage2
+
+    guard let output = filter.outputImage else {
+        return nil
+    }
+
+    let context = CIContext()
+    guard let cgImage = context.createCGImage(output, from: output.extent) else {
+        return nil
+    }
+    return UIImage(cgImage: cgImage)
 }
 
 private func context(for cgImage: CGImage, bytesPerRow: Int, data: UnsafeMutableRawPointer? = nil) -> CGContext? {

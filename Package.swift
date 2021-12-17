@@ -5,7 +5,7 @@ import PackageDescription
 let package = Package(
   name: "SnapshotTesting",
   platforms: [
-    .iOS(.v13),
+    .iOS(.v14),
     .macOS(.v10_10),
     .tvOS(.v10)
   ],
