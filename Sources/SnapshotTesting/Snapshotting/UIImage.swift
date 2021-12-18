@@ -81,10 +81,7 @@ private func compare(_ old: UIImage, _ new: UIImage, precision: Float) -> Bool {
   guard newCgImage.height != 0 else { return false }
   guard oldCgImage.height == newCgImage.height else { return false }
 
-  let resultImage = computeImageDifference(image1: old, image2: new)
-    let result2 = try? ImageDiff().compare(leftImage: old.cgImage!, rightImage: new.cgImage!)
-
-    let comp3 = try? compare(tolerance: 60, expectedUIImage: old, observedUIImage: new)
+    let comp2 = try? compare(tolerance: 99, expectedUIImage: old, observedUIImage: new)
 
   // Values between images may differ due to padding to multiple of 64 bytes per row,
   // because of that a freshly taken view snapshot may differ from one stored as PNG.
@@ -124,9 +121,9 @@ enum CompareError: Error {
 
 // See: https://github.com/facebookarchive/ios-snapshot-test-case/blob/master/FBSnapshotTestCase/Categories/UIImage%2BCompare.m
 private func compare(tolerance: Percentage, expectedUIImage: UIImage, observedUIImage: UIImage) throws -> Bool {
-//    guard let expectedUIImage = UIImage(data: expected), let observedUIImage = UIImage(data: observed) else {
-//        throw CompareError.unableToGetUIImageFromData
-//    }
+    //    guard let expectedUIImage = UIImage(data: expected), let observedUIImage = UIImage(data: observed) else {
+    //        throw CompareError.unableToGetUIImageFromData
+    //    }
     guard let expectedCGImage = expectedUIImage.cgImage, let observedCGImage = observedUIImage.cgImage else {
         throw CompareError.unableToGetCGImageFromData
     }
@@ -195,103 +192,6 @@ private func compare(tolerance: Percentage, expectedUIImage: UIImage, observedUI
 }
 
 
-class ImageDiff {
-
-    func compare(leftImage: CGImage, rightImage: CGImage) throws -> Int {
-
-        let left = CIImage(cgImage: leftImage)
-        let right = CIImage(cgImage: rightImage)
-
-        guard let diffFilter = CIFilter(name: "CIDifferenceBlendMode") else {
-            throw ImageDiffError.failedToCreateFilter
-        }
-        diffFilter.setDefaults()
-        diffFilter.setValue(left, forKey: kCIInputImageKey)
-        diffFilter.setValue(right, forKey: kCIInputBackgroundImageKey)
-
-        // Create the area max filter and set its properties.
-        guard let areaMaxFilter = CIFilter(name: "CIAreaMaximum") else {
-            throw ImageDiffError.failedToCreateFilter
-        }
-        areaMaxFilter.setDefaults()
-        areaMaxFilter.setValue(diffFilter.value(forKey: kCIOutputImageKey),
-                               forKey: kCIInputImageKey)
-        let compareRect = CGRect(x: 0, y: 0, width: CGFloat(leftImage.width), height: CGFloat(leftImage.height))
-
-        let extents = CIVector(cgRect: compareRect)
-        areaMaxFilter.setValue(extents, forKey: kCIInputExtentKey)
-
-        // The filters have been setup, now set up the CGContext bitmap context the
-        // output is drawn to. Setup the context with our supplied buffer.
-        let alphaInfo = CGImageAlphaInfo.premultipliedLast
-        let bitmapInfo = CGBitmapInfo(rawValue: alphaInfo.rawValue)
-        let colorSpace = CGColorSpaceCreateDeviceRGB()
-
-        var buf: [CUnsignedChar] = Array<CUnsignedChar>(repeating: 255, count: 16)
-
-        guard let context = CGContext(
-            data: &buf,
-            width: 1,
-            height: 1,
-            bitsPerComponent: 8,
-            bytesPerRow: 16,
-            space: colorSpace,
-            bitmapInfo: bitmapInfo.rawValue
-        ) else {
-            throw ImageDiffError.failedToCreateContext
-        }
-
-        // Now create the core image context CIContext from the bitmap context.
-        let ciContextOpts = [
-            CIContextOption.workingColorSpace : colorSpace,
-            CIContextOption.useSoftwareRenderer : false
-        ] as [CIContextOption : Any]
-        let ciContext = CIContext(cgContext: context, options: ciContextOpts)
-
-        // Get the output CIImage and draw that to the Core Image context.
-        let valueImage = areaMaxFilter.value(forKey: kCIOutputImageKey)! as! CIImage
-        ciContext.draw(valueImage, in: CGRect(x: 0, y: 0, width: 1, height: 1),
-                       from: valueImage.extent)
-
-        // This will have modified the contents of the buffer used for the CGContext.
-        // Find the maximum value of the different color components. Remember that
-        // the CGContext was created with a Premultiplied last meaning that alpha
-        // is the fourth component with red, green and blue in the first three.
-        let maxVal = max(buf[0], max(buf[1], buf[2]))
-        let diff = Int(maxVal)
-
-        return diff
-    }
-}
-
-// MARK: - Supporting Types
-
-enum ImageDiffError: LocalizedError {
-    case failedToCreateFilter
-    case failedToCreateContext
-}
-
-
-//func getPixelData(from uiimage: UIImage) -> CFData? {
-//    if let cgImage = uiimage.cgImage {
-//        let provider = cgImage.dataProvider
-//        let providerData = provider?.data
-//        return providerData
-//    }
-//
-//    guard let ciImage = uiimage.ciImage else {
-//        return nil
-//    }
-//
-//    let convertedCGImage = convertCGImageToCGImage(inputImage: ciImage)
-//    return convertedCGImage?.dataProvider?.data
-//}
-//
-//func convertCGImageToCGImage(inputImage: CIImage) -> CGImage? {
-//    let context = CIContext(options: nil)
-//    return context.createCGImage(inputImage, from: inputImage.extent)
-//}
-
 import CoreImage
 import CoreImage.CIFilterBuiltins
 
@@ -337,13 +237,16 @@ private func context(for cgImage: CGImage, bytesPerRow: Int, data: UnsafeMutable
 }
 
 private func diff(_ old: UIImage, _ new: UIImage, scale: CGFloat) -> UIImage {
-  let width = max(old.size.width, new.size.width)
-  let height = max(old.size.height, new.size.height)
-  UIGraphicsBeginImageContextWithOptions(CGSize(width: width, height: height), true, scale)
-  new.draw(at: .zero)
-  old.draw(at: .zero, blendMode: .difference, alpha: 1)
-  let differenceImage = UIGraphicsGetImageFromCurrentImageContext()!
-  UIGraphicsEndImageContext()
-  return differenceImage
+    let resultImage = computeImageDifference(image1: old, image2: new)
+    return resultImage ?? old
+
+//  let width = max(old.size.width, new.size.width)
+//  let height = max(old.size.height, new.size.height)
+//  UIGraphicsBeginImageContextWithOptions(CGSize(width: width, height: height), true, scale)
+//  new.draw(at: .zero)
+//  old.draw(at: .zero, blendMode: .difference, alpha: 1)
+//  let differenceImage = UIGraphicsGetImageFromCurrentImageContext()!
+//  UIGraphicsEndImageContext()
+//  return differenceImage
 }
 #endif

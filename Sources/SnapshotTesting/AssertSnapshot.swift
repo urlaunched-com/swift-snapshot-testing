@@ -321,6 +321,6 @@ private var counterMap: [URL: Int] = [:]
 
 func sanitizePathComponent(_ string: String) -> String {
     return string
-        .replacingOccurrences(of: "\\W+", with: "-", options: .regularExpression)
+        .replacingOccurrences(of: "\\W+", with: "", options: .regularExpression)
         .replacingOccurrences(of: "^-|-$", with: "", options: .regularExpression)
 }
