@@ -82,7 +82,7 @@ private func compare(_ old: UIImage, _ new: UIImage, precision: Float) -> Bool {
   guard oldCgImage.height == newCgImage.height else { return false }
 
   let resultImage = computeImageDifference(image1: old, image2: new)
-    let result2 = ImageDiff().compare(leftImage: old.cgImage!, rightImage: new.cgImage!)
+    let result2 = try? ImageDiff().compare(leftImage: old.cgImage!, rightImage: new.cgImage!)
 
   // Values between images may differ due to padding to multiple of 64 bytes per row,
   // because of that a freshly taken view snapshot may differ from one stored as PNG.
