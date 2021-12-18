@@ -579,7 +579,7 @@ extension UITraitCollection {
     public static func iPhoneSE2(_ orientation: ViewImageConfig.Orientation)
     -> UITraitCollection {
         let base: [UITraitCollection] = [
-            .init(displayGamut: .P3),
+//            .init(displayGamut: .P3),
             .init(displayScale: 2),
             .init(forceTouchCapability: .unavailable),
             .init(layoutDirection: .leftToRight),
@@ -607,7 +607,7 @@ extension UITraitCollection {
     public static func iPhone8(_ orientation: ViewImageConfig.Orientation)
     -> UITraitCollection {
         let base: [UITraitCollection] = [
-            .init(displayGamut: .P3),
+//            .init(displayGamut: .P3),
             .init(displayScale: 2),
             .init(forceTouchCapability: .available),
             .init(layoutDirection: .leftToRight),
@@ -635,7 +635,7 @@ extension UITraitCollection {
     public static func iPhone8Plus(_ orientation: ViewImageConfig.Orientation)
     -> UITraitCollection {
         let base: [UITraitCollection] = [
-            .init(displayGamut: .P3),
+//            .init(displayGamut: .P3),
             .init(displayScale: 3),
             .init(forceTouchCapability: .available),
             .init(layoutDirection: .leftToRight),
@@ -691,7 +691,7 @@ extension UITraitCollection {
     public static func iPhone13(_ orientation: ViewImageConfig.Orientation)
     -> UITraitCollection {
         let base: [UITraitCollection] = [
-            .init(displayGamut: .P3),
+//            .init(displayGamut: .P3),
             .init(displayScale: 3),
             .init(forceTouchCapability: .unavailable),
             .init(layoutDirection: .leftToRight),
@@ -719,7 +719,7 @@ extension UITraitCollection {
     public static func iPhone13Mini(_ orientation: ViewImageConfig.Orientation)
     -> UITraitCollection {
         let base: [UITraitCollection] = [
-            .init(displayGamut: .P3),
+//            .init(displayGamut: .P3),
             .init(displayScale: 3),
             .init(forceTouchCapability: .unavailable),
             .init(layoutDirection: .leftToRight),
@@ -747,7 +747,7 @@ extension UITraitCollection {
     public static func iPhone13ProMax(_ orientation: ViewImageConfig.Orientation)
     -> UITraitCollection {
         let base: [UITraitCollection] = [
-            .init(displayGamut: .P3),
+//            .init(displayGamut: .P3),
             .init(displayScale: 3),
             .init(forceTouchCapability: .unavailable),
             .init(layoutDirection: .leftToRight),
