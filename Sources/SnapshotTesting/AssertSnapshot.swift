@@ -285,7 +285,10 @@ public func verifySnapshot<Value, Format>(
 
         try fileManager.createDirectory(at: artifactsUrl, withIntermediateDirectories: true)
         let failedSnapshotFileUrl = artifactsUrl.appendingPathComponent("__artifact__" + snapshotFileUrl.lastPathComponent)
-        try snapshotting.diffing.toData(diffable).write(to: failedSnapshotFileUrl)
+
+        if let diffAttachment = attachments.first(where: { $0.name == "difference_payload" }), let artifactImage = diffAttachment.userInfo?["image"] as? UIImage {
+            try artifactImage.pngData()?.write(to: failedSnapshotFileUrl)
+        }
 
         if !attachments.isEmpty {
 #if !os(Linux)

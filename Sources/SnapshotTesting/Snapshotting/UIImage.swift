@@ -33,10 +33,18 @@ extension Diffing where Value == UIImage {
       let newAttachment = XCTAttachment(image: new)
       newAttachment.name = "failure"
       let differenceAttachment = XCTAttachment(image: difference)
-      differenceAttachment.name = "difference"
+        differenceAttachment.name = "difference"
+
+        let differenceAttachmentWithPayload = XCTAttachment(
+            uniformTypeIdentifier: "public.png",
+            name: "difference_payload",
+            payload: difference.pngData()!,
+            userInfo: ["image": difference]
+        )
+
       return (
         message,
-        [oldAttachment, newAttachment, differenceAttachment]
+        [oldAttachment, newAttachment, differenceAttachment, differenceAttachmentWithPayload]
       )
     }
   }
@@ -71,6 +79,15 @@ extension Snapshotting where Value == UIImage, Format == UIImage {
   }
 }
 
+func calculateTime(block : (() -> Void)) {
+    let start = DispatchTime.now()
+    block()
+    let end = DispatchTime.now()
+    let nanoTime = end.uptimeNanoseconds - start.uptimeNanoseconds
+    let timeInterval = Double(nanoTime) / 1_000_000_000
+    print("Time: \(timeInterval) seconds")
+}
+
 private func compare(_ old: UIImage, _ new: UIImage, precision: Float) -> Bool {
   guard let oldCgImage = old.cgImage else { return false }
   guard let newCgImage = new.cgImage else { return false }
@@ -81,7 +98,38 @@ private func compare(_ old: UIImage, _ new: UIImage, precision: Float) -> Bool {
   guard newCgImage.height != 0 else { return false }
   guard oldCgImage.height == newCgImage.height else { return false }
 
-    let comp2 = try? compare(tolerance: 99, expectedUIImage: old, observedUIImage: new)
+    calculateTime {
+        let comp2 = try? compare(tolerance: precision * 100, expectedUIImage: old, observedUIImage: new)
+    }
+
+    Swift.print("")
+
+    calculateTime {
+        let minBytesPerRow = min(oldCgImage.bytesPerRow, newCgImage.bytesPerRow)
+        let byteCount = minBytesPerRow * oldCgImage.height
+
+        var oldBytes = [UInt8](repeating: 0, count: byteCount)
+        guard let oldContext = context(for: oldCgImage, bytesPerRow: minBytesPerRow, data: &oldBytes) else { return }
+        guard let oldData = oldContext.data else { return }
+        if let newContext = context(for: newCgImage, bytesPerRow: minBytesPerRow), let newData = newContext.data {
+            if memcmp(oldData, newData, byteCount) == 0 { return }
+        }
+        let newer = UIImage(data: new.pngData()!)!
+        guard let newerCgImage = newer.cgImage else { return }
+        var newerBytes = [UInt8](repeating: 0, count: byteCount)
+        guard let newerContext = context(for: newerCgImage, bytesPerRow: minBytesPerRow, data: &newerBytes) else { return }
+        guard let newerData = newerContext.data else { return }
+        if memcmp(oldData, newerData, byteCount) == 0 { return }
+        if precision >= 1 { return }
+        var differentPixelCount = 0
+        let threshold = 1 - precision
+        for byte in 0..<byteCount {
+            if oldBytes[byte] != newerBytes[byte] { differentPixelCount += 1 }
+            if Float(differentPixelCount) / Float(byteCount) > threshold { return }
+        }
+    }
+
+    Swift.print("")
 
   // Values between images may differ due to padding to multiple of 64 bytes per row,
   // because of that a freshly taken view snapshot may differ from one stored as PNG.
