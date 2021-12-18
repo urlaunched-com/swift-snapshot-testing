@@ -994,7 +994,8 @@ func prepareView(
     drawHierarchyInKeyWindow: Bool,
     traits: UITraitCollection,
     view: UIView,
-    viewController: UIViewController
+    viewController: UIViewController,
+    interfaceStyle: UIUserInterfaceStyle = .light
 ) -> () -> Void {
     let size = config.size ?? viewController.view.frame.size
     view.frame.size = size
@@ -1013,7 +1014,8 @@ func prepareView(
     } else {
         window = Window(
             config: .init(safeArea: config.safeArea, size: config.size ?? size, traits: traits, name: config.name),
-            viewController: viewController
+            viewController: viewController,
+            interfaceStyle: interfaceStyle
         )
     }
     let dispose = add(traits: traits, viewController: viewController, to: window)
@@ -1033,7 +1035,8 @@ func snapshotView(
     drawHierarchyInKeyWindow: Bool,
     traits: UITraitCollection,
     view: UIView,
-    viewController: UIViewController
+    viewController: UIViewController,
+    interfaceStyle: UIUserInterfaceStyle = .light
 )
 -> Async<UIImage> {
     let initialFrame = view.frame
@@ -1042,7 +1045,8 @@ func snapshotView(
         drawHierarchyInKeyWindow: false,//drawHierarchyInKeyWindow,
         traits: traits,
         view: view,
-        viewController: viewController
+        viewController: viewController,
+        interfaceStyle: interfaceStyle
     )
     // NB: Avoid safe area influence.
     if config.safeArea == .zero { view.frame.origin = .init(x: offscreen, y: offscreen) }
@@ -1105,7 +1109,7 @@ private func getKeyWindow() -> UIWindow? {
 private final class Window: UIWindow {
     var config: ViewImageConfig
 
-    init(config: ViewImageConfig, viewController: UIViewController) {
+    init(config: ViewImageConfig, viewController: UIViewController, interfaceStyle: UIUserInterfaceStyle) {
         let size = config.size ?? viewController.view.bounds.size
         self.config = config
         super.init(frame: .init(origin: .zero, size: size))
@@ -1124,6 +1128,7 @@ private final class Window: UIWindow {
             }
         }
         self.isHidden = false
+        self.overrideUserInterfaceStyle = interfaceStyle
     }
 
     override var traitCollection: UITraitCollection {

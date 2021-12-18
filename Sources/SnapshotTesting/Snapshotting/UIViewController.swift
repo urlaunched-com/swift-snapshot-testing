@@ -4,11 +4,11 @@ import UIKit
 extension Snapshotting where Value == UIViewController, Format == UIImage {
   /// A snapshot strategy for comparing view controller views based on pixel equality.
   public static var image: Snapshotting {
-    return .image()
+      return .image(interfaceStyle: .light)
   }
 
   public static func image(scale: CGFloat) -> Snapshotting {
-      return .image(drawHierarchyInKeyWindow: true, precision: 1, scale: scale, traits: .init(displayScale: scale))
+      return .image(drawHierarchyInKeyWindow: true, precision: 1, scale: scale, traits: .init(displayScale: scale), interfaceStyle: .light)
   }
 
   /// A snapshot strategy for comparing view controller views based on pixel equality.
@@ -23,7 +23,8 @@ extension Snapshotting where Value == UIViewController, Format == UIImage {
     drawHierarchyInKeyWindow: Bool = true,
     precision: Float = 1,
     size: CGSize? = nil,
-    traits: UITraitCollection = .init()
+    traits: UITraitCollection = .init(),
+    interfaceStyle: UIUserInterfaceStyle = .light
     )
     -> Snapshotting {
 
@@ -33,7 +34,8 @@ extension Snapshotting where Value == UIViewController, Format == UIImage {
           drawHierarchyInKeyWindow: drawHierarchyInKeyWindow,
           traits: config.traits,
           view: viewController.view,
-          viewController: viewController
+          viewController: viewController,
+          interfaceStyle: interfaceStyle
         )
       }
   }
@@ -49,7 +51,8 @@ extension Snapshotting where Value == UIViewController, Format == UIImage {
     drawHierarchyInKeyWindow: Bool = false,
     precision: Float = 1,
     size: CGSize? = nil,
-    traits: UITraitCollection = .init()
+    traits: UITraitCollection = .init(),
+    interfaceStyle: UIUserInterfaceStyle = .light
     )
     -> Snapshotting {
 
@@ -59,7 +62,8 @@ extension Snapshotting where Value == UIViewController, Format == UIImage {
           drawHierarchyInKeyWindow: drawHierarchyInKeyWindow,
           traits: .init(),
           view: viewController.view,
-          viewController: viewController
+          viewController: viewController,
+          interfaceStyle: interfaceStyle
         )
       }
   }
@@ -69,7 +73,8 @@ extension Snapshotting where Value == UIViewController, Format == UIImage {
         precision: Float = 1,
         size: CGSize? = nil,
         scale: CGFloat,
-        traits: UITraitCollection = .init()
+        traits: UITraitCollection = .init(),
+        interfaceStyle: UIUserInterfaceStyle = .light
     )
     -> Snapshotting {
 
@@ -79,7 +84,8 @@ extension Snapshotting where Value == UIViewController, Format == UIImage {
                 drawHierarchyInKeyWindow: drawHierarchyInKeyWindow,
                 traits: .init(displayScale: scale),
                 view: viewController.view,
-                viewController: viewController
+                viewController: viewController,
+                interfaceStyle: interfaceStyle
             )
         }
     }
@@ -94,7 +100,8 @@ extension Snapshotting where Value == UIViewController, Format == String {
         drawHierarchyInKeyWindow: false,
         traits: .init(),
         view: viewController.view,
-        viewController: viewController
+        viewController: viewController,
+        interfaceStyle: .light //TODO: as param
       )
       defer { dispose() }
       return purgePointers(
@@ -117,7 +124,8 @@ extension Snapshotting where Value == UIViewController, Format == String {
   public static func recursiveDescription(
     on config: ViewImageConfig = .init(name: "recursiveDescription"),
     size: CGSize? = nil,
-    traits: UITraitCollection = .init()
+    traits: UITraitCollection = .init(),
+    interfaceStyle: UIUserInterfaceStyle = .light
     )
     -> Snapshotting<UIViewController, String> {
       return SimplySnapshotting.lines.pullback { viewController in
@@ -126,7 +134,8 @@ extension Snapshotting where Value == UIViewController, Format == String {
           drawHierarchyInKeyWindow: false,
           traits: traits,
           view: viewController.view,
-          viewController: viewController
+          viewController: viewController,
+          interfaceStyle: interfaceStyle
         )
         defer { dispose() }
         return purgePointers(

@@ -20,7 +20,7 @@ extension Snapshotting where Value: SwiftUI.View, Format == UIImage {
 
   /// A snapshot strategy for comparing SwiftUI Views based on pixel equality.
   public static var image: Snapshotting {
-    return .image()
+      return .image(interfaceStyle: .light)
   }
 
   /// A snapshot strategy for comparing SwiftUI Views based on pixel equality.
@@ -34,7 +34,8 @@ extension Snapshotting where Value: SwiftUI.View, Format == UIImage {
     drawHierarchyInKeyWindow: Bool = false,
     precision: Float = 1,
     layout: SwiftUISnapshotLayout = .sizeThatFits,
-    traits: UITraitCollection = .init()
+    traits: UITraitCollection = .init(),
+    interfaceStyle: UIUserInterfaceStyle = .light
     )
     -> Snapshotting {
       let config: ViewImageConfig
@@ -74,7 +75,8 @@ extension Snapshotting where Value: SwiftUI.View, Format == UIImage {
           drawHierarchyInKeyWindow: drawHierarchyInKeyWindow,
           traits: traits,
           view: controller.view,
-          viewController: controller
+          viewController: controller,
+          interfaceStyle: interfaceStyle
         )
       }
   }

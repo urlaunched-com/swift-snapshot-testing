@@ -4,7 +4,7 @@ import UIKit
 extension Snapshotting where Value == UIView, Format == UIImage {
   /// A snapshot strategy for comparing views based on pixel equality.
   public static var image: Snapshotting {
-    return .image()
+      return .image(interfaceStyle: .light)
   }
 
   /// A snapshot strategy for comparing views based on pixel equality.
@@ -18,7 +18,8 @@ extension Snapshotting where Value == UIView, Format == UIImage {
     drawHierarchyInKeyWindow: Bool = false,
     precision: Float = 1,
     size: CGSize? = nil,
-    traits: UITraitCollection = .init()
+    traits: UITraitCollection = .init(),
+    interfaceStyle: UIUserInterfaceStyle = .light
     )
     -> Snapshotting {
 
@@ -28,7 +29,8 @@ extension Snapshotting where Value == UIView, Format == UIImage {
           drawHierarchyInKeyWindow: drawHierarchyInKeyWindow,
           traits: traits,
           view: view,
-          viewController: .init()
+          viewController: .init(),
+          interfaceStyle: interfaceStyle
         )
       }
   }
@@ -52,7 +54,8 @@ extension Snapshotting where Value == UIView, Format == String {
           drawHierarchyInKeyWindow: false,
           traits: .init(),
           view: view,
-          viewController: .init()
+          viewController: .init(),
+          interfaceStyle: .light
         )
         defer { dispose() }
         return purgePointers(
