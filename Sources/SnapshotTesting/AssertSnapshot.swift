@@ -274,7 +274,17 @@ public func verifySnapshot<Value, Format>(
         }
 #endif
 
-        guard let (failure, attachments) = snapshotting.diffing.diff(reference, diffable) else {
+        let tmpURL = recordingSnapshotFileUrl
+            .deletingLastPathComponent()
+            .appendingPathComponent("to_compare.png")
+
+        try snapshotting.diffing.toData(diffable).write(to: tmpURL)
+        let tmpData = try Data(contentsOf: tmpURL)
+        let tmpDiffable = snapshotting.diffing.fromData(tmpData)
+
+        let toCheck = diffable as? UIImage
+
+        guard let (failure, attachments) = snapshotting.diffing.diff(reference, tmpDiffable) else {
             return nil
         }
 
