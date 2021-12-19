@@ -34,6 +34,7 @@ public func assertSnapshot<Value, Format>(
     record recording: Bool = false,
     snapshotDirectory: String? = nil,
     timeout: TimeInterval = 5,
+    addAttachment: @escaping (XCTAttachment) -> Void = { _ in },
     file: StaticString = #file,
     testName: String = #function,
     line: UInt = #line
@@ -46,6 +47,7 @@ public func assertSnapshot<Value, Format>(
         record: recording,
         snapshotDirectory: snapshotDirectory,
         timeout: timeout,
+        addAttachment: addAttachment,
         file: file,
         testName: testName,
         line: line
@@ -69,6 +71,7 @@ public func assertSnapshots<Value, Format>(
     as strategies: [String: Snapshotting<Value, Format>],
     record recording: Bool = false,
     timeout: TimeInterval = 5,
+    addAttachment: @escaping (XCTAttachment) -> Void = { _ in },
     file: StaticString = #file,
     testName: String = #function,
     line: UInt = #line
@@ -81,6 +84,7 @@ public func assertSnapshots<Value, Format>(
             named: name,
             record: recording,
             timeout: timeout,
+            addAttachment: addAttachment,
             file: file,
             testName: testName,
             line: line
@@ -103,6 +107,7 @@ public func assertSnapshots<Value, Format>(
     as strategies: [Snapshotting<Value, Format>],
     record recording: Bool = false,
     timeout: TimeInterval = 5,
+    addAttachment: @escaping (XCTAttachment) -> Void = { _ in },
     file: StaticString = #file,
     testName: String = #function,
     line: UInt = #line
@@ -114,6 +119,7 @@ public func assertSnapshots<Value, Format>(
             as: strategy,
             record: recording,
             timeout: timeout,
+            addAttachment: addAttachment,
             file: file,
             testName: testName,
             line: line
@@ -169,6 +175,7 @@ public func verifySnapshot<Value, Format>(
     record recording: Bool = false,
     snapshotDirectory: String? = nil,
     timeout: TimeInterval = 5,
+    addAttachment: @escaping (XCTAttachment) -> Void = { _ in },
     file: StaticString = #file,
     testName: String = #function,
     line: UInt = #line
@@ -293,11 +300,14 @@ public func verifySnapshot<Value, Format>(
         if !attachments.isEmpty {
 #if !os(Linux)
             if ProcessInfo.processInfo.environment.keys.contains("__XCODE_BUILT_PRODUCTS_DIR_PATHS") {
-                XCTContext.runActivity(named: "Attached Failure Diff") { activity in
-                    attachments.forEach {
-                        activity.add($0)
-                    }
+                attachments.forEach {
+                    addAttachment($0)
                 }
+//                XCTContext.runActivity(named: "Attached Failure Diff") { activity in
+//                    attachments.forEach {
+//                        activity.add($0)
+//                    }
+//                }
             }
 #endif
         }

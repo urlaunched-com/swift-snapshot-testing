@@ -30,10 +30,15 @@ extension Diffing where Value == UIImage {
         : "Newly-taken snapshot@\(new.size) does not match reference@\(old.size)."
       let oldAttachment = XCTAttachment(image: old)
       oldAttachment.name = "reference"
+        oldAttachment.lifetime = .deleteOnSuccess
+
       let newAttachment = XCTAttachment(image: new)
       newAttachment.name = "failure"
+        newAttachment.lifetime = .deleteOnSuccess
+
       let differenceAttachment = XCTAttachment(image: difference)
         differenceAttachment.name = "difference"
+        differenceAttachment.lifetime = .deleteOnSuccess
 
         let differenceAttachmentWithPayload = XCTAttachment(
             uniformTypeIdentifier: "public.png",
@@ -41,6 +46,8 @@ extension Diffing where Value == UIImage {
             payload: difference.pngData()!,
             userInfo: ["image": difference]
         )
+
+        differenceAttachmentWithPayload.lifetime = .deleteOnSuccess
 
       return (
         message,
