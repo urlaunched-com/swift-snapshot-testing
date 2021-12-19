@@ -123,7 +123,7 @@ private func compare(_ old: UIImage, _ new: UIImage, precision: Float) -> (isEqu
     if oldBytes[byte] != newerBytes[byte] { differentPixelCount += 1 }
       let diff = Float(differentPixelCount) / Float(byteCount)
     if diff > threshold {
-        return (false, diff)
+        return (false, 1 - diff)
     }
   }
   return (true, 1)
