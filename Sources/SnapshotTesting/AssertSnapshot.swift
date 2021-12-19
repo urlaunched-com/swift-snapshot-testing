@@ -290,12 +290,7 @@ public func verifySnapshot<Value, Format>(
         ??
         recordingSnapshotFileUrl.deletingLastPathComponent()
 
-        try fileManager.createDirectory(at: artifactsUrl, withIntermediateDirectories: true)
         let failedSnapshotFileUrl = artifactsUrl.appendingPathComponent("__artifact__" + snapshotFileUrl.lastPathComponent)
-
-        if let diffAttachment = attachments.first(where: { $0.name == "difference_payload" }), let artifactImage = diffAttachment.userInfo?["image"] as? UIImage {
-            try artifactImage.pngData()?.write(to: failedSnapshotFileUrl)
-        }
 
         if !attachments.isEmpty {
 #if !os(Linux)
@@ -303,11 +298,6 @@ public func verifySnapshot<Value, Format>(
                 attachments.forEach {
                     addAttachment($0)
                 }
-//                XCTContext.runActivity(named: "Attached Failure Diff") { activity in
-//                    attachments.forEach {
-//                        activity.add($0)
-//                    }
-//                }
             }
 #endif
         }

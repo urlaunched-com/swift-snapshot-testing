@@ -40,18 +40,9 @@ extension Diffing where Value == UIImage {
         differenceAttachment.name = "difference"
         differenceAttachment.lifetime = .deleteOnSuccess
 
-        let differenceAttachmentWithPayload = XCTAttachment(
-            uniformTypeIdentifier: "public.png",
-            name: "difference_payload",
-            payload: difference.pngData()!,
-            userInfo: ["image": difference]
-        )
-
-        differenceAttachmentWithPayload.lifetime = .deleteOnSuccess
-
       return (
         message,
-        [oldAttachment, newAttachment, differenceAttachment, differenceAttachmentWithPayload]
+        [oldAttachment, newAttachment, differenceAttachment]
       )
     }
   }
