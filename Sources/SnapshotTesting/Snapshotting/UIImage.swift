@@ -38,7 +38,7 @@ extension Diffing where Value == UIImage {
         newAttachment.lifetime = .deleteOnSuccess
 
       let differenceAttachment = XCTAttachment(image: difference)
-        differenceAttachment.name = "difference (diff: \(String(format: "%2.f", result.diff))"
+        differenceAttachment.name = "difference (diff: \(String(format: "%.2f", result.diff))"
         differenceAttachment.lifetime = .deleteOnSuccess
 
       return (
