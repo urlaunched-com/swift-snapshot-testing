@@ -108,14 +108,14 @@ private func compare(_ old: UIImage, _ new: UIImage, precision: Float) -> (isEqu
   guard let oldContext = context(for: oldCgImage, bytesPerRow: minBytesPerRow, data: &oldBytes) else { return (false, 0) }
   guard let oldData = oldContext.data else { return (false, 0) }
   if let newContext = context(for: newCgImage, bytesPerRow: minBytesPerRow), let newData = newContext.data {
-    if memcmp(oldData, newData, byteCount) == 0 { return (false, 1) }
+    if memcmp(oldData, newData, byteCount) == 0 { return (true, 1) }
   }
   let newer = UIImage(data: new.pngData()!)!
   guard let newerCgImage = newer.cgImage else { return (false, 0) }
   var newerBytes = [UInt8](repeating: 0, count: byteCount)
   guard let newerContext = context(for: newerCgImage, bytesPerRow: minBytesPerRow, data: &newerBytes) else { return (false, 0) }
   guard let newerData = newerContext.data else { return (false, 0) }
-  if memcmp(oldData, newerData, byteCount) == 0 { return (false, 1) }
+  if memcmp(oldData, newerData, byteCount) == 0 { return (true, 1) }
   if precision >= 1 { return (false, 0) }
   var differentPixelCount = 0
   let threshold = 1 - precision
