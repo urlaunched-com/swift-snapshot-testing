@@ -94,7 +94,7 @@ private func compare(_ old: UIImage, _ new: UIImage, precision: Float) -> (isEqu
 
     calculateTime {
         do {
-            try FBSnapshotTestController().compareReferenceImage(old, to: new, overallTolerance: CGFloat(precision))
+            try FBSnapshotTestController().compareReferenceImage(old, to: new, overallTolerance: CGFloat(1.0 - precision))
         } catch {
             Swift.print(error)
             Swift.print("")
