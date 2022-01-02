@@ -92,7 +92,7 @@ import iOSSnapshotTestCase
 private func compare(_ old: UIImage, _ new: UIImage, precision: Float) -> (isEqual: Bool, diff: Float) {
 
     do {
-        try FBSnapshotTestController().compareReferenceImage(old, to: new, overallTolerance: 0.5)
+        try FBSnapshotTestController().compareReferenceImage(old, to: new, overallTolerance: precision)
     } catch {
         Swift.print(error)
         Swift.print("")
