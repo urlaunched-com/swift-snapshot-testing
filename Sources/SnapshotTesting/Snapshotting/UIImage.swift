@@ -87,7 +87,17 @@ func calculateTime(block : (() -> Void)) {
     print("Time: \(timeInterval) seconds")
 }
 
+import iOSSnapshotTestCase
+
 private func compare(_ old: UIImage, _ new: UIImage, precision: Float) -> (isEqual: Bool, diff: Float) {
+
+    do {
+        try FBSnapshotTestController().compareReferenceImage(old, to: new, overallTolerance: 0.5)
+    } catch {
+        Swift.print(error)
+        Swift.print("")
+    }
+
   guard let oldCgImage = old.cgImage else { return (false, 0) }
   guard let newCgImage = new.cgImage else { return (false, 0) }
   guard oldCgImage.width != 0 else { return (false, 0) }
