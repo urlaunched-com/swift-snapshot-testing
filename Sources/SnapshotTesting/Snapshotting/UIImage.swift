@@ -23,8 +23,7 @@ extension Diffing where Value == UIImage {
       toData: { $0.pngData() ?? emptyImage().pngData()! },
       fromData: { UIImage(data: $0, scale: imageScale)! }
     ) { old, new in
-        let result = compare(old, new, precision: precision)
-        guard !result.isEqual else { return nil }
+      guard !compare(old, new, precision: precision) else { return nil }
       let difference = SnapshotTesting.diff(old, new, scale: imageScale)
       let message = new.size == old.size
         ? "Newly-taken snapshot does not match reference."
@@ -38,7 +37,7 @@ extension Diffing where Value == UIImage {
         newAttachment.lifetime = .deleteOnSuccess
 
       let differenceAttachment = XCTAttachment(image: difference)
-        differenceAttachment.name = "difference (diff: \(String(format: "%.2f", result.diff))"
+        differenceAttachment.name = "difference"
         differenceAttachment.lifetime = .deleteOnSuccess
 
       return (
@@ -89,99 +88,15 @@ func calculateTime(block : (() -> Void)) {
 
 import iOSSnapshotTestCase
 
-private func compare(_ old: UIImage, _ new: UIImage, precision: Float) -> (isEqual: Bool, diff: Float) {
-
-
-    calculateTime {
-        do {
-            try FBSnapshotTestController().compareReferenceImage(old, to: new, overallTolerance: CGFloat(1.0 - precision))
-        } catch {
-            Swift.print(error)
-            Swift.print("")
-        }
+private func compare(_ old: UIImage, _ new: UIImage, precision: Float) -> Bool {
+    var result = true
+    do {
+        try FBSnapshotTestController().compareReferenceImage(old, to: new, overallTolerance: CGFloat(1.0 - precision))
+    } catch {
+        Swift.print(error)
+        result = false
     }
-
-    calculateTime {
-        guard let oldCgImage = old.cgImage else { return }
-        guard let newCgImage = new.cgImage else { return }
-        guard oldCgImage.width != 0 else { return }
-        guard newCgImage.width != 0 else { return }
-        guard oldCgImage.width == newCgImage.width else { return }
-        guard oldCgImage.height != 0 else { return }
-        guard newCgImage.height != 0 else { return }
-        guard oldCgImage.height == newCgImage.height else { return }
-
-        // Values between images may differ due to padding to multiple of 64 bytes per row,
-        // because of that a freshly taken view snapshot may differ from one stored as PNG.
-        // At this point we're sure that size of both images is the same, so we can go with minimal `bytesPerRow` value
-        // and use it to create contexts.
-        let minBytesPerRow = min(oldCgImage.bytesPerRow, newCgImage.bytesPerRow)
-        let byteCount = minBytesPerRow * oldCgImage.height
-
-        var oldBytes = [UInt8](repeating: 0, count: byteCount)
-        guard let oldContext = context(for: oldCgImage, bytesPerRow: minBytesPerRow, data: &oldBytes) else { return }
-        guard let oldData = oldContext.data else { return }
-        if let newContext = context(for: newCgImage, bytesPerRow: minBytesPerRow), let newData = newContext.data {
-            if memcmp(oldData, newData, byteCount) == 0 { }
-        }
-        let newer = UIImage(data: new.pngData()!)!
-        guard let newerCgImage = newer.cgImage else { return }
-        var newerBytes = [UInt8](repeating: 0, count: byteCount)
-        guard let newerContext = context(for: newerCgImage, bytesPerRow: minBytesPerRow, data: &newerBytes) else { return }
-        guard let newerData = newerContext.data else { return }
-        if memcmp(oldData, newerData, byteCount) == 0 { return }
-        if precision >= 1 { return }
-        var differentPixelCount = 0
-        let threshold = 1 - precision
-        for byte in 0..<byteCount {
-            if oldBytes[byte] != newerBytes[byte] { differentPixelCount += 1 }
-            let diff = Float(differentPixelCount) / Float(byteCount)
-            if diff > threshold {
-                return
-            }
-        }
-        return
-    }
-
-  guard let oldCgImage = old.cgImage else { return (false, 0) }
-  guard let newCgImage = new.cgImage else { return (false, 0) }
-  guard oldCgImage.width != 0 else { return (false, 0) }
-  guard newCgImage.width != 0 else { return (false, 0) }
-  guard oldCgImage.width == newCgImage.width else { return (false, 0) }
-  guard oldCgImage.height != 0 else { return (false, 0) }
-  guard newCgImage.height != 0 else { return (false, 0) }
-  guard oldCgImage.height == newCgImage.height else { return (false, 0) }
-
-  // Values between images may differ due to padding to multiple of 64 bytes per row,
-  // because of that a freshly taken view snapshot may differ from one stored as PNG.
-  // At this point we're sure that size of both images is the same, so we can go with minimal `bytesPerRow` value
-  // and use it to create contexts.
-  let minBytesPerRow = min(oldCgImage.bytesPerRow, newCgImage.bytesPerRow)
-  let byteCount = minBytesPerRow * oldCgImage.height
-
-  var oldBytes = [UInt8](repeating: 0, count: byteCount)
-  guard let oldContext = context(for: oldCgImage, bytesPerRow: minBytesPerRow, data: &oldBytes) else { return (false, 0) }
-  guard let oldData = oldContext.data else { return (false, 0) }
-  if let newContext = context(for: newCgImage, bytesPerRow: minBytesPerRow), let newData = newContext.data {
-    if memcmp(oldData, newData, byteCount) == 0 { return (true, 1) }
-  }
-  let newer = UIImage(data: new.pngData()!)!
-  guard let newerCgImage = newer.cgImage else { return (false, 0) }
-  var newerBytes = [UInt8](repeating: 0, count: byteCount)
-  guard let newerContext = context(for: newerCgImage, bytesPerRow: minBytesPerRow, data: &newerBytes) else { return (false, 0) }
-  guard let newerData = newerContext.data else { return (false, 0) }
-  if memcmp(oldData, newerData, byteCount) == 0 { return (true, 1) }
-  if precision >= 1 { return (false, 0) }
-  var differentPixelCount = 0
-  let threshold = 1 - precision
-  for byte in 0..<byteCount {
-    if oldBytes[byte] != newerBytes[byte] { differentPixelCount += 1 }
-      let diff = Float(differentPixelCount) / Float(byteCount)
-    if diff > threshold {
-        return (false, 1 - diff)
-    }
-  }
-  return (true, 1)
+    return result
 }
 
 import CoreImage
