@@ -1091,6 +1091,10 @@ private func add(traits: UITraitCollection, viewController: UIViewController, to
 
     return {
         viewController.beginAppearanceTransition(false, animated: false)
+        viewController.willMove(toParent: nil)
+        viewController.view.removeFromSuperview()
+        viewController.removeFromParent()
+        viewController.didMove(toParent: nil)
         viewController.endAppearanceTransition()
         window.rootViewController = nil
     }

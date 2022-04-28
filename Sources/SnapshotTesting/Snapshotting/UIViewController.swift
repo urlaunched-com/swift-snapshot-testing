@@ -60,7 +60,7 @@ extension Snapshotting where Value == UIViewController, Format == UIImage {
         snapshotView(
           config: .init(safeArea: .zero, size: size, traits: traits, name: String(describing: size)),
           drawHierarchyInKeyWindow: drawHierarchyInKeyWindow,
-          traits: .init(),
+          traits: traits,
           view: viewController.view,
           viewController: viewController,
           interfaceStyle: interfaceStyle
