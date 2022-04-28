@@ -286,13 +286,8 @@ public func verifySnapshot<Value, Format>(
         do {
             try newSnapshotData.write(to: tmpFileUrl)
             let newData = try Data(contentsOf: snapshotFileUrl)
-            let res1 = snapshotting.diffing.diff(reference, diffable)
-
             diffable = snapshotting.diffing.fromData(newData)
-
-            let res2 = snapshotting.diffing.diff(reference, diffable)
-            print("")
-
+            try fileManager.removeItem(at: tmpFileUrl)
         } catch {}
 
         guard let (failure, attachments) = snapshotting.diffing.diff(reference, diffable) else {
