@@ -97,7 +97,7 @@ private func compare(_ old: UIImage, _ new: UIImage, precision: Float) -> Bool {
         result = false
     }
 
-    let var2 = old.compare(withImage: new)
+//    let var2 = old.compare(withImage: new)
 
     return result
 }

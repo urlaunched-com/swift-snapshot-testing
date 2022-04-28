@@ -281,6 +281,20 @@ public func verifySnapshot<Value, Format>(
         }
 #endif
 
+        let newSnapshotData = snapshotting.diffing.toData(diffable)
+        let tmpFileUrl = recordingSnapshotDirectoryUrl.appendingPathComponent("tmp_" + recordingSnapshotFileUrl.lastPathComponent)
+        do {
+            try newSnapshotData.write(to: tmpFileUrl)
+            let newData = try Data(contentsOf: snapshotFileUrl)
+            let res1 = snapshotting.diffing.diff(reference, diffable)
+
+            diffable = snapshotting.diffing.fromData(newData)
+
+            let res2 = snapshotting.diffing.diff(reference, diffable)
+            print("")
+
+        } catch {}
+
         guard let (failure, attachments) = snapshotting.diffing.diff(reference, diffable) else {
             return nil
         }
