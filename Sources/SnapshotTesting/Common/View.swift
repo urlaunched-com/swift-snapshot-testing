@@ -992,7 +992,6 @@ extension UIApplication {
 func prepareView(
     config: ViewImageConfig,
     drawHierarchyInKeyWindow: Bool,
-    traits: UITraitCollection,
     view: UIView,
     viewController: UIViewController,
     interfaceStyle: UIUserInterfaceStyle = .light
@@ -1003,7 +1002,6 @@ func prepareView(
         viewController.view.bounds = view.bounds
         viewController.view.addSubview(view)
     }
-    let traits = UITraitCollection(traitsFrom: [config.traits, traits])
     let window: UIWindow
     if drawHierarchyInKeyWindow {
         guard let keyWindow = getKeyWindow() else {
@@ -1013,12 +1011,12 @@ func prepareView(
         window.frame.size = size
     } else {
         window = Window(
-            config: .init(safeArea: config.safeArea, size: config.size ?? size, traits: traits, name: config.name),
+            config: .init(safeArea: config.safeArea, size: config.size ?? size, traits: config.traits, name: config.name),
             viewController: viewController,
             interfaceStyle: interfaceStyle
         )
     }
-    let dispose = add(traits: traits, viewController: viewController, to: window)
+    let dispose = add(traits: config.traits, viewController: viewController, to: window)
 
     if size.width == 0 || size.height == 0 {
         // Try to call sizeToFit() if the view still has invalid size
@@ -1043,7 +1041,6 @@ func snapshotView(
     let dispose = prepareView(
         config: config,
         drawHierarchyInKeyWindow: false,//drawHierarchyInKeyWindow,
-        traits: traits,
         view: view,
         viewController: viewController,
         interfaceStyle: interfaceStyle

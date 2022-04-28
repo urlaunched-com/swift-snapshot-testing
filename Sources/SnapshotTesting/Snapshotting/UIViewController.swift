@@ -98,7 +98,6 @@ extension Snapshotting where Value == UIViewController, Format == String {
       let dispose = prepareView(
         config: .init(name: "hierarchy"),
         drawHierarchyInKeyWindow: false,
-        traits: .init(),
         view: viewController.view,
         viewController: viewController,
         interfaceStyle: .light //TODO: as param
@@ -124,15 +123,13 @@ extension Snapshotting where Value == UIViewController, Format == String {
   public static func recursiveDescription(
     on config: ViewImageConfig = .init(name: "recursiveDescription"),
     size: CGSize? = nil,
-    traits: UITraitCollection = .init(),
     interfaceStyle: UIUserInterfaceStyle = .light
-    )
+  )
     -> Snapshotting<UIViewController, String> {
       return SimplySnapshotting.lines.pullback { viewController in
         let dispose = prepareView(
           config: .init(safeArea: config.safeArea, size: size ?? config.size, traits: config.traits, name: String(describing: size ?? config.size)),
           drawHierarchyInKeyWindow: false,
-          traits: traits,
           view: viewController.view,
           viewController: viewController,
           interfaceStyle: interfaceStyle

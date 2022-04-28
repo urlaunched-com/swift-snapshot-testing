@@ -759,7 +759,7 @@ final class SnapshotTestingTests: XCTestCase {
     allContentSizes.forEach { name, contentSize in
       assertSnapshot(
         matching: viewController,
-        as: .recursiveDescription(on: .iPhoneSe, traits: .init(preferredContentSizeCategory: contentSize)),
+        as: .recursiveDescription(on: .iPhoneSe),
         named: "label-\(name)"
       )
     }

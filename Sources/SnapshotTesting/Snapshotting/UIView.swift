@@ -52,7 +52,6 @@ extension Snapshotting where Value == UIView, Format == String {
         let dispose = prepareView(
           config: .init(safeArea: .zero, size: size ?? view.frame.size, traits: traits, name: "\(size ?? view.frame.size)"),
           drawHierarchyInKeyWindow: false,
-          traits: .init(),
           view: view,
           viewController: .init(),
           interfaceStyle: .light
