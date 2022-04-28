@@ -26,6 +26,8 @@ public struct ViewImageConfig {
         public static let navigationBarInline = Options(rawValue: 1 << 2)
     }
 
+    public static var global: ViewImageConfig = .iPhone13
+
     public var name: String
     public var options: Options
 
