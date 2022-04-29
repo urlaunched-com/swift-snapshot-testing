@@ -97,54 +97,7 @@ private func compare(_ old: UIImage, _ new: UIImage, precision: Float) -> Bool {
         result = false
     }
 
-//    let var2 = old.compare(withImage: new)
-
     return result
-}
-
-
-import CoreGraphics
-
-extension UIImage {
-
-    func compare(withImage image: UIImage) -> Bool {
-        guard let selfCgImage = cgImage else { return false }
-        guard let imageCgImage = image.cgImage else { return false }
-        return selfCgImage.compare(withImage: imageCgImage)
-    }
-}
-
-private extension CGImage {
-
-    private var size: CGSize {
-        return CGSize(width: self.width, height: self.height)
-    }
-
-    func compare(withImage image: CGImage) -> Bool {
-
-        guard size.equalTo(image.size) else { return false }
-
-        let colorSpace = CGColorSpaceCreateDeviceRGB()
-        let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedFirst.rawValue)
-        let minBytesPerRow = min(bytesPerRow, image.bytesPerRow)
-
-        let imageSizeBytes = height * minBytesPerRow
-        var imageBuf = Array<CUnsignedChar>(repeating: 0, count: imageSizeBytes)
-        var referenceBuf = Array<CUnsignedChar>(repeating: 0, count: imageSizeBytes)
-
-        guard let imageContext = CGContext(data: &imageBuf, width: width, height: height, bitsPerComponent: bitsPerComponent, bytesPerRow: minBytesPerRow, space: colorSpace, bitmapInfo: bitmapInfo.rawValue) else {
-            return false
-        }
-
-        guard let referenceContext = CGContext(data: &referenceBuf, width: image.width, height: image.height, bitsPerComponent: image.bitsPerComponent, bytesPerRow: minBytesPerRow, space: colorSpace, bitmapInfo: bitmapInfo.rawValue) else {
-            return false
-        }
-
-        imageContext.draw(self, in: CGRect(origin: .zero, size: size))
-        referenceContext.draw(image, in: CGRect(origin: .zero, size: image.size))
-
-        return memcmp(UnsafePointer(imageBuf), UnsafePointer(referenceBuf), imageSizeBytes) == 0
-    }
 }
 
 
