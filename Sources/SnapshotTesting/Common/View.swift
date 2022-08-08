@@ -1032,7 +1032,8 @@ func prepareView(
 
 func snapshotView(
     config: ViewImageConfig,
-    drawHierarchyInKeyWindow: Bool,
+    renderingMode: RenderingMode = .snapshot(afterScreenUpdates: false),
+//    drawHierarchyInKeyWindow: Bool,
     traits: UITraitCollection,
     view: UIView,
     viewController: UIViewController,
@@ -1054,9 +1055,15 @@ func snapshotView(
         addImagesForRenderedViews(view).sequence().run { views in
             callback(
                 renderer(bounds: view.bounds, for: traits).image { ctx in
-                    if drawHierarchyInKeyWindow {
-                        view.drawHierarchy(in: view.bounds, afterScreenUpdates: true)
-                    } else {
+
+                    switch renderingMode {
+                    case .snapshot(let afterScreenUpdates):
+                        view.snapshotView(afterScreenUpdates: afterScreenUpdates)
+
+                    case .drawHierarchy(let afterScreenUpdates):
+                        view.drawHierarchy(in: view.bounds, afterScreenUpdates: afterScreenUpdates)
+
+                    case .renderInContext:
                         view.layer.render(in: ctx.cgContext)
                     }
                 }

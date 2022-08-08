@@ -8,7 +8,7 @@ extension Snapshotting where Value == UIViewController, Format == UIImage {
   }
 
   public static func image(scale: CGFloat) -> Snapshotting {
-      return .image(drawHierarchyInKeyWindow: true, precision: 1, scale: scale, traits: .init(displayScale: scale), interfaceStyle: .light)
+      return .image(precision: 1, scale: scale, traits: .init(displayScale: scale), interfaceStyle: .light)
   }
 
   /// A snapshot strategy for comparing view controller views based on pixel equality.
@@ -20,7 +20,7 @@ extension Snapshotting where Value == UIViewController, Format == UIImage {
   ///   - traits: A trait collection override.
   public static func image(
     on config: ViewImageConfig,
-    drawHierarchyInKeyWindow: Bool = true,
+    renderingMode: RenderingMode = .snapshot(afterScreenUpdates: false),
     precision: Float = 1,
     size: CGSize? = nil,
     traits: UITraitCollection = .init(),
@@ -31,7 +31,7 @@ extension Snapshotting where Value == UIViewController, Format == UIImage {
     return SimplySnapshotting.image(precision: precision, scale: config.traits.displayScale).asyncPullback { viewController in
         snapshotView(
           config: size.map { .init(safeArea: config.safeArea, size: $0, traits: config.traits, name: "\($0)") } ?? config,
-          drawHierarchyInKeyWindow: drawHierarchyInKeyWindow,
+          renderingMode: renderingMode,
           traits: config.traits,
           view: viewController.view,
           viewController: viewController,
@@ -48,7 +48,7 @@ extension Snapshotting where Value == UIViewController, Format == UIImage {
   ///   - size: A view size override.
   ///   - traits: A trait collection override.
   public static func image(
-    drawHierarchyInKeyWindow: Bool = false,
+    renderingMode: RenderingMode = .snapshot(afterScreenUpdates: false),
     precision: Float = 1,
     size: CGSize? = nil,
     traits: UITraitCollection = .init(),
@@ -59,7 +59,7 @@ extension Snapshotting where Value == UIViewController, Format == UIImage {
       return SimplySnapshotting.image(precision: precision, scale: traits.displayScale).asyncPullback { viewController in
         snapshotView(
           config: .init(safeArea: .zero, size: size, traits: traits, name: String(describing: size)),
-          drawHierarchyInKeyWindow: drawHierarchyInKeyWindow,
+          renderingMode: renderingMode,
           traits: traits,
           view: viewController.view,
           viewController: viewController,
@@ -69,7 +69,7 @@ extension Snapshotting where Value == UIViewController, Format == UIImage {
   }
 
     public static func image(
-        drawHierarchyInKeyWindow: Bool = false,
+        renderingMode: RenderingMode = .snapshot(afterScreenUpdates: false),
         precision: Float = 1,
         size: CGSize? = nil,
         scale: CGFloat,
@@ -81,7 +81,7 @@ extension Snapshotting where Value == UIViewController, Format == UIImage {
         return SimplySnapshotting.image(precision: precision, scale: scale).asyncPullback { viewController in
             snapshotView(
                 config: .init(safeArea: .zero, size: size, traits: traits, name: String(describing: size)),
-                drawHierarchyInKeyWindow: drawHierarchyInKeyWindow,
+                renderingMode: renderingMode,
                 traits: .init(displayScale: scale),
                 view: viewController.view,
                 viewController: viewController,
