@@ -2,29 +2,29 @@
 import UIKit
 
 extension Snapshotting where Value == UIBezierPath, Format == UIImage {
-  /// A snapshot strategy for comparing bezier paths based on pixel equality.
-  public static var image: Snapshotting {
-    return .image()
-  }
-
-  /// A snapshot strategy for comparing bezier paths based on pixel equality.
-  ///
-  /// - Parameter precision: The percentage of pixels that must match.
-  public static func image(precision: Float = 1, scale: CGFloat = 1) -> Snapshotting {
-    return SimplySnapshotting.image(precision: precision, scale: scale).pullback { path in
-      let bounds = path.bounds
-      let format: UIGraphicsImageRendererFormat
-      if #available(iOS 11.0, tvOS 11.0, *) {
-        format = UIGraphicsImageRendererFormat.preferred()
-      } else {
-        format = UIGraphicsImageRendererFormat.default()
-      }
-      format.scale = scale
-      return UIGraphicsImageRenderer(bounds: bounds, format: format).image { ctx in
-        path.fill()
-      }
+    /// A snapshot strategy for comparing bezier paths based on pixel equality.
+    public static var image: Snapshotting {
+        return .image(png: true)
     }
-  }
+
+    /// A snapshot strategy for comparing bezier paths based on pixel equality.
+    ///
+    /// - Parameter precision: The percentage of pixels that must match.
+    public static func image(precision: Float = 1, scale: CGFloat = 1, png: Bool) -> Snapshotting {
+        return SimplySnapshotting.image(precision: precision, scale: scale, png: png).pullback { path in
+            let bounds = path.bounds
+            let format: UIGraphicsImageRendererFormat
+            if #available(iOS 11.0, tvOS 11.0, *) {
+                format = UIGraphicsImageRendererFormat.preferred()
+            } else {
+                format = UIGraphicsImageRendererFormat.default()
+            }
+            format.scale = scale
+            return UIGraphicsImageRenderer(bounds: bounds, format: format).image { ctx in
+                path.fill()
+            }
+        }
+    }
 }
 
 @available(iOS 11.0, tvOS 11.0, *)

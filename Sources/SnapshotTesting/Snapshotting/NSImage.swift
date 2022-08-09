@@ -3,46 +3,46 @@ import Cocoa
 import XCTest
 
 extension Diffing where Value == NSImage {
-  /// A pixel-diffing strategy for NSImage's which requires a 100% match.
-  public static let image = Diffing.image(precision: 1)
+    /// A pixel-diffing strategy for NSImage's which requires a 100% match.
+    public static let image = Diffing.image(precision: 1)
 
-  /// A pixel-diffing strategy for NSImage that allows customizing how precise the matching must be.
-  ///
-  /// - Parameter precision: A value between 0 and 1, where 1 means the images must match 100% of their pixels.
-  /// - Returns: A new diffing strategy.
-  public static func image(precision: Float) -> Diffing {
-    return .init(
-      toData: { NSImagePNGRepresentation($0)! },
-      fromData: { NSImage(data: $0)! }
-    ) { old, new in
-      guard !compare(old, new, precision: precision) else { return nil }
-      let difference = SnapshotTesting.diff(old, new)
-      let message = new.size == old.size
-        ? "Newly-taken snapshot does not match reference."
-        : "Newly-taken snapshot@\(new.size) does not match reference@\(old.size)."
-      return (
-        message,
-        [XCTAttachment(image: old), XCTAttachment(image: new), XCTAttachment(image: difference)]
-      )
+    /// A pixel-diffing strategy for NSImage that allows customizing how precise the matching must be.
+    ///
+    /// - Parameter precision: A value between 0 and 1, where 1 means the images must match 100% of their pixels.
+    /// - Returns: A new diffing strategy.
+    public static func image(precision: Float, png: Bool) -> Diffing {
+        return .init(
+            toData: { png ? NSImagePNGRepresentation($0)! : NSImageJPEGRepresentation($0)! },
+            fromData: { NSImage(data: $0)! }
+        ) { old, new in
+            guard !compare(old, new, precision: precision) else { return nil }
+            let difference = SnapshotTesting.diff(old, new)
+            let message = new.size == old.size
+            ? "Newly-taken snapshot does not match reference."
+            : "Newly-taken snapshot@\(new.size) does not match reference@\(old.size)."
+            return (
+                message,
+                [XCTAttachment(image: old), XCTAttachment(image: new), XCTAttachment(image: difference)]
+            )
+        }
     }
-  }
 }
 
 extension Snapshotting where Value == NSImage, Format == NSImage {
-  /// A snapshot strategy for comparing images based on pixel equality.
-  public static var image: Snapshotting {
-    return .image(precision: 1)
-  }
+    /// A snapshot strategy for comparing images based on pixel equality.
+    public static var image: Snapshotting {
+        return .image(precision: 1)
+    }
 
-  /// A snapshot strategy for comparing images based on pixel equality.
-  ///
-  /// - Parameter precision: The percentage of pixels that must match.
-  public static func image(precision: Float) -> Snapshotting {
-    return .init(
-      pathExtension: "png",
-      diffing: .image(precision: precision)
-    )
-  }
+    /// A snapshot strategy for comparing images based on pixel equality.
+    ///
+    /// - Parameter precision: The percentage of pixels that must match.
+    public static func image(precision: Float, png: Bool) -> Snapshotting {
+        return .init(
+            pathExtension: png ? "png" : "jpg",
+            diffing: .image(precision: precision)
+        )
+    }
 }
 
 private func NSImagePNGRepresentation(_ image: NSImage) -> Data? {
@@ -52,7 +52,14 @@ private func NSImagePNGRepresentation(_ image: NSImage) -> Data? {
   return rep.representation(using: .png, properties: [:])
 }
 
-private func compare(_ old: NSImage, _ new: NSImage, precision: Float) -> Bool {
+private func NSImageJPEGRepresentation(_ image: NSImage) -> Data? {
+    guard let cgImage = image.cgImage(forProposedRect: nil, context: nil, hints: nil) else { return nil }
+    let rep = NSBitmapImageRep(cgImage: cgImage)
+    rep.size = image.size
+    return rep.representation(using: .jpeg, properties: [:])
+}
+
+private func compare(_ old: NSImage, _ new: NSImage, precision: Float, png: Bool) -> Bool {
   guard let oldCgImage = old.cgImage(forProposedRect: nil, context: nil, hints: nil) else { return false }
   guard let newCgImage = new.cgImage(forProposedRect: nil, context: nil, hints: nil) else { return false }
   guard oldCgImage.width != 0 else { return false }
@@ -67,7 +74,7 @@ private func compare(_ old: NSImage, _ new: NSImage, precision: Float) -> Bool {
   guard let newData = newContext.data else { return false }
   let byteCount = oldContext.height * oldContext.bytesPerRow
   if memcmp(oldData, newData, byteCount) == 0 { return true }
-  let newer = NSImage(data: NSImagePNGRepresentation(new)!)!
+  let newer = NSImage(data: png ? NSImagePNGRepresentation(new)! : NSImageJPEGRepresentation(new)!)!
   guard let newerCgImage = newer.cgImage(forProposedRect: nil, context: nil, hints: nil) else { return false }
   guard let newerContext = context(for: newerCgImage) else { return false }
   guard let newerData = newerContext.data else { return false }

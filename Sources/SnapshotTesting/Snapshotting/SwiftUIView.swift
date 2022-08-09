@@ -20,7 +20,7 @@ extension Snapshotting where Value: SwiftUI.View, Format == UIImage {
 
   /// A snapshot strategy for comparing SwiftUI Views based on pixel equality.
   public static var image: Snapshotting {
-      return .image(interfaceStyle: .light)
+      return .image(png: true, interfaceStyle: .light)
   }
 
   /// A snapshot strategy for comparing SwiftUI Views based on pixel equality.
@@ -30,56 +30,57 @@ extension Snapshotting where Value: SwiftUI.View, Format == UIImage {
   ///   - precision: The percentage of pixels that must match.
   ///   - size: A view size override.
   ///   - traits: A trait collection override.
-  public static func image(
-    drawHierarchyInKeyWindow: Bool = false,
-    precision: Float = 1,
-    layout: SwiftUISnapshotLayout = .sizeThatFits,
-    traits: UITraitCollection = .init(),
-    interfaceStyle: UIUserInterfaceStyle = .light
+    public static func image(
+        renderingMode: RenderingMode = .snapshot(afterScreenUpdates: true),
+        precision: Float = 1,
+        png: Bool,
+        layout: SwiftUISnapshotLayout = .sizeThatFits,
+        traits: UITraitCollection = .init(),
+        interfaceStyle: UIUserInterfaceStyle = .light
     )
     -> Snapshotting {
-      let config: ViewImageConfig
+        let config: ViewImageConfig
 
-      switch layout {
-      #if os(iOS) || os(tvOS)
-      case let .device(config: deviceConfig):
-        config = deviceConfig
-      #endif
-      case .sizeThatFits:
-        config = .init(safeArea: .zero, size: nil, traits: traits, name: "sizeThatFits")
-      case let .fixed(width: width, height: height):
-        let size = CGSize(width: width, height: height)
-        config = .init(safeArea: .zero, size: size, traits: traits, name: "\(size)")
-      }
-
-      return SimplySnapshotting.image(precision: precision, scale: traits.displayScale).asyncPullback { view in
-        var config = config
-
-        let controller: UIViewController
-
-        if config.size != nil {
-          controller = UIHostingController.init(
-            rootView: view
-          )
-        } else {
-          let hostingController = UIHostingController.init(rootView: view)
-
-          let maxSize = CGSize(width: 0.0, height: 0.0)
-          config.size = hostingController.sizeThatFits(in: maxSize)
-
-          controller = hostingController
+        switch layout {
+#if os(iOS) || os(tvOS)
+        case let .device(config: deviceConfig):
+            config = deviceConfig
+#endif
+        case .sizeThatFits:
+            config = .init(safeArea: .zero, size: nil, traits: traits, name: "sizeThatFits", options: .none)
+        case let .fixed(width: width, height: height):
+            let size = CGSize(width: width, height: height)
+            config = .init(safeArea: .zero, size: size, traits: traits, name: "\(size)", options: .none)
         }
 
-        return snapshotView(
-          config: config,
-          drawHierarchyInKeyWindow: drawHierarchyInKeyWindow,
-          traits: traits,
-          view: controller.view,
-          viewController: controller,
-          interfaceStyle: interfaceStyle
-        )
-      }
-  }
+        return SimplySnapshotting.image(precision: precision, scale: traits.displayScale, png: png).asyncPullback { view in
+            var config = config
+            
+            let controller: UIViewController
+
+            if config.size != nil {
+                controller = UIHostingController.init(
+                    rootView: view
+                )
+            } else {
+                let hostingController = UIHostingController.init(rootView: view)
+
+                let maxSize = CGSize(width: 0.0, height: 0.0)
+                config.size = hostingController.sizeThatFits(in: maxSize)
+
+                controller = hostingController
+            }
+
+            return snapshotView(
+                config: config,
+                renderingMode: renderingMode,
+                traits: traits,
+                view: controller.view,
+                viewController: controller,
+                interfaceStyle: interfaceStyle
+            )
+        }
+    }
 }
 #endif
 #endif

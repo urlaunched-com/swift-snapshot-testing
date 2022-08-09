@@ -27,23 +27,23 @@ extension Snapshotting where Value == CALayer, Format == NSImage {
 import UIKit
 
 extension Snapshotting where Value == CALayer, Format == UIImage {
-  /// A snapshot strategy for comparing layers based on pixel equality.
-  public static var image: Snapshotting {
-    return .image()
-  }
+    /// A snapshot strategy for comparing layers based on pixel equality.
+    public static var image: Snapshotting {
+        return .image(png: true)
+    }
 
-  /// A snapshot strategy for comparing layers based on pixel equality.
-  ///
-  /// - Parameter precision: The percentage of pixels that must match.
-  public static func image(precision: Float = 1, traits: UITraitCollection = .init())
+    /// A snapshot strategy for comparing layers based on pixel equality.
+    ///
+    /// - Parameter precision: The percentage of pixels that must match.
+    public static func image(precision: Float = 1, traits: UITraitCollection = .init(), png: Bool)
     -> Snapshotting {
-      return SimplySnapshotting.image(precision: precision, scale: traits.displayScale).pullback { layer in
-        renderer(bounds: layer.bounds, for: traits).image { ctx in
-          layer.setNeedsLayout()
-          layer.layoutIfNeeded()
-          layer.render(in: ctx.cgContext)
+        return SimplySnapshotting.image(precision: precision, scale: traits.displayScale, png: png).pullback { layer in
+            renderer(bounds: layer.bounds, for: traits).image { ctx in
+                layer.setNeedsLayout()
+                layer.layoutIfNeeded()
+                layer.render(in: ctx.cgContext)
+            }
         }
-      }
-  }
+    }
 }
 #endif
