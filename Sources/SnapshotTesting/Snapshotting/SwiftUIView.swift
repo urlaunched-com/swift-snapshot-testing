@@ -31,7 +31,7 @@ extension Snapshotting where Value: SwiftUI.View, Format == UIImage {
   ///   - size: A view size override.
   ///   - traits: A trait collection override.
   public static func image(
-    renderingMode: RenderingMode = .snapshot(afterScreenUpdates: false),
+    renderingMode: RenderingMode = .snapshot(afterScreenUpdates: true),
     precision: Float = 1,
     layout: SwiftUISnapshotLayout = .sizeThatFits,
     traits: UITraitCollection = .init(),
@@ -40,17 +40,17 @@ extension Snapshotting where Value: SwiftUI.View, Format == UIImage {
     -> Snapshotting {
       let config: ViewImageConfig
 
-      switch layout {
-      #if os(iOS) || os(tvOS)
-      case let .device(config: deviceConfig):
-        config = deviceConfig
-      #endif
-      case .sizeThatFits:
-        config = .init(safeArea: .zero, size: nil, traits: traits, name: "sizeThatFits")
-      case let .fixed(width: width, height: height):
-        let size = CGSize(width: width, height: height)
-        config = .init(safeArea: .zero, size: size, traits: traits, name: "\(size)")
-      }
+        switch layout {
+#if os(iOS) || os(tvOS)
+        case let .device(config: deviceConfig):
+            config = deviceConfig
+#endif
+        case .sizeThatFits:
+            config = .init(safeArea: .zero, size: nil, traits: traits, name: "sizeThatFits", options: .none)
+        case let .fixed(width: width, height: height):
+            let size = CGSize(width: width, height: height)
+            config = .init(safeArea: .zero, size: size, traits: traits, name: "\(size)", options: .none)
+        }
 
       return SimplySnapshotting.image(precision: precision, scale: traits.displayScale).asyncPullback { view in
         var config = config
