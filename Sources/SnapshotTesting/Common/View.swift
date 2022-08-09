@@ -1078,7 +1078,7 @@ func snapshotView(
                     switch renderingMode {
                     case .snapshot(let afterScreenUpdates):
                         view
-                            .snapshotView(afterScreenUpdates: afterScreenUpdates)?
+                            .snapshotView(afterScreenUpdates: true)?
                             .drawHierarchy(in: view.bounds, afterScreenUpdates: afterScreenUpdates)
 
                     case .drawHierarchy(let afterScreenUpdates):
