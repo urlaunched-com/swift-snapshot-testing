@@ -24,7 +24,7 @@ extension Diffing where Value == UIImage {
           if png {
               return $0.pngData() ?? emptyImage().pngData()!
           } else {
-              return $0.jpegData(compressionQuality: 1) ?? emptyImage().jpegData(compressionQuality: 1)!
+              return $0.jpegData(compressionQuality: 0.8) ?? emptyImage().jpegData(compressionQuality: 0.8)!
           }
       },
       fromData: { UIImage(data: $0, scale: imageScale)! }
