@@ -1110,7 +1110,7 @@ func renderer(bounds: CGRect, for traits: UITraitCollection) -> UIGraphicsImageR
 private func add(traits: UITraitCollection, viewController: UIViewController, to window: UIWindow) -> () -> Void {
     let rootViewController: UIViewController
     if viewController != window.rootViewController {
-        rootViewController = UIViewController()
+        rootViewController = ContainerViewController(insets: .zero)
         rootViewController.view.backgroundColor = .clear
         rootViewController.view.frame = window.frame
         rootViewController.view.translatesAutoresizingMaskIntoConstraints =
@@ -1235,5 +1235,30 @@ extension Array {
                 }
             }
         }
+    }
+}
+
+
+final class ContainerViewController: UIViewController {
+    var insets: UIEdgeInsets
+
+    init(insets: UIEdgeInsets) {
+        self.insets = insets
+        super.init(nibName: nil, bundle: nil)
+
+        let _class: AnyClass = view.classForCoder
+        let safeAreaInsets: @convention(block) (AnyObject) -> UIEdgeInsets = { [weak self] _ in
+            return self?.insets ?? .zero
+        }
+
+        guard let method = class_getInstanceMethod(_class.self, #selector(getter: UIView.safeAreaInsets)) else {
+            return
+        }
+
+        class_replaceMethod(_class, #selector(getter: UIView.safeAreaInsets), imp_implementationWithBlock(safeAreaInsets), method_getTypeEncoding(method))
+    }
+
+    @MainActor @objc required dynamic init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }
