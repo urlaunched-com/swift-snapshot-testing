@@ -4,14 +4,14 @@ import XCTest
 
 extension Diffing where Value == UIImage {
   /// A pixel-diffing strategy for UIImage's which requires a 100% match.
-  public static let image = Diffing.image(precision: 1, scale: nil)
+  public static let image = Diffing.image(precision: 1, scale: nil, png: true)
 
   /// A pixel-diffing strategy for UIImage that allows customizing how precise the matching must be.
   ///
   /// - Parameter precision: A value between 0 and 1, where 1 means the images must match 100% of their pixels.
   /// - Parameter scale: Scale to use when loading the reference image from disk. If `nil` or the `UITraitCollection`s default value of `0.0`, the screens scale is used.
   /// - Returns: A new diffing strategy.
-  public static func image(precision: Float, scale: CGFloat?) -> Diffing {
+    public static func image(precision: Float, scale: CGFloat?, png: Bool) -> Diffing {
     let imageScale: CGFloat
     if let scale = scale, scale != 0.0 {
       imageScale = scale
@@ -20,7 +20,13 @@ extension Diffing where Value == UIImage {
     }
 
     return Diffing(
-      toData: { $0.pngData() ?? emptyImage().pngData()! },
+      toData: {
+          if png {
+              return $0.pngData() ?? emptyImage().pngData()!
+          } else {
+              return $0.jpegData(compressionQuality: 1) ?? emptyImage().jpegData(compressionQuality: 1)!
+          }
+      },
       fromData: { UIImage(data: $0, scale: imageScale)! }
     ) { old, new in
       guard !compare(old, new, precision: precision) else { return nil }
@@ -60,21 +66,21 @@ extension Diffing where Value == UIImage {
 }
 
 extension Snapshotting where Value == UIImage, Format == UIImage {
-  /// A snapshot strategy for comparing images based on pixel equality.
-  public static var image: Snapshotting {
-    return .image(precision: 1, scale: nil)
-  }
+    /// A snapshot strategy for comparing images based on pixel equality.
+    public static var image: Snapshotting {
+        return .image(precision: 1, scale: nil, png: true)
+    }
 
-  /// A snapshot strategy for comparing images based on pixel equality.
-  ///
-  /// - Parameter precision: The percentage of pixels that must match.
-  /// - Parameter scale: The scale of the reference image stored on disk.
-  public static func image(precision: Float, scale: CGFloat?) -> Snapshotting {
-    return .init(
-      pathExtension: "png",
-      diffing: .image(precision: precision, scale: scale)
-    )
-  }
+    /// A snapshot strategy for comparing images based on pixel equality.
+    ///
+    /// - Parameter precision: The percentage of pixels that must match.
+    /// - Parameter scale: The scale of the reference image stored on disk.
+    public static func image(precision: Float, scale: CGFloat?, png: Bool) -> Snapshotting {
+        return .init(
+            pathExtension: png ? "png" : "jpg",
+            diffing: .image(precision: precision, scale: scale, png: png)
+        )
+    }
 }
 
 func calculateTime(block : (() -> Void)) {
