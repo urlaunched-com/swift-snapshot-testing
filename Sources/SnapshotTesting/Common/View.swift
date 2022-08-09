@@ -72,6 +72,10 @@ public struct ViewImageConfig {
     public var size: CGSize?
     public var traits: UITraitCollection
 
+    public mutating func setInterfaceStyle(_ style: UIUserInterfaceStyle) {
+        traits = .init(traitsFrom: [traits, .init(userInterfaceStyle: style)])
+    }
+
     public init(
         safeArea: UIEdgeInsets = .zero,
         size: CGSize? = nil,

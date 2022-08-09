@@ -4,7 +4,7 @@ import UIKit
 extension Snapshotting where Value == UIView, Format == UIImage {
   /// A snapshot strategy for comparing views based on pixel equality.
   public static var image: Snapshotting {
-      return .image(interfaceStyle: .light)
+      return .image(png: true, interfaceStyle: .light)
   }
 
     /// A snapshot strategy for comparing views based on pixel equality.
@@ -17,13 +17,14 @@ extension Snapshotting where Value == UIView, Format == UIImage {
     public static func image(
         renderingMode: RenderingMode = .snapshot(afterScreenUpdates: true),
         precision: Float = 1,
+        png: Bool,
         size: CGSize? = nil,
         traits: UITraitCollection = .init(),
         interfaceStyle: UIUserInterfaceStyle = .light
     )
     -> Snapshotting {
 
-        return SimplySnapshotting.image(precision: precision, scale: traits.displayScale).asyncPullback { view in
+        return SimplySnapshotting.image(precision: precision, scale: traits.displayScale, png: png).asyncPullback { view in
             snapshotView(
                 config: .init(safeArea: .zero, size: size ?? view.frame.size, traits: .init(), name: "\(size ?? view.frame.size)", options: .none),
                 renderingMode: renderingMode,
