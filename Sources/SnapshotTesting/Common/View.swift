@@ -1119,16 +1119,16 @@ private func add(traits: UITraitCollection, viewController: UIViewController, to
         viewController.view.frame = rootViewController.view.frame
         rootViewController.view.addSubview(viewController.view)
 
-//        if viewController.view.translatesAutoresizingMaskIntoConstraints {
-//            viewController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-//        } else {
+        if viewController.view.translatesAutoresizingMaskIntoConstraints {
+            viewController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        } else {
             NSLayoutConstraint.activate([
                 viewController.view.topAnchor.constraint(equalTo: rootViewController.view.topAnchor),
                 viewController.view.bottomAnchor.constraint(equalTo: rootViewController.view.bottomAnchor),
                 viewController.view.leadingAnchor.constraint(equalTo: rootViewController.view.leadingAnchor),
                 viewController.view.trailingAnchor.constraint(equalTo: rootViewController.view.trailingAnchor),
             ])
-//        }
+        }
         rootViewController.addChild(viewController)
     } else {
         rootViewController = viewController
