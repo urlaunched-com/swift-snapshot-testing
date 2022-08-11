@@ -1145,19 +1145,19 @@ private final class Window: UIWindow {
         self.config = config
         super.init(frame: .init(origin: .zero, size: size))
 
-        // NB: Safe area renders inaccurately for UI{Navigation,TabBar}Controller.
-        // Fixes welcome!
-        if viewController is UINavigationController {
-            self.frame.size.height -= self.config.safeArea.top
-            self.config.safeArea.top = 0
-        } else if let viewController = viewController as? UITabBarController {
-            self.frame.size.height -= self.config.safeArea.bottom
-            self.config.safeArea.bottom = 0
-            if viewController.selectedViewController is UINavigationController {
-                self.frame.size.height -= self.config.safeArea.top
-                self.config.safeArea.top = 0
-            }
-        }
+//        // NB: Safe area renders inaccurately for UI{Navigation,TabBar}Controller.
+//        // Fixes welcome!
+//        if viewController is UINavigationController {
+//            self.frame.size.height -= self.config.safeArea.top
+//            self.config.safeArea.top = 0
+//        } else if let viewController = viewController as? UITabBarController {
+//            self.frame.size.height -= self.config.safeArea.bottom
+//            self.config.safeArea.bottom = 0
+//            if viewController.selectedViewController is UINavigationController {
+//                self.frame.size.height -= self.config.safeArea.top
+//                self.config.safeArea.top = 0
+//            }
+//        }
         self.isHidden = false
         self.overrideUserInterfaceStyle = interfaceStyle
     }
