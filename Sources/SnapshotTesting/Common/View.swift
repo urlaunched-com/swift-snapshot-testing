@@ -1110,7 +1110,7 @@ func renderer(bounds: CGRect, for traits: UITraitCollection) -> UIGraphicsImageR
 private func add(traits: UITraitCollection, viewController: UIViewController, to window: UIWindow) -> () -> Void {
     let rootViewController: UIViewController
     if viewController != window.rootViewController {
-        rootViewController = UIViewController()
+        rootViewController = ZeroInsetsViewController()
         rootViewController.view.backgroundColor = .clear
         rootViewController.view.frame = window.frame
         rootViewController.view.translatesAutoresizingMaskIntoConstraints =
@@ -1118,16 +1118,17 @@ private func add(traits: UITraitCollection, viewController: UIViewController, to
         rootViewController.preferredContentSize = rootViewController.view.frame.size
         viewController.view.frame = rootViewController.view.frame
         rootViewController.view.addSubview(viewController.view)
-        if viewController.view.translatesAutoresizingMaskIntoConstraints {
-            viewController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        } else {
+
+//        if viewController.view.translatesAutoresizingMaskIntoConstraints {
+//            viewController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+//        } else {
             NSLayoutConstraint.activate([
                 viewController.view.topAnchor.constraint(equalTo: rootViewController.view.topAnchor),
                 viewController.view.bottomAnchor.constraint(equalTo: rootViewController.view.bottomAnchor),
                 viewController.view.leadingAnchor.constraint(equalTo: rootViewController.view.leadingAnchor),
                 viewController.view.trailingAnchor.constraint(equalTo: rootViewController.view.trailingAnchor),
             ])
-        }
+//        }
         rootViewController.addChild(viewController)
     } else {
         rootViewController = viewController
@@ -1237,5 +1238,27 @@ extension Array {
                 }
             }
         }
+    }
+}
+
+
+final class ZeroInsetsViewController: UIViewController {
+    init() {
+        super.init(nibName: nil, bundle: nil)
+
+        let _class: AnyClass = view.classForCoder
+        let safeAreaInsets: @convention(block) (AnyObject) -> UIEdgeInsets = { _ in
+            return .zero
+        }
+
+        guard let method = class_getInstanceMethod(_class.self, #selector(getter: UIView.safeAreaInsets)) else {
+            return
+        }
+
+        class_replaceMethod(_class, #selector(getter: UIView.safeAreaInsets), imp_implementationWithBlock(safeAreaInsets), method_getTypeEncoding(method))
+    }
+
+    @MainActor @objc required dynamic init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }
