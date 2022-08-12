@@ -1092,7 +1092,7 @@ func snapshotView(
                 cgImage: old.cgImage!.copy(colorSpace: CGColorSpace(name: CGColorSpace.sRGB)!)!
             )
             callback(
-                old
+                srgb
             )
             views.forEach { $0.removeFromSuperview() }
             view.frame = initialFrame

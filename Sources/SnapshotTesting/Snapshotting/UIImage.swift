@@ -34,7 +34,7 @@ extension Diffing where Value == UIImage {
             cgImage: old.cgImage!.copy(colorSpace: CGColorSpace(name: CGColorSpace.sRGB)!)!
           )
 
-          return old
+          return srgb
       }
     ) { old, new in
       guard !compare(old, new, precision: precision) else { return nil }
