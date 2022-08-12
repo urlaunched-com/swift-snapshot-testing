@@ -1075,6 +1075,8 @@ func snapshotView(
 
     return (view.snapshot ?? Async { callback in
         addImagesForRenderedViews(view).sequence().run { views in
+            ViewImageConfig.global = config
+
             let old = renderer(bounds: view.bounds, for: traits).image { ctx in
                 switch renderingMode {
                 case .snapshot(let afterScreenUpdates):
