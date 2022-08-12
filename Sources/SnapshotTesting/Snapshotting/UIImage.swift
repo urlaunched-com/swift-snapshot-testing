@@ -27,7 +27,15 @@ extension Diffing where Value == UIImage {
               return $0.jpegData(compressionQuality: 0.8) ?? emptyImage().jpegData(compressionQuality: 0.8)!
           }
       },
-      fromData: { UIImage(data: $0, scale: imageScale)! }
+      fromData: {
+          let old = UIImage(data: $0, scale: imageScale)!
+
+          let srgb = UIImage(
+            cgImage: old.cgImage!.copy(colorSpace: CGColorSpace(name: CGColorSpace.sRGB)!)!
+          )
+
+          return old
+      }
     ) { old, new in
       guard !compare(old, new, precision: precision) else { return nil }
       let difference = SnapshotTesting.diff(old, new, scale: imageScale)

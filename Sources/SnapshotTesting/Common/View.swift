@@ -1073,21 +1073,26 @@ func snapshotView(
 
     return (view.snapshot ?? Async { callback in
         addImagesForRenderedViews(view).sequence().run { views in
-            callback(
-                renderer(bounds: view.bounds, for: traits).image { ctx in
-                    switch renderingMode {
-                    case .snapshot(let afterScreenUpdates):
-                        view
-                            .snapshotView(afterScreenUpdates: afterScreenUpdates)?
-                            .drawHierarchy(in: view.bounds, afterScreenUpdates: afterScreenUpdates)
+            let old = renderer(bounds: view.bounds, for: traits).image { ctx in
+                switch renderingMode {
+                case .snapshot(let afterScreenUpdates):
+                    view
+                        .snapshotView(afterScreenUpdates: afterScreenUpdates)?
+                        .drawHierarchy(in: view.bounds, afterScreenUpdates: afterScreenUpdates)
 
-                    case .drawHierarchy(let afterScreenUpdates):
-                        view.drawHierarchy(in: view.bounds, afterScreenUpdates: afterScreenUpdates)
+                case .drawHierarchy(let afterScreenUpdates):
+                    view.drawHierarchy(in: view.bounds, afterScreenUpdates: afterScreenUpdates)
 
-                    case .renderInContext:
-                        view.layer.render(in: ctx.cgContext)
-                    }
+                case .renderInContext:
+                    view.layer.render(in: ctx.cgContext)
                 }
+            }
+
+            let srgb = UIImage(
+                cgImage: old.cgImage!.copy(colorSpace: CGColorSpace(name: CGColorSpace.sRGB)!)!
+            )
+            callback(
+                old
             )
             views.forEach { $0.removeFromSuperview() }
             view.frame = initialFrame
