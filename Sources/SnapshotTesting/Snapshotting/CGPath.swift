@@ -39,7 +39,7 @@ extension Snapshotting where Value == CGPath, Format == UIImage {
     ///
     /// - Parameter precision: The percentage of pixels that must match.
     public static func image(precision: Float = 1, scale: CGFloat = 1, drawingMode: CGPathDrawingMode = .eoFill, png: Bool) -> Snapshotting {
-        return SimplySnapshotting.image(precision: precision, scale: scale, png: png).pullback { path in
+        return SimplySnapshotting.image(precision: precision, scale: scale, png: png, subpixelThreshold: 0).pullback { path in
             let bounds = path.boundingBoxOfPath
             let format: UIGraphicsImageRendererFormat
             if #available(iOS 11.0, tvOS 11.0, *) {

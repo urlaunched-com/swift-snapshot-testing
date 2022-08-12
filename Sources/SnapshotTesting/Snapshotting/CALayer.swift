@@ -29,15 +29,15 @@ import UIKit
 extension Snapshotting where Value == CALayer, Format == UIImage {
     /// A snapshot strategy for comparing layers based on pixel equality.
     public static var image: Snapshotting {
-        return .image(png: true)
+        return .image(png: true, subpixelThreshold: 0)
     }
 
     /// A snapshot strategy for comparing layers based on pixel equality.
     ///
     /// - Parameter precision: The percentage of pixels that must match.
-    public static func image(precision: Float = 1, traits: UITraitCollection = .init(), png: Bool)
+    public static func image(precision: Float = 1, traits: UITraitCollection = .init(), png: Bool, subpixelThreshold: UInt8 = 0)
     -> Snapshotting {
-        return SimplySnapshotting.image(precision: precision, scale: traits.displayScale, png: png).pullback { layer in
+        return SimplySnapshotting.image(precision: precision, scale: traits.displayScale, png: png, subpixelThreshold: subpixelThreshold).pullback { layer in
             renderer(bounds: layer.bounds, for: traits).image { ctx in
                 layer.setNeedsLayout()
                 layer.layoutIfNeeded()

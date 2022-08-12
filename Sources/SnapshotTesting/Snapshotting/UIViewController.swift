@@ -4,11 +4,11 @@ import UIKit
 extension Snapshotting where Value == UIViewController, Format == UIImage {
     /// A snapshot strategy for comparing view controller views based on pixel equality.
     public static var image: Snapshotting {
-        return .image(png: true, interfaceStyle: .light)
+        return .image(subpixelThreshold: 0, png: true, interfaceStyle: .light)
     }
 
     public static func image(scale: CGFloat, png: Bool) -> Snapshotting {
-        return .image(precision: 1, png: png, scale: scale, traits: .init(displayScale: scale), interfaceStyle: .light)
+        return .image(precision: 1, subpixelThreshold: 0, png: png, scale: scale, traits: .init(displayScale: scale), interfaceStyle: .light)
     }
 
   /// A snapshot strategy for comparing view controller views based on pixel equality.
@@ -22,6 +22,7 @@ extension Snapshotting where Value == UIViewController, Format == UIImage {
     on config: ViewImageConfig,
     renderingMode: RenderingMode = .snapshot(afterScreenUpdates: true),
     precision: Float = 1,
+    subpixelThreshold: UInt8 = 0,
     png: Bool,
     size: CGSize? = nil,
     traits: UITraitCollection = .init(),
@@ -29,7 +30,7 @@ extension Snapshotting where Value == UIViewController, Format == UIImage {
     )
     -> Snapshotting {
 
-        return SimplySnapshotting.image(precision: precision, scale: config.traits.displayScale, png: png).asyncPullback { viewController in
+        return SimplySnapshotting.image(precision: precision, scale: config.traits.displayScale, png: png, subpixelThreshold: subpixelThreshold).asyncPullback { viewController in
             snapshotView(
                 config: size.map { .init(safeArea: config.safeArea, size: $0, traits: config.traits, name: "\($0)", options: config.options) } ?? config,
                 renderingMode: renderingMode,
@@ -51,6 +52,7 @@ extension Snapshotting where Value == UIViewController, Format == UIImage {
     public static func image(
         renderingMode: RenderingMode = .snapshot(afterScreenUpdates: true),
         precision: Float = 1,
+        subpixelThreshold: UInt8 = 0,
         png: Bool,
         size: CGSize? = nil,
         traits: UITraitCollection = .init(),
@@ -58,7 +60,7 @@ extension Snapshotting where Value == UIViewController, Format == UIImage {
     )
     -> Snapshotting {
 
-        return SimplySnapshotting.image(precision: precision, scale: traits.displayScale, png: png).asyncPullback { viewController in
+        return SimplySnapshotting.image(precision: precision, scale: traits.displayScale, png: png, subpixelThreshold: subpixelThreshold).asyncPullback { viewController in
             snapshotView(
                 config: .init(safeArea: .zero, size: size, traits: traits, name: String(describing: size), options: .none),
                 renderingMode: renderingMode,
@@ -73,6 +75,7 @@ extension Snapshotting where Value == UIViewController, Format == UIImage {
     public static func image(
         renderingMode: RenderingMode = .snapshot(afterScreenUpdates: true),
         precision: Float = 1,
+        subpixelThreshold: UInt8 = 0,
         png: Bool,
         size: CGSize? = nil,
         scale: CGFloat,
@@ -81,7 +84,7 @@ extension Snapshotting where Value == UIViewController, Format == UIImage {
     )
     -> Snapshotting {
 
-        return SimplySnapshotting.image(precision: precision, scale: scale, png: png).asyncPullback { viewController in
+        return SimplySnapshotting.image(precision: precision, scale: scale, png: png, subpixelThreshold: subpixelThreshold).asyncPullback { viewController in
             snapshotView(
                 config: .init(safeArea: .zero, size: size, traits: traits, name: String(describing: size), options: .none),
                 renderingMode: renderingMode,
