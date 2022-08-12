@@ -15,13 +15,13 @@ let package = Package(
             targets: ["SnapshotTesting"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/uber/ios-snapshot-test-case.git", from: "8.0.0")
+//        .package(url: "https://github.com/uber/ios-snapshot-test-case.git", from: "8.0.0")
     ],
     targets: [
         .target(
             name: "SnapshotTesting",
             dependencies: [
-                .product(name: "iOSSnapshotTestCase", package: "ios-snapshot-test-case")
+//                .product(name: "iOSSnapshotTestCase", package: "ios-snapshot-test-case")
             ]
         ),
         .testTarget(
