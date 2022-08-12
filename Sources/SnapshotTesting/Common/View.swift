@@ -1060,6 +1060,8 @@ func snapshotView(
     interfaceStyle: UIUserInterfaceStyle = .light
 )
 -> Async<UIImage> {
+    ViewImageConfig.global = config
+
     let initialFrame = view.frame
     let dispose = prepareView(
         config: config,
@@ -1070,7 +1072,6 @@ func snapshotView(
     )
     // NB: Avoid safe area influence.
     if config.safeArea == .zero { view.frame.origin = .init(x: offscreen, y: offscreen) }
-    ViewImageConfig.global = config
 
     return (view.snapshot ?? Async { callback in
         addImagesForRenderedViews(view).sequence().run { views in
