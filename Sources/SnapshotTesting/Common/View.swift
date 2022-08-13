@@ -1126,12 +1126,12 @@ private func add(traits: UITraitCollection, viewController: UIViewController, to
     viewController.view.layoutIfNeeded()
 
     return {
-        viewController.beginAppearanceTransition(false, animated: false)
+//        viewController.beginAppearanceTransition(false, animated: false)
         viewController.willMove(toParent: nil)
         viewController.view.removeFromSuperview()
         viewController.removeFromParent()
         viewController.didMove(toParent: nil)
-        viewController.endAppearanceTransition()
+//        viewController.endAppearanceTransition()
         window.rootViewController = nil
     }
 }
