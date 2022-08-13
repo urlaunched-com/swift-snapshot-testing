@@ -1119,19 +1119,19 @@ func renderer(bounds: CGRect, for traits: UITraitCollection) -> UIGraphicsImageR
 private func add(traits: UITraitCollection, viewController: UIViewController, to window: UIWindow) -> () -> Void {
     window.rootViewController = viewController
 
-//    viewController.beginAppearanceTransition(true, animated: false)
-//    viewController.endAppearanceTransition()
+    viewController.beginAppearanceTransition(true, animated: false)
+    viewController.endAppearanceTransition()
 
     viewController.view.setNeedsLayout()
     viewController.view.layoutIfNeeded()
 
     return {
-//        viewController.beginAppearanceTransition(false, animated: false)
+        viewController.beginAppearanceTransition(false, animated: false)
         viewController.willMove(toParent: nil)
         viewController.view.removeFromSuperview()
         viewController.removeFromParent()
         viewController.didMove(toParent: nil)
-//        viewController.endAppearanceTransition()
+        viewController.endAppearanceTransition()
         window.rootViewController = nil
     }
 }
