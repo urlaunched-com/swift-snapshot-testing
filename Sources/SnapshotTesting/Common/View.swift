@@ -1052,6 +1052,15 @@ func prepareView(
                 height: size.height - (safeArea.top + safeArea.bottom)
             )
         )
+
+        vc.view.translatesAutoresizingMaskIntoConstraints = false
+
+        NSLayoutConstraint.activate([
+            vc.view.topAnchor.constraint(equalTo: navController.view.topAnchor, constant: safeArea.top),
+            vc.view.bottomAnchor.constraint(equalTo: navController.view.bottomAnchor, constant: safeArea.bottom),
+            vc.view.leadingAnchor.constraint(equalTo: navController.view.leadingAnchor, constant: safeArea.left),
+            vc.view.trailingAnchor.constraint(equalTo: navController.view.trailingAnchor, constant: safeArea.right),
+        ])
     }
 
     if size.width == 0 || size.height == 0 {
