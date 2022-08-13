@@ -1119,8 +1119,8 @@ func renderer(bounds: CGRect, for traits: UITraitCollection) -> UIGraphicsImageR
 private func add(traits: UITraitCollection, viewController: UIViewController, to window: UIWindow) -> () -> Void {
     window.rootViewController = viewController
 
-    viewController.beginAppearanceTransition(true, animated: false)
-    viewController.endAppearanceTransition()
+//    viewController.beginAppearanceTransition(true, animated: false)
+//    viewController.endAppearanceTransition()
 
     viewController.view.setNeedsLayout()
     viewController.view.layoutIfNeeded()
