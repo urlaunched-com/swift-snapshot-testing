@@ -245,11 +245,11 @@ public struct ViewImageConfig {
         case .portrait:
             safeArea = .init(top: 20, left: 0, bottom: 0, right: 0)
 
-            if options.contains(.navigationBarInline) {
-                safeArea.top += 44
-            } else if options.contains(.navigationBarLargeTitle) {
-                safeArea.top += 44 + 52
-            }
+//            if options.contains(.navigationBarInline) {
+//                safeArea.top += 44
+//            } else if options.contains(.navigationBarLargeTitle) {
+//                safeArea.top += 44 + 52
+//            }
 
             size = .init(width: 375, height: 667)
         }
