@@ -1042,8 +1042,8 @@ func prepareView(
     let dispose = add(traits: config.traits, viewController: viewController, to: window)
 
     if let navController = viewController as? UINavigationController, let vc = navController.viewControllers.first {
-        let size = deviceSize.size ?? .zero
-        let safeArea = deviceSize.safeArea
+        let size = config.size ?? .zero
+        let safeArea = config.safeArea
 
         vc.view.frame = CGRect(
             origin: CGPoint(x: safeArea.left, y: safeArea.top),
