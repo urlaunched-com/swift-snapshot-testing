@@ -32,7 +32,7 @@ extension Snapshotting where Value == SKScene, Format == UIImage {
 
 fileprivate extension Snapshotting where Value == SKScene, Format == Image {
     static func skScene(precision: Float, size: CGSize, png: Bool) -> Snapshotting {
-        return Snapshotting<View, Image>.image(precision: precision, png: png, interfaceStyle: .light).pullback { scene in
+        return Snapshotting<View, Image>.image(precision: precision, subpixelThreshold: 0, png: png, interfaceStyle: .light).pullback { scene in
             let view = SKView(frame: .init(x: 0, y: 0, width: size.width, height: size.height))
             view.presentScene(scene)
             return view

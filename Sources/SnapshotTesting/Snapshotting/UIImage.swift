@@ -4,14 +4,14 @@ import XCTest
 
 extension Diffing where Value == UIImage {
   /// A pixel-diffing strategy for UIImage's which requires a 100% match.
-  public static let image = Diffing.image(precision: 1, scale: nil, png: true)
+    public static let image = Diffing.image(precision: 1, scale: nil, png: true, subpixelThreshold: 0)
 
   /// A pixel-diffing strategy for UIImage that allows customizing how precise the matching must be.
   ///
   /// - Parameter precision: A value between 0 and 1, where 1 means the images must match 100% of their pixels.
   /// - Parameter scale: Scale to use when loading the reference image from disk. If `nil` or the `UITraitCollection`s default value of `0.0`, the screens scale is used.
   /// - Returns: A new diffing strategy.
-    public static func image(precision: Float, scale: CGFloat?, png: Bool) -> Diffing {
+    public static func image(precision: Float, scale: CGFloat?, png: Bool, subpixelThreshold: UInt8 = 0) -> Diffing {
     let imageScale: CGFloat
     if let scale = scale, scale != 0.0 {
       imageScale = scale
@@ -27,9 +27,17 @@ extension Diffing where Value == UIImage {
               return $0.jpegData(compressionQuality: 0.8) ?? emptyImage().jpegData(compressionQuality: 0.8)!
           }
       },
-      fromData: { UIImage(data: $0, scale: imageScale)! }
+      fromData: {
+          let old = UIImage(data: $0, scale: imageScale)!
+
+          let srgb = UIImage(
+            cgImage: old.cgImage!.copy(colorSpace: CGColorSpace(name: CGColorSpace.sRGB)!)!
+          )
+
+          return srgb
+      }
     ) { old, new in
-      guard !compare(old, new, precision: precision) else { return nil }
+        guard !compare(old, new, precision: precision, subpixelThreshold: subpixelThreshold) else { return nil }
       let difference = SnapshotTesting.diff(old, new, scale: imageScale)
       let message = new.size == old.size
         ? "Newly-taken snapshot does not match reference."
@@ -68,17 +76,17 @@ extension Diffing where Value == UIImage {
 extension Snapshotting where Value == UIImage, Format == UIImage {
     /// A snapshot strategy for comparing images based on pixel equality.
     public static var image: Snapshotting {
-        return .image(precision: 1, scale: nil, png: true)
+        return .image(precision: 1, scale: nil, png: true, subpixelThreshold: 0)
     }
 
     /// A snapshot strategy for comparing images based on pixel equality.
     ///
     /// - Parameter precision: The percentage of pixels that must match.
     /// - Parameter scale: The scale of the reference image stored on disk.
-    public static func image(precision: Float, scale: CGFloat?, png: Bool) -> Snapshotting {
+    public static func image(precision: Float, scale: CGFloat?, png: Bool, subpixelThreshold: UInt8 = 0) -> Snapshotting {
         return .init(
             pathExtension: png ? "png" : "jpg",
-            diffing: .image(precision: precision, scale: scale, png: png)
+            diffing: .image(precision: precision, scale: scale, png: png, subpixelThreshold: subpixelThreshold)
         )
     }
 }
@@ -92,18 +100,73 @@ func calculateTime(block : (() -> Void)) {
     print("Time: \(timeInterval) seconds")
 }
 
-import iOSSnapshotTestCase
+//import iOSSnapshotTestCase
 
-private func compare(_ old: UIImage, _ new: UIImage, precision: Float) -> Bool {
-    var result = true
-    do {
-        try FBSnapshotTestController().compareReferenceImage(old, to: new, overallTolerance: CGFloat(1.0 - precision))
-    } catch {
-        Swift.print(error)
-        result = false
+//private func compare(_ old: UIImage, _ new: UIImage, precision: Float) -> Bool {
+//    var result = true
+//    do {
+//        try FBSnapshotTestController().compareReferenceImage(old, to: new, overallTolerance: CGFloat(1.0 - precision))
+//    } catch {
+//        Swift.print(error)
+//        result = false
+//    }
+//
+//    return result
+//}
+
+// remap snapshot & reference to same colorspace
+let imageContextColorSpace = CGColorSpace(name: CGColorSpace.sRGB)
+let imageContextBitsPerComponent = 8
+let imageContextBytesPerPixel = 4
+
+private func compare(_ old: UIImage, _ new: UIImage, precision: Float, subpixelThreshold: UInt8) -> Bool {
+    guard let oldCgImage = old.cgImage else { return false }
+    guard let newCgImage = new.cgImage else { return false }
+    guard oldCgImage.width != 0 else { return false }
+    guard newCgImage.width != 0 else { return false }
+    guard oldCgImage.width == newCgImage.width else { return false }
+    guard oldCgImage.height != 0 else { return false }
+    guard newCgImage.height != 0 else { return false }
+    guard oldCgImage.height == newCgImage.height else { return false }
+
+    let byteCount = imageContextBytesPerPixel * oldCgImage.width * oldCgImage.height
+    var oldBytes = [UInt8](repeating: 0, count: byteCount)
+    guard let oldContext = context(for: oldCgImage, data: &oldBytes) else { return false }
+    guard let oldData = oldContext.data else { return false }
+    if let newContext = context(for: newCgImage), let newData = newContext.data {
+        if memcmp(oldData, newData, byteCount) == 0 { return true }
     }
+    let newer = UIImage(data: new.pngData()!)!
+    guard let newerCgImage = newer.cgImage else { return false }
+    var newerBytes = [UInt8](repeating: 0, count: byteCount)
+    guard let newerContext = context(for: newerCgImage, data: &newerBytes) else { return false }
+    guard let newerData = newerContext.data else { return false }
+    if memcmp(oldData, newerData, byteCount) == 0 { return true }
+    if precision >= 1 && subpixelThreshold == 0 { return false }
+    var differentPixelCount = 0
+    let threshold = Int(round((1.0 - precision) * Float(byteCount)))
 
-    return result
+    var byte = 0
+    while byte < byteCount {
+        if oldBytes[byte].diff(between: newerBytes[byte]) > subpixelThreshold {
+            differentPixelCount += 1
+            if differentPixelCount >= threshold {
+                return false
+            }
+        }
+        byte += 1
+    }
+    return true
+}
+
+extension UInt8 {
+    func diff(between other: UInt8) -> UInt8 {
+        if other > self {
+            return other - self
+        } else {
+            return self - other
+        }
+    }
 }
 
 
@@ -133,16 +196,17 @@ func computeImageDifference(image1: UIImage, image2: UIImage) -> UIImage? {
     return UIImage(cgImage: cgImage, scale: image1.scale, orientation: image1.imageOrientation)
 }
 
-private func context(for cgImage: CGImage, bytesPerRow: Int, data: UnsafeMutableRawPointer? = nil) -> CGContext? {
+private func context(for cgImage: CGImage, data: UnsafeMutableRawPointer? = nil) -> CGContext? {
+    let bytesPerRow = cgImage.width * imageContextBytesPerPixel
   guard
-    let space = cgImage.colorSpace,
+    let colorSpace = imageContextColorSpace,
     let context = CGContext(
       data: data,
       width: cgImage.width,
       height: cgImage.height,
-      bitsPerComponent: cgImage.bitsPerComponent,
+      bitsPerComponent: imageContextBitsPerComponent,
       bytesPerRow: bytesPerRow,
-      space: space,
+      space: colorSpace,
       bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
     )
     else { return nil }
@@ -151,8 +215,20 @@ private func context(for cgImage: CGImage, bytesPerRow: Int, data: UnsafeMutable
   return context
 }
 
+//private func diff(_ old: UIImage, _ new: UIImage, scale: CGFloat) -> UIImage {
+//    let resultImage = computeImageDifference(image1: old, image2: new)
+//    return resultImage ?? old
+//}
+
 private func diff(_ old: UIImage, _ new: UIImage, scale: CGFloat) -> UIImage {
-    let resultImage = computeImageDifference(image1: old, image2: new)
-    return resultImage ?? old
+    let width = max(old.size.width, new.size.width)
+    let height = max(old.size.height, new.size.height)
+
+    UIGraphicsBeginImageContextWithOptions(CGSize(width: width, height: height), true, scale)
+    new.draw(at: .zero)
+    old.draw(at: .zero, blendMode: .difference, alpha: 1)
+    let differenceImage = UIGraphicsGetImageFromCurrentImageContext()!
+    UIGraphicsEndImageContext()
+    return differenceImage
 }
 #endif
