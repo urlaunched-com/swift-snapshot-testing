@@ -65,6 +65,7 @@ extension Snapshotting where Value: SwiftUI.View, Format == UIImage {
                 )
             } else {
                 let hostingController = UIHostingController.init(rootView: view)
+                hostingController.view.sizeToFit()
 
                 let maxSize = CGSize(width: 0.0, height: 0.0)
                 config.size = hostingController.sizeThatFits(in: maxSize)
