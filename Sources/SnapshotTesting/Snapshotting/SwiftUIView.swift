@@ -142,7 +142,7 @@ final class SizedViewController<Content: SwiftUI.View>: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        let hosting = UIHostingController(rootView: contentView)
+        let hosting = SnapshotHostingController(rootView: contentView)
         view.addSubview(hosting.view)
 
         self.addChild(hosting)
@@ -151,33 +151,33 @@ final class SizedViewController<Content: SwiftUI.View>: UIViewController {
         hosting.view.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
 //            hosting.view.topAnchor.constraint(equalTo: view.topAnchor),
-            //hosting.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-//            hosting.view.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-//            hosting.view.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+//            hosting.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            hosting.view.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            hosting.view.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             hosting.view.widthAnchor.constraint(equalToConstant: size.width),
             hosting.view.heightAnchor.constraint(equalToConstant: size.height)
         ])
 //        hosting.didMove(toParent: self)
 
         viewToRender = hosting.view
-        updateFrame(size: size)
+//        updateFrame(size: size)
     }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        updateFrame(size: size)
+//        updateFrame(size: size)
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private func updateFrame(size: CGSize) {
-        var frame = viewToRender.frame
-        frame.origin = .zero
-        frame.size = size
-        viewToRender.frame = frame
-    }
+//    private func updateFrame(size: CGSize) {
+//        var frame = viewToRender.frame
+//        frame.origin = .zero
+//        frame.size = size
+//        viewToRender.frame = frame
+//    }
 }
 
 final class SizeToFitViewController<Content: SwiftUI.View>: UIViewController {
@@ -191,7 +191,7 @@ final class SizeToFitViewController<Content: SwiftUI.View>: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        let hosting = UIHostingController(rootView: contentView)
+        let hosting = SnapshotHostingController(rootView: contentView)
 
         view.addSubview(hosting.view)
         addChild(hosting)
@@ -221,6 +221,27 @@ final class SizeToFitViewController<Content: SwiftUI.View>: UIViewController {
         frame.origin = .zero
         frame.size = size
         viewToRender.frame = frame
+    }
+}
+
+final class SnapshotHostingController<Content: SwiftUI.View>: UIHostingController<Content> {
+    override init(rootView: Content) {
+        super.init(rootView: rootView)
+
+        let _class: AnyClass = view.classForCoder
+        let safeAreaInsets: @convention(block) (AnyObject) -> UIEdgeInsets = { _ in
+            return .zero
+        }
+
+        guard let method = class_getInstanceMethod(_class.self, #selector(getter: UIView.safeAreaInsets)) else {
+            return
+        }
+
+        class_replaceMethod(_class, #selector(getter: UIView.safeAreaInsets), imp_implementationWithBlock(safeAreaInsets), method_getTypeEncoding(method))
+    }
+
+    @MainActor @objc required dynamic init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }
 
