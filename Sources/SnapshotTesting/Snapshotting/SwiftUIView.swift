@@ -90,15 +90,15 @@ extension Snapshotting where Value: SwiftUI.View, Format == UIImage {
     ) -> Async<UIImage> {
 
         ViewImageConfig.global = config
-        let dispose = prepareView(
-            config: config,
-            drawHierarchyInKeyWindow: false,
-            view: viewController.view,
-            viewController: viewController,
-            interfaceStyle: interfaceStyle
-        )
+//        let dispose = prepareView(
+//            config: config,
+//            drawHierarchyInKeyWindow: false,
+//            view: viewController.view,
+//            viewController: viewController,
+//            interfaceStyle: interfaceStyle
+//        )
 
-        return (viewController.view.snapshot ?? Async { callback in
+        return Async { callback in
             addImagesForRenderedViews(view()).sequence().run { views in
                 ViewImageConfig.global = config
 
@@ -125,7 +125,7 @@ extension Snapshotting where Value: SwiftUI.View, Format == UIImage {
                 )
                 views.forEach { $0.removeFromSuperview() }
             }
-        }).map { dispose(); return $0 }
+        }//.map { dispose(); return $0 }
     }
 }
 
