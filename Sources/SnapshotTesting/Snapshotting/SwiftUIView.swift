@@ -90,17 +90,15 @@ extension Snapshotting where Value: SwiftUI.View, Format == UIImage {
     ) -> Async<UIImage> {
 
         ViewImageConfig.global = config
-//        let dispose = prepareView(
-//            config: config,
-//            drawHierarchyInKeyWindow: false,
-//            view: viewController.view,
-//            viewController: viewController,
-//            interfaceStyle: interfaceStyle
-//        )
-        viewController.view.setNeedsLayout()
-        viewController.view.layoutIfNeeded()
+        let dispose = prepareView(
+            config: config,
+            drawHierarchyInKeyWindow: false,
+            view: viewController.view,
+            viewController: viewController,
+            interfaceStyle: interfaceStyle
+        )
 
-        return Async { callback in
+        return (viewController.view.snapshot ?? Async { callback in
             addImagesForRenderedViews(view()).sequence().run { views in
                 ViewImageConfig.global = config
 
@@ -127,7 +125,7 @@ extension Snapshotting where Value: SwiftUI.View, Format == UIImage {
                 )
                 views.forEach { $0.removeFromSuperview() }
             }
-        }//.map { dispose(); return $0 }
+        }).map { dispose(); return $0 }
     }
 }
 
@@ -150,17 +148,16 @@ final class SizedViewController<Content: SwiftUI.View>: UIViewController {
         self.addChild(hosting)
         hosting.didMove(toParent: self)
 
-        /*
         hosting.view.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
 //            hosting.view.topAnchor.constraint(equalTo: view.topAnchor),
             //hosting.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            hosting.view.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            hosting.view.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            hosting.view.widthAnchor.constraint(equalToConstant: size.width),
+//            hosting.view.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+//            hosting.view.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            hosting.view.widthAnchor.constraint(equalToConstant: size.width)
             hosting.view.heightAnchor.constraint(equalToConstant: size.height)
-        ])*/
-        hosting.didMove(toParent: self)
+        ])
+//        hosting.didMove(toParent: self)
 
         viewToRender = hosting.view
         updateFrame(size: size)
