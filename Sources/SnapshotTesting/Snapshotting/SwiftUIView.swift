@@ -55,34 +55,169 @@ extension Snapshotting where Value: SwiftUI.View, Format == UIImage {
         }
 
         return SimplySnapshotting.image(precision: precision, scale: traits.displayScale, png: png, subpixelThreshold: subpixelThreshold).asyncPullback { view in
-            var config = config
-            
-            let controller: UIViewController
+            guard let size = config.size else {
+                let controller = UIHostingController(rootView: view)
 
-            if config.size != nil {
-                controller = UIHostingController.init(
-                    rootView: view
+                //TODO: Size to fit
+                return snapshotView(
+                    config: config,
+                    renderingMode: renderingMode,
+                    traits: traits,
+                    view: controller.view,
+                    viewController: controller,
+                    interfaceStyle: interfaceStyle
                 )
-            } else {
-                let hostingController = UIHostingController.init(rootView: view)
-                hostingController.view.sizeToFit()
-
-                let maxSize = CGSize(width: 0.0, height: 0.0)
-                config.size = hostingController.sizeThatFits(in: maxSize)
-
-                controller = hostingController
             }
+            let sizedController = SizedViewController(rootView: view, size: size)
 
-            return snapshotView(
+//            let controller: UIViewController
+
+//            if config.size != nil {
+//                controller = UIHostingController.init(
+//                    rootView: view
+//                )
+//            } else {
+//                let hostingController = UIHostingController.init(rootView: view)
+//                hostingController.view.sizeToFit()
+//
+//                let maxSize = CGSize(width: 0.0, height: 0.0)
+//                config.size = hostingController.sizeThatFits(in: maxSize)
+//
+//                controller = hostingController
+//            }
+
+//            return snapshotView(
+//                config: config,
+//                renderingMode: renderingMode,
+//                traits: traits,
+//                view: controller.view,
+//                viewController: controller,
+//                interfaceStyle: interfaceStyle
+//            )
+
+            ViewImageConfig.global = config
+            let view = sizedController.view!
+            let initialFrame = view.frame
+
+            let dispose = prepareView(
                 config: config,
-                renderingMode: renderingMode,
-                traits: traits,
-                view: controller.view,
-                viewController: controller,
+                drawHierarchyInKeyWindow: false,
+                view: view,
+                viewController: sizedController,
                 interfaceStyle: interfaceStyle
             )
+
+            return (view.snapshot ?? Async { callback in
+                addImagesForRenderedViews(view).sequence().run { views in
+                    ViewImageConfig.global = config
+
+                    let old = renderer(bounds: view.bounds, for: traits).image { ctx in
+                        switch renderingMode {
+                        case .snapshot(let afterScreenUpdates):
+                            sizedController
+                                .viewToRender
+                                .snapshotView(afterScreenUpdates: afterScreenUpdates)?
+                                .drawHierarchy(in: view.bounds, afterScreenUpdates: afterScreenUpdates)
+
+                        case .drawHierarchy(let afterScreenUpdates):
+                            sizedController
+                                .viewToRender
+                                .drawHierarchy(in: view.bounds, afterScreenUpdates: afterScreenUpdates)
+
+                        case .renderInContext:
+                            sizedController
+                                .viewToRender
+                                .layer
+                                .render(in: ctx.cgContext)
+                        }
+                    }
+
+                    let srgb = UIImage(
+                        cgImage: old.cgImage!.copy(colorSpace: CGColorSpace(name: CGColorSpace.sRGB)!)!
+                    )
+                    callback(
+                        srgb
+                    )
+                    views.forEach { $0.removeFromSuperview() }
+                    view.frame = initialFrame
+                }
+            }).map { dispose(); return $0 }
         }
     }
 }
+
+final class SizedViewController<Content: SwiftUI.View>: UIViewController {
+    let size: CGSize
+    let contentView: Content
+    var viewToRender: UIView!
+
+    init(rootView: Content, size: CGSize) {
+        self.contentView = rootView
+        self.size = size
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        let hosting = UIHostingController(rootView: contentView)
+
+        view.addSubview(hosting.view)
+
+        self.addChild(hosting)
+
+        hosting.view.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            hosting.view.topAnchor.constraint(equalTo: view.topAnchor),
+            hosting.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            hosting.view.widthAnchor.constraint(equalToConstant: size.width),
+            hosting.view.heightAnchor.constraint(equalToConstant: size.height)
+        ])
+        hosting.didMove(toParent: self)
+
+        viewToRender = hosting.view
+//        hosting.view.setNeedsLayout()
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        print("")
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
 #endif
 #endif
+
+/*
+let rootViewController: UIViewController
+if viewController != window.rootViewController {
+    rootViewController = UIViewController()
+    rootViewController.view.backgroundColor = .clear
+    rootViewController.view.frame = window.frame
+    rootViewController.view.translatesAutoresizingMaskIntoConstraints =
+    viewController.view.translatesAutoresizingMaskIntoConstraints
+    rootViewController.preferredContentSize = rootViewController.view.frame.size
+    viewController.view.frame = rootViewController.view.frame
+    rootViewController.view.addSubview(viewController.view)
+    if viewController.view.translatesAutoresizingMaskIntoConstraints {
+        viewController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+    } else {
+        NSLayoutConstraint.activate([
+            viewController.view.topAnchor.constraint(equalTo: rootViewController.view.topAnchor),
+            viewController.view.bottomAnchor.constraint(equalTo: rootViewController.view.bottomAnchor),
+            viewController.view.leadingAnchor.constraint(equalTo: rootViewController.view.leadingAnchor),
+            viewController.view.trailingAnchor.constraint(equalTo: rootViewController.view.trailingAnchor),
+        ])
+    }
+    rootViewController.addChild(viewController)
+} else {
+    rootViewController = viewController
+}
+rootViewController.setOverrideTraitCollection(traits, forChild: viewController)
+viewController.didMove(toParent: rootViewController)
+
+window.rootViewController = rootViewController
+*/
