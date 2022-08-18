@@ -97,6 +97,8 @@ extension Snapshotting where Value: SwiftUI.View, Format == UIImage {
 //            viewController: viewController,
 //            interfaceStyle: interfaceStyle
 //        )
+        viewController.view.setNeedsLayout()
+        viewController.view.layoutIfNeeded()
 
         return Async { callback in
             addImagesForRenderedViews(view()).sequence().run { views in
