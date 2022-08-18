@@ -146,7 +146,9 @@ final class SizedViewController<Content: SwiftUI.View>: UIViewController {
         view.addSubview(hosting.view)
 
         self.addChild(hosting)
+        hosting.didMove(toParent: self)
 
+        /*
         hosting.view.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
 //            hosting.view.topAnchor.constraint(equalTo: view.topAnchor),
@@ -155,19 +157,27 @@ final class SizedViewController<Content: SwiftUI.View>: UIViewController {
             hosting.view.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             hosting.view.widthAnchor.constraint(equalToConstant: size.width),
             hosting.view.heightAnchor.constraint(equalToConstant: size.height)
-        ])
+        ])*/
         hosting.didMove(toParent: self)
 
         viewToRender = hosting.view
+        updateFrame(size: size)
     }
-    
+
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        print("")
+        updateFrame(size: size)
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    private func updateFrame(size: CGSize) {
+        var frame = viewToRender.frame
+        frame.origin = .zero
+        frame.size = size
+        viewToRender.frame = frame
     }
 }
 
