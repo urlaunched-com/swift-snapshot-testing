@@ -154,7 +154,7 @@ final class SizedViewController<Content: SwiftUI.View>: UIViewController {
             //hosting.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
 //            hosting.view.centerXAnchor.constraint(equalTo: view.centerXAnchor),
 //            hosting.view.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            hosting.view.widthAnchor.constraint(equalToConstant: size.width)
+            hosting.view.widthAnchor.constraint(equalToConstant: size.width),
             hosting.view.heightAnchor.constraint(equalToConstant: size.height)
         ])
 //        hosting.didMove(toParent: self)
