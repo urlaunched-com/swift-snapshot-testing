@@ -59,7 +59,7 @@ extension Snapshotting where Value: SwiftUI.View, Format == UIImage {
                 let controller = SizeToFitViewController(rootView: view)
 
                 return snapshot(
-                    view: controller.viewToRender,
+                    view: controller.viewToRender!,
                     viewController: controller,
                     renderingMode: renderingMode,
                     config: config,
@@ -70,7 +70,7 @@ extension Snapshotting where Value: SwiftUI.View, Format == UIImage {
 
             let sizedController = SizedViewController(rootView: view, size: size)
             return snapshot(
-                view: sizedController.viewToRender,
+                view: sizedController.viewToRender!,
                 viewController: sizedController,
                 renderingMode: renderingMode,
                 config: config,
