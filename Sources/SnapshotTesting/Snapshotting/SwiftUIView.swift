@@ -143,8 +143,6 @@ final class SizedViewController<Content: SwiftUI.View>: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         let hosting = UIHostingController(rootView: contentView)
-
-        view.backgroundColor = .red
         view.addSubview(hosting.view)
 
         self.addChild(hosting)
@@ -187,8 +185,7 @@ final class SizeToFitViewController<Content: SwiftUI.View>: UIViewController {
         let maxSize = CGSize(width: CGFloat.infinity, height: CGFloat.infinity)
         let size = viewToRender.sizeThatFits(maxSize)
 
-        viewToRender.sizeToFit()
-        updateFrame()
+        updateFrame(size: size)
     }
 
     override func viewDidLayoutSubviews() {
@@ -196,17 +193,17 @@ final class SizeToFitViewController<Content: SwiftUI.View>: UIViewController {
         let maxSize = CGSize(width: CGFloat.infinity, height: CGFloat.infinity)
         let size = viewToRender.sizeThatFits(maxSize)
 
-        viewToRender.sizeToFit()
-        updateFrame()
+        updateFrame(size: size)
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private func updateFrame() {
+    private func updateFrame(size: CGSize) {
         var frame = viewToRender.frame
         frame.origin = .zero
+        frame.size = size
         viewToRender.frame = frame
     }
 }
