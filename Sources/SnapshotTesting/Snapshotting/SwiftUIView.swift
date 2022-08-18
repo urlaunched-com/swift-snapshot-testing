@@ -149,14 +149,21 @@ final class SizedViewController<Content: SwiftUI.View>: UIViewController {
 
         hosting.view.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            hosting.view.topAnchor.constraint(equalTo: view.topAnchor),
-            hosting.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+//            hosting.view.topAnchor.constraint(equalTo: view.topAnchor),
+            //hosting.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            hosting.view.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            hosting.view.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             hosting.view.widthAnchor.constraint(equalToConstant: size.width),
             hosting.view.heightAnchor.constraint(equalToConstant: size.height)
         ])
         hosting.didMove(toParent: self)
 
         viewToRender = hosting.view
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        print("")
     }
 
     required init?(coder: NSCoder) {
