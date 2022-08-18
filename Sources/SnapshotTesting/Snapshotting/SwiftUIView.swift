@@ -100,7 +100,7 @@ extension Snapshotting where Value: SwiftUI.View, Format == UIImage {
             interfaceStyle: interfaceStyle
         )
 
-        return (view.snapshot ?? Async { callback in
+        return (viewController.view.snapshot ?? Async { callback in
             addImagesForRenderedViews(view).sequence().run { views in
                 ViewImageConfig.global = config
 
