@@ -59,7 +59,7 @@ extension Snapshotting where Value: SwiftUI.View, Format == UIImage {
                 let controller = SizeToFitViewController(rootView: view)
 
                 return snapshot(
-                    view: controller.view!,
+                    view: controller.viewToRender,
                     viewController: controller,
                     renderingMode: renderingMode,
                     config: config,
@@ -70,7 +70,7 @@ extension Snapshotting where Value: SwiftUI.View, Format == UIImage {
 
             let sizedController = SizedViewController(rootView: view, size: size)
             return snapshot(
-                view: sizedController.viewToRender!,
+                view: sizedController.viewToRender,
                 viewController: sizedController,
                 renderingMode: renderingMode,
                 config: config,
@@ -187,12 +187,18 @@ final class SizeToFitViewController<Content: SwiftUI.View>: UIViewController {
         hosting.didMove(toParent: self)
 
         viewToRender = hosting.view
+        let maxSize = CGSize(width: CGFloat.infinity, height: CGFloat.infinity)
+        let size = viewToRender.sizeThatFits(maxSize)
+
         viewToRender.sizeToFit()
         updateFrame()
     }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+        let maxSize = CGSize(width: CGFloat.infinity, height: CGFloat.infinity)
+        let size = viewToRender.sizeThatFits(maxSize)
+
         viewToRender.sizeToFit()
         updateFrame()
     }
