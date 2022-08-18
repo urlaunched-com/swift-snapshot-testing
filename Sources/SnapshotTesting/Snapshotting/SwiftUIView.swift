@@ -59,7 +59,7 @@ extension Snapshotting where Value: SwiftUI.View, Format == UIImage {
                 let controller = SizeToFitViewController(rootView: view)
 
                 return snapshot(
-                    view: controller.viewToRender!,
+                    view: { controller.viewToRender! },
                     viewController: controller,
                     renderingMode: renderingMode,
                     config: config,
@@ -70,7 +70,7 @@ extension Snapshotting where Value: SwiftUI.View, Format == UIImage {
 
             let sizedController = SizedViewController(rootView: view, size: size)
             return snapshot(
-                view: sizedController.viewToRender!,
+                view: { sizedController.viewToRender! },
                 viewController: sizedController,
                 renderingMode: renderingMode,
                 config: config,
@@ -81,7 +81,7 @@ extension Snapshotting where Value: SwiftUI.View, Format == UIImage {
     }
 
     static func snapshot(
-        view: UIView,
+        view: @escaping () -> UIView,
         viewController: UIViewController,
         renderingMode: RenderingMode,
         config: ViewImageConfig,
@@ -90,32 +90,30 @@ extension Snapshotting where Value: SwiftUI.View, Format == UIImage {
     ) -> Async<UIImage> {
 
         ViewImageConfig.global = config
-        let initialFrame = view.frame
-
         let dispose = prepareView(
             config: config,
             drawHierarchyInKeyWindow: false,
-            view: view,
+            view: viewController.view,
             viewController: viewController,
             interfaceStyle: interfaceStyle
         )
 
         return (viewController.view.snapshot ?? Async { callback in
-            addImagesForRenderedViews(view).sequence().run { views in
+            addImagesForRenderedViews(view()).sequence().run { views in
                 ViewImageConfig.global = config
 
-                let old = renderer(bounds: view.bounds, for: traits).image { ctx in
+                let old = renderer(bounds: view().bounds, for: traits).image { ctx in
                     switch renderingMode {
                     case .snapshot(let afterScreenUpdates):
-                        view
+                        view()
                             .snapshotView(afterScreenUpdates: afterScreenUpdates)?
-                            .drawHierarchy(in: view.bounds, afterScreenUpdates: afterScreenUpdates)
+                            .drawHierarchy(in: view().bounds, afterScreenUpdates: afterScreenUpdates)
 
                     case .drawHierarchy(let afterScreenUpdates):
-                        view.drawHierarchy(in: view.bounds, afterScreenUpdates: afterScreenUpdates)
+                        view().drawHierarchy(in: view().bounds, afterScreenUpdates: afterScreenUpdates)
 
                     case .renderInContext:
-                        view.layer.render(in: ctx.cgContext)
+                        view().layer.render(in: ctx.cgContext)
                     }
                 }
 
@@ -126,7 +124,6 @@ extension Snapshotting where Value: SwiftUI.View, Format == UIImage {
                     srgb
                 )
                 views.forEach { $0.removeFromSuperview() }
-                view.frame = initialFrame
             }
         }).map { dispose(); return $0 }
     }
