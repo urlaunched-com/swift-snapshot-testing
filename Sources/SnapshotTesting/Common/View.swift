@@ -1046,14 +1046,14 @@ func prepareView(
     if let navController = viewController as? UINavigationController, let vc = navController.viewControllers.first {
         let safeArea = config.safeArea
 
-        vc.view.translatesAutoresizingMaskIntoConstraints = false
-
-        NSLayoutConstraint.activate([
-            vc.view.topAnchor.constraint(equalTo: navController.view.topAnchor, constant: safeArea.top),
-            vc.view.bottomAnchor.constraint(equalTo: navController.view.bottomAnchor, constant: safeArea.bottom),
-            vc.view.leadingAnchor.constraint(equalTo: navController.view.leadingAnchor, constant: safeArea.left),
-            vc.view.trailingAnchor.constraint(equalTo: navController.view.trailingAnchor, constant: safeArea.right),
-        ])
+//        vc.view.translatesAutoresizingMaskIntoConstraints = false
+//
+//        NSLayoutConstraint.activate([
+//            vc.view.topAnchor.constraint(equalTo: navController.view.topAnchor, constant: safeArea.top),
+//            vc.view.bottomAnchor.constraint(equalTo: navController.view.bottomAnchor, constant: safeArea.bottom),
+//            vc.view.leadingAnchor.constraint(equalTo: navController.view.leadingAnchor, constant: safeArea.left),
+//            vc.view.trailingAnchor.constraint(equalTo: navController.view.trailingAnchor, constant: safeArea.right),
+//        ])
 
 //        if let size = config.size {
 //            viewController.view.translatesAutoresizingMaskIntoConstraints = false
@@ -1065,11 +1065,11 @@ func prepareView(
 //            ])
 //        }
 
-        viewController.view.setNeedsLayout()
-        vc.view.setNeedsLayout()
-
-        viewController.view.layoutIfNeeded()
-        vc.view.layoutIfNeeded()
+//        viewController.view.setNeedsLayout()
+//        vc.view.setNeedsLayout()
+//
+//        viewController.view.layoutIfNeeded()
+//        vc.view.layoutIfNeeded()
     }
 
     if size.width == 0 || size.height == 0 {
