@@ -1094,7 +1094,7 @@ func prepareView(
     if let navController = viewController as? UINavigationController, let vc = navController.viewControllers.first {
 //        let safeArea = config.safeArea
 
-        viewController.view.snp.makeConstraints { make in
+        vc.view.snp.makeConstraints { make in
             make.top.equalTo(navController.view.safeAreaLayoutGuide)
             make.bottom.equalTo(navController.view.safeAreaLayoutGuide)
             make.leading.equalTo(navController.view.safeAreaLayoutGuide)
