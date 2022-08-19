@@ -1104,32 +1104,34 @@ func snapshotView(
     if config.safeArea == .zero { view.frame.origin = .init(x: offscreen, y: offscreen) }
 
     return (view.snapshot ?? Async { callback in
-        addImagesForRenderedViews(view).sequence().run { views in
-            ViewImageConfig.global = config
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+            addImagesForRenderedViews(view).sequence().run { views in
+                ViewImageConfig.global = config
 
-            let old = renderer(bounds: view.bounds, for: traits).image { ctx in
-                switch renderingMode {
-                case .snapshot(let afterScreenUpdates):
-                    view
-                        .snapshotView(afterScreenUpdates: afterScreenUpdates)?
-                        .drawHierarchy(in: view.bounds, afterScreenUpdates: afterScreenUpdates)
+                let old = renderer(bounds: view.bounds, for: traits).image { ctx in
+                    switch renderingMode {
+                    case .snapshot(let afterScreenUpdates):
+                        view
+                            .snapshotView(afterScreenUpdates: afterScreenUpdates)?
+                            .drawHierarchy(in: view.bounds, afterScreenUpdates: afterScreenUpdates)
 
-                case .drawHierarchy(let afterScreenUpdates):
-                    view.drawHierarchy(in: view.bounds, afterScreenUpdates: afterScreenUpdates)
+                    case .drawHierarchy(let afterScreenUpdates):
+                        view.drawHierarchy(in: view.bounds, afterScreenUpdates: afterScreenUpdates)
 
-                case .renderInContext:
-                    view.layer.render(in: ctx.cgContext)
+                    case .renderInContext:
+                        view.layer.render(in: ctx.cgContext)
+                    }
                 }
-            }
 
-            let srgb = UIImage(
-                cgImage: old.cgImage!.copy(colorSpace: CGColorSpace(name: CGColorSpace.sRGB)!)!
-            )
-            callback(
-                srgb
-            )
-            views.forEach { $0.removeFromSuperview() }
-            view.frame = initialFrame
+                let srgb = UIImage(
+                    cgImage: old.cgImage!.copy(colorSpace: CGColorSpace(name: CGColorSpace.sRGB)!)!
+                )
+                callback(
+                    srgb
+                )
+                views.forEach { $0.removeFromSuperview() }
+                view.frame = initialFrame
+            }
         }
     }).map { dispose(); return $0 }
 }
