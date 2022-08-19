@@ -1154,21 +1154,23 @@ func snapshotView(
 
     return (view.snapshot ?? Async { callback in
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-            addImagesForRenderedViews(view).sequence().run { views in
+            let renderView = viewController.parent?.view ?? view
+
+            addImagesForRenderedViews(renderView).sequence().run { views in
                 ViewImageConfig.global = config
 
-                let old = renderer(bounds: view.bounds, for: traits).image { ctx in
+                let old = renderer(bounds: renderView.bounds, for: traits).image { ctx in
                     switch renderingMode {
                     case .snapshot(let afterScreenUpdates):
-                        view
+                        renderView
                             .snapshotView(afterScreenUpdates: afterScreenUpdates)?
-                            .drawHierarchy(in: view.bounds, afterScreenUpdates: afterScreenUpdates)
+                            .drawHierarchy(in: renderView.bounds, afterScreenUpdates: afterScreenUpdates)
 
                     case .drawHierarchy(let afterScreenUpdates):
-                        view.drawHierarchy(in: view.bounds, afterScreenUpdates: afterScreenUpdates)
+                        renderView.drawHierarchy(in: renderView.bounds, afterScreenUpdates: afterScreenUpdates)
 
                     case .renderInContext:
-                        view.layer.render(in: ctx.cgContext)
+                        renderView.layer.render(in: ctx.cgContext)
                     }
                 }
 
