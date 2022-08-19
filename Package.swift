@@ -1,4 +1,4 @@
-// swift-tools-version:5.5
+// swift-tools-version:5.6
 import Foundation
 import PackageDescription
 
@@ -6,7 +6,7 @@ let package = Package(
     name: "SnapshotTesting",
     platforms: [
         .iOS(.v14),
-        .macOS(.v10_10),
+        .macOS(.v10_11),
         .tvOS(.v10)
     ],
     products: [
@@ -14,11 +14,15 @@ let package = Package(
             name: "SnapshotTesting",
             targets: ["SnapshotTesting"]),
     ],
-    dependencies: [],
+    dependencies: [
+        .package(url: "https://github.com/SnapKit/SnapKit.git", from: "5.6.0")
+    ],
     targets: [
         .target(
             name: "SnapshotTesting",
-            dependencies: []
+            dependencies: [
+                .byName(name: "SnapKit")
+            ]
         ),
         .testTarget(
             name: "SnapshotTestingTests",
