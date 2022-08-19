@@ -1041,20 +1041,36 @@ func prepareView(
         window.makeKeyAndVisible()
     }
 
+    viewController.view.frame = CGRect(
+        origin: CGPoint(x: config.safeArea.left, y: config.safeArea.top),
+        size: CGSize(
+            width: size.width - (config.safeArea.left + config.safeArea.right),
+            height: size.height - (config.safeArea.top + config.safeArea.bottom)
+        )
+    )
+
     let dispose = add(traits: config.traits, viewController: viewController, to: window)
 
-    viewController.view.translatesAutoresizingMaskIntoConstraints = false
-
-    viewController.view.topAnchor.constraint(equalTo: viewController.parent!.view.topAnchor, constant: config.safeArea.top).isActive = true
-    viewController.view.leadingAnchor.constraint(equalTo: viewController.parent!.view.leadingAnchor, constant: config.safeArea.left).isActive = true
-    viewController.view.trailingAnchor.constraint(equalTo: viewController.parent!.view.trailingAnchor, constant: config.safeArea.right).isActive = true
-    viewController.view.bottomAnchor.constraint(equalTo: viewController.parent!.view.bottomAnchor, constant: config.safeArea.bottom).isActive = true
-
-    viewController.parent!.view.setNeedsLayout()
-    viewController.view.setNeedsLayout()
+//    viewController.view.translatesAutoresizingMaskIntoConstraints = false
+//
+//    viewController.view.topAnchor.constraint(equalTo: viewController.parent!.view.topAnchor, constant: config.safeArea.top).isActive = true
+//    viewController.view.leadingAnchor.constraint(equalTo: viewController.parent!.view.leadingAnchor, constant: config.safeArea.left).isActive = true
+//    viewController.view.trailingAnchor.constraint(equalTo: viewController.parent!.view.trailingAnchor, constant: config.safeArea.right).isActive = true
+//    viewController.view.bottomAnchor.constraint(equalTo: viewController.parent!.view.bottomAnchor, constant: config.safeArea.bottom).isActive = true
+//
+//    viewController.parent!.view.setNeedsLayout()
+//    viewController.view.setNeedsLayout()
 
     viewController.parent!.view.layoutSubviews()
     viewController.view.layoutSubviews()
+
+    viewController.view.frame = CGRect(
+        origin: CGPoint(x: config.safeArea.left, y: config.safeArea.top),
+        size: CGSize(
+            width: size.width - (config.safeArea.left + config.safeArea.right),
+            height: size.height - (config.safeArea.top + config.safeArea.bottom)
+        )
+    )
 
 //    viewController.parent!.view
 
