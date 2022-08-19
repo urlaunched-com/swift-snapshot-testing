@@ -35,7 +35,9 @@ extension Snapshotting where Value == UIViewController, Format == UIImage {
                 config: size.map { .init(safeArea: config.safeArea, size: $0, traits: config.traits, name: "\($0)", options: config.options) } ?? config,
                 renderingMode: renderingMode,
                 traits: config.traits,
-                view: viewController.view,
+                view: {
+                    viewController.view
+                },
                 viewController: viewController,
                 interfaceStyle: interfaceStyle
             )
@@ -65,7 +67,9 @@ extension Snapshotting where Value == UIViewController, Format == UIImage {
                 config: .init(safeArea: .zero, size: size, traits: traits, name: String(describing: size), options: .none),
                 renderingMode: renderingMode,
                 traits: traits,
-                view: viewController.view,
+                view: {
+                    viewController.view
+                },
                 viewController: viewController,
                 interfaceStyle: interfaceStyle
             )
@@ -89,7 +93,9 @@ extension Snapshotting where Value == UIViewController, Format == UIImage {
                 config: .init(safeArea: .zero, size: size, traits: traits, name: String(describing: size), options: .none),
                 renderingMode: renderingMode,
                 traits: .init(displayScale: scale),
-                view: viewController.view,
+                view: {
+                    viewController.view
+                },
                 viewController: viewController,
                 interfaceStyle: interfaceStyle
             )

@@ -1142,41 +1142,41 @@ func snapshotView(
     config: ViewImageConfig,
     renderingMode: RenderingMode = .snapshot(afterScreenUpdates: true),
     traits: UITraitCollection,
-    view: UIView,
+    view: @escaping () -> UIView,
     viewController: UIViewController,
     interfaceStyle: UIUserInterfaceStyle = .light
 )
 -> Async<UIImage> {
     ViewImageConfig.global = config
 
-    let initialFrame = view.frame
+    let initialFrame = view().frame
     let dispose = prepareView(
         config: config,
         drawHierarchyInKeyWindow: false,//drawHierarchyInKeyWindow,
-        view: view,
+        view: view(),
         viewController: viewController,
         interfaceStyle: interfaceStyle
     )
     // NB: Avoid safe area influence.
-    if config.safeArea == .zero { view.frame.origin = .init(x: offscreen, y: offscreen) }
+    if config.safeArea == .zero { view().frame.origin = .init(x: offscreen, y: offscreen) }
 
-    return (view.snapshot ?? Async { callback in
+    return (view().snapshot ?? Async { callback in
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-            addImagesForRenderedViews(view).sequence().run { views in
+            addImagesForRenderedViews(view()).sequence().run { views in
                 ViewImageConfig.global = config
 
-                let old = renderer(bounds: view.bounds, for: traits).image { ctx in
+                let old = renderer(bounds: view().bounds, for: traits).image { ctx in
                     switch renderingMode {
                     case .snapshot(let afterScreenUpdates):
-                        view
+                        view()
                             .snapshotView(afterScreenUpdates: afterScreenUpdates)?
-                            .drawHierarchy(in: view.bounds, afterScreenUpdates: afterScreenUpdates)
+                            .drawHierarchy(in: view().bounds, afterScreenUpdates: afterScreenUpdates)
 
                     case .drawHierarchy(let afterScreenUpdates):
-                        view.drawHierarchy(in: view.bounds, afterScreenUpdates: afterScreenUpdates)
+                        view().drawHierarchy(in: view().bounds, afterScreenUpdates: afterScreenUpdates)
 
                     case .renderInContext:
-                        view.layer.render(in: ctx.cgContext)
+                        view().layer.render(in: ctx.cgContext)
                     }
                 }
 
@@ -1187,7 +1187,7 @@ func snapshotView(
                     srgb
                 )
                 views.forEach { $0.removeFromSuperview() }
-                view.frame = initialFrame
+                view().frame = initialFrame
             }
         }
     }).map { dispose(); return $0 }

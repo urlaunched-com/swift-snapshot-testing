@@ -30,7 +30,7 @@ extension Snapshotting where Value == UIView, Format == UIImage {
                 config: .init(safeArea: .zero, size: size ?? view.frame.size, traits: .init(), name: "\(size ?? view.frame.size)", options: .none),
                 renderingMode: renderingMode,
                 traits: traits,
-                view: view,
+                view: { view },
                 viewController: .init(),
                 interfaceStyle: interfaceStyle
             )

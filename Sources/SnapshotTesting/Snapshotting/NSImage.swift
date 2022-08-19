@@ -4,7 +4,7 @@ import XCTest
 
 extension Diffing where Value == NSImage {
     /// A pixel-diffing strategy for NSImage's which requires a 100% match.
-    public static let image = Diffing.image(precision: 1)
+    public static let image = Diffing.image(precision: 1, png: false)
 
     /// A pixel-diffing strategy for NSImage that allows customizing how precise the matching must be.
     ///
@@ -15,7 +15,7 @@ extension Diffing where Value == NSImage {
             toData: { png ? NSImagePNGRepresentation($0)! : NSImageJPEGRepresentation($0)! },
             fromData: { NSImage(data: $0)! }
         ) { old, new in
-            guard !compare(old, new, precision: precision) else { return nil }
+            guard !compare(old, new, precision: precision, png: png) else { return nil }
             let difference = SnapshotTesting.diff(old, new)
             let message = new.size == old.size
             ? "Newly-taken snapshot does not match reference."
@@ -31,7 +31,7 @@ extension Diffing where Value == NSImage {
 extension Snapshotting where Value == NSImage, Format == NSImage {
     /// A snapshot strategy for comparing images based on pixel equality.
     public static var image: Snapshotting {
-        return .image(precision: 1)
+        return .image(precision: 1, png: false)
     }
 
     /// A snapshot strategy for comparing images based on pixel equality.
@@ -40,7 +40,7 @@ extension Snapshotting where Value == NSImage, Format == NSImage {
     public static func image(precision: Float, png: Bool) -> Snapshotting {
         return .init(
             pathExtension: png ? "png" : "jpg",
-            diffing: .image(precision: precision)
+            diffing: .image(precision: precision, png: png)
         )
     }
 }
