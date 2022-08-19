@@ -11,7 +11,7 @@ extension Snapshotting where Value == CALayer, Format == NSImage {
   ///
   /// - Parameter precision: The percentage of pixels that must match.
   public static func image(precision: Float) -> Snapshotting {
-    return SimplySnapshotting.image(precision: precision).pullback { layer in
+      return SimplySnapshotting.image(precision: precision, size: nil).pullback { layer in
       let image = NSImage(size: layer.bounds.size)
       image.lockFocus()
       let context = NSGraphicsContext.current!.cgContext

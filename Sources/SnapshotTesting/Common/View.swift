@@ -1054,6 +1054,16 @@ func prepareView(
             vc.view.trailingAnchor.constraint(equalTo: navController.view.trailingAnchor, constant: safeArea.right),
         ])
 
+        if let size = config.size {
+            viewController.view.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                viewController.view.widthAnchor.constraint(equalToConstant: size.width),
+                viewController.view.heightAnchor.constraint(equalToConstant: size.height),
+                viewController.view.centerXAnchor.constraint(equalTo: viewController.view.superview!.centerXAnchor),
+                viewController.view.centerYAnchor.constraint(equalTo: viewController.view.superview!.centerYAnchor)
+            ])
+        }
+
         viewController.view.setNeedsLayout()
         vc.view.setNeedsLayout()
 

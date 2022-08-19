@@ -11,7 +11,7 @@ extension Snapshotting where Value == NSBezierPath, Format == NSImage {
   ///
   /// - Parameter precision: The percentage of pixels that must match.
   public static func image(precision: Float = 1) -> Snapshotting {
-    return SimplySnapshotting.image(precision: precision).pullback { path in
+      return SimplySnapshotting.image(precision: precision, drawingMode: .eoFill).pullback { path in
       // Move path info frame:
       let bounds = path.bounds
       let transform = AffineTransform(translationByX: -bounds.origin.x, byY: -bounds.origin.y)
