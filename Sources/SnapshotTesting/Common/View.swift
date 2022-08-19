@@ -1046,10 +1046,10 @@ func prepareView(
     viewController.view.translatesAutoresizingMaskIntoConstraints = false
 
     NSLayoutConstraint.activate([
-        viewController.view.topAnchor.constraint(equalToConstant: config.safeArea.top),
-        viewController.view.bottomAnchor.constraint(equalToConstant: config.safeArea.bottom),
-        viewController.view.leadingAnchor.constraint(equalToConstant: config.safeArea.left),
-        viewController.view.trailingAnchor.constraint(equalToConstant: config.safeArea.right)
+        viewController.view.topAnchor.constraint(equalTo: viewController.view.superview!.topAnchor, constant: config.safeArea.top),
+        viewController.view.bottomAnchor.constraint(equalTo: viewController.view.superview!.bottomAnchor, constant: config.safeArea.bottom),
+        viewController.view.leadingAnchor.constraint(equalTo: viewController.view.superview!.leadingAnchor, constant: config.safeArea.left),
+        viewController.view.trailingAnchor.constraint(equalTo: viewController.view.superview!.trailingAnchor, constant: config.safeArea.right)
     ])
 
     viewController.view.setNeedsLayout()
