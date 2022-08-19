@@ -1050,6 +1050,12 @@ func prepareView(
     viewController.view.trailingAnchor.constraint(equalTo: viewController.parent!.view.trailingAnchor, constant: config.safeArea.right).isActive = true
     viewController.view.bottomAnchor.constraint(equalTo: viewController.parent!.view.bottomAnchor, constant: config.safeArea.bottom).isActive = true
 
+    viewController.parent!.view.setNeedsLayout()
+    viewController.view.setNeedsLayout()
+
+    viewController.parent!.view.layoutSubviews()
+    viewController.view.layoutSubviews()
+
 //    viewController.parent!.view
 
 //    viewController.view. constraintEqualToAnchor(label.trailingAnchor, constant: 8.0).isActive = true
