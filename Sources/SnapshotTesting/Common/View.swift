@@ -1034,7 +1034,7 @@ func prepareView(
         window.frame.size = size
     } else {
         window = Window(
-            config: .init(safeArea: .zero, size: config.size ?? size, traits: config.traits, name: config.name, options: config.options),
+            config: .init(safeArea: config.safeArea, size: config.size ?? size, traits: config.traits, name: config.name, options: config.options),
             viewController: viewController,
             interfaceStyle: interfaceStyle
         )
@@ -1045,15 +1045,26 @@ func prepareView(
 
     viewController.view.translatesAutoresizingMaskIntoConstraints = false
 
-    NSLayoutConstraint.activate([
-        viewController.view.topAnchor.constraint(equalTo: viewController.view.superview!.topAnchor, constant: config.safeArea.top),
-        viewController.view.bottomAnchor.constraint(equalTo: viewController.view.superview!.bottomAnchor, constant: config.safeArea.bottom),
-        viewController.view.leadingAnchor.constraint(equalTo: viewController.view.superview!.leadingAnchor, constant: config.safeArea.left),
-        viewController.view.trailingAnchor.constraint(equalTo: viewController.view.superview!.trailingAnchor, constant: config.safeArea.right)
-    ])
+    viewController.view.topAnchor.constraint(equalTo: viewController.parent!.view.topAnchor, constant: config.safeArea.top).isActive = true
+    viewController.view.leadingAnchor.constraint(equalTo: viewController.parent!.view.leadingAnchor, constant: config.safeArea.left).isActive = true
+    viewController.view.trailingAnchor.constraint(equalTo: viewController.parent!.view.trailingAnchor, constant: config.safeArea.right).isActive = true
+    viewController.view.bottomAnchor.constraint(equalTo: viewController.parent!.view.bottomAnchor, constant: config.safeArea.bottom).isActive = true
 
-    viewController.view.setNeedsLayout()
-    viewController.view.layoutIfNeeded()
+//    viewController.parent!.view
+
+//    viewController.view. constraintEqualToAnchor(label.trailingAnchor, constant: 8.0).isActive = true
+
+
+//    NSLayoutConstraint.activate([
+//        viewController.view.topAnchor.constraint(equalTo: viewController.view.superview!.topAnchor, constant: config.safeArea.top),
+//        viewController.view.bottomAnchor.constraint(equalTo: viewController.view.superview!.bottomAnchor, constant: config.safeArea.bottom),
+//        viewController.view.leadingAnchor.constraint(equalTo: viewController.view.superview!.leadingAnchor, constant: config.safeArea.left),
+//        viewController.view.trailingAnchor.constraint(equalTo: viewController.view.superview!.trailingAnchor, constant: config.safeArea.right)
+//    ])
+
+
+//    viewController.view.setNeedsLayout()
+//    viewController.view.layoutIfNeeded()
 
     /*
     if let navController = viewController as? UINavigationController, let vc = navController.viewControllers.first {
