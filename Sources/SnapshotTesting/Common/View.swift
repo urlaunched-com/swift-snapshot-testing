@@ -1040,17 +1040,10 @@ func prepareView(
         )
     }
 
-    if let navController = viewController as? UINavigationController, let vc = navController.viewControllers.first {
-        let size = config.size ?? .zero
-        let safeArea = config.safeArea
+    let dispose = add(traits: config.traits, viewController: viewController, to: window)
 
-//        vc.view.frame = CGRect(
-//            origin: CGPoint(x: safeArea.left, y: safeArea.top),
-//            size: CGSize(
-//                width: size.width - (safeArea.left + safeArea.right),
-//                height: size.height - (safeArea.top + safeArea.bottom)
-//            )
-//        )
+    if let navController = viewController as? UINavigationController, let vc = navController.viewControllers.first {
+        let safeArea = config.safeArea
 
         vc.view.translatesAutoresizingMaskIntoConstraints = false
 
@@ -1060,9 +1053,13 @@ func prepareView(
             vc.view.leadingAnchor.constraint(equalTo: navController.view.leadingAnchor, constant: safeArea.left),
             vc.view.trailingAnchor.constraint(equalTo: navController.view.trailingAnchor, constant: safeArea.right),
         ])
-    }
 
-    let dispose = add(traits: config.traits, viewController: viewController, to: window)
+        viewController.view.setNeedsLayout()
+        vc.view.setNeedsLayout()
+
+        viewController.view.layoutIfNeeded()
+        vc.view.layoutIfNeeded()
+    }
 
     if size.width == 0 || size.height == 0 {
         // Try to call sizeToFit() if the view still has invalid size
