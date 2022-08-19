@@ -1049,7 +1049,7 @@ func prepareView(
 //            height: size.height - (config.safeArea.top + config.safeArea.bottom)
 //        )
 //    )
-    viewController.view.translatesAutoresizingMaskIntoConstraints = false
+//    viewController.view.translatesAutoresizingMaskIntoConstraints = false
 
     let dispose = add(traits: config.traits, viewController: viewController, to: window)
 
@@ -1090,18 +1090,26 @@ func prepareView(
 //    viewController.view.setNeedsLayout()
 //    viewController.view.layoutIfNeeded()
 
-    /*
+
     if let navController = viewController as? UINavigationController, let vc = navController.viewControllers.first {
-        let safeArea = config.safeArea
+//        let safeArea = config.safeArea
 
-        vc.view.translatesAutoresizingMaskIntoConstraints = false
+        viewController.view.snp.makeConstraints { make in
+            make.top.equalTo(navController.view.safeAreaLayoutGuide)
+            make.bottom.equalTo(navController.view.safeAreaLayoutGuide)
+            make.leading.equalTo(navController.view.safeAreaLayoutGuide)
+            make.trailing.equalTo(navController.view.safeAreaLayoutGuide)
+        }
 
-        NSLayoutConstraint.activate([
-            vc.view.topAnchor.constraint(equalTo: navController.view.topAnchor, constant: 250), //safeArea.top),
-            vc.view.bottomAnchor.constraint(equalTo: navController.view.bottomAnchor, constant: safeArea.bottom),
-            vc.view.leadingAnchor.constraint(equalTo: navController.view.leadingAnchor, constant: safeArea.left),
-            vc.view.trailingAnchor.constraint(equalTo: navController.view.trailingAnchor, constant: safeArea.right),
-        ])
+
+//        vc.view.translatesAutoresizingMaskIntoConstraints = false
+//
+//        NSLayoutConstraint.activate([
+//            vc.view.topAnchor.constraint(equalTo: navController.view.topAnchor, constant: 250), //safeArea.top),
+//            vc.view.bottomAnchor.constraint(equalTo: navController.view.bottomAnchor, constant: safeArea.bottom),
+//            vc.view.leadingAnchor.constraint(equalTo: navController.view.leadingAnchor, constant: safeArea.left),
+//            vc.view.trailingAnchor.constraint(equalTo: navController.view.trailingAnchor, constant: safeArea.right),
+//        ])
 
 //        if let size = config.size {
 //            viewController.view.translatesAutoresizingMaskIntoConstraints = false
@@ -1118,7 +1126,7 @@ func prepareView(
 
         viewController.view.layoutIfNeeded()
         vc.view.layoutIfNeeded()
-    }*/
+    }
 
     if size.width == 0 || size.height == 0 {
         // Try to call sizeToFit() if the view still has invalid size
@@ -1154,23 +1162,21 @@ func snapshotView(
 
     return (view.snapshot ?? Async { callback in
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-            let renderView = viewController.parent?.view ?? view
-
-            addImagesForRenderedViews(renderView).sequence().run { views in
+            addImagesForRenderedViews(view).sequence().run { views in
                 ViewImageConfig.global = config
 
-                let old = renderer(bounds: renderView.bounds, for: traits).image { ctx in
+                let old = renderer(bounds: view.bounds, for: traits).image { ctx in
                     switch renderingMode {
                     case .snapshot(let afterScreenUpdates):
-                        renderView
+                        view
                             .snapshotView(afterScreenUpdates: afterScreenUpdates)?
-                            .drawHierarchy(in: renderView.bounds, afterScreenUpdates: afterScreenUpdates)
+                            .drawHierarchy(in: view.bounds, afterScreenUpdates: afterScreenUpdates)
 
                     case .drawHierarchy(let afterScreenUpdates):
-                        renderView.drawHierarchy(in: renderView.bounds, afterScreenUpdates: afterScreenUpdates)
+                        view.drawHierarchy(in: view.bounds, afterScreenUpdates: afterScreenUpdates)
 
                     case .renderInContext:
-                        renderView.layer.render(in: ctx.cgContext)
+                        view.layer.render(in: ctx.cgContext)
                     }
                 }
 
@@ -1200,6 +1206,19 @@ func renderer(bounds: CGRect, for traits: UITraitCollection) -> UIGraphicsImageR
 }
 
 private func add(traits: UITraitCollection, viewController: UIViewController, to window: UIWindow) -> () -> Void {
+    window.rootViewController = viewController
+
+    viewController.beginAppearanceTransition(true, animated: false)
+    viewController.endAppearanceTransition()
+
+    viewController.view.setNeedsLayout()
+    viewController.view.layoutIfNeeded()
+    return {
+        viewController.beginAppearanceTransition(false, animated: false)
+        viewController.endAppearanceTransition()
+        window.rootViewController = nil
+    }
+    /*
     let rootViewController: UIViewController
     if viewController != window.rootViewController {
         rootViewController = UIViewController()
@@ -1246,7 +1265,7 @@ private func add(traits: UITraitCollection, viewController: UIViewController, to
         viewController.didMove(toParent: nil)
         rootViewController.endAppearanceTransition()
         window.rootViewController = nil
-    }
+    }*/
 }
 
 /*
