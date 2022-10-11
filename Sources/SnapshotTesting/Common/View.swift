@@ -1090,20 +1090,20 @@ func prepareView(
 //    viewController.view.setNeedsLayout()
 //    viewController.view.layoutIfNeeded()
 
-    if let navController = viewController as? UINavigationController, let vc = navController.viewControllers.first {
-        NSLayoutConstraint.activate([
-            vc.view.topAnchor.constraint(equalTo: navController.view.topAnchor),
-            vc.view.bottomAnchor.constraint(equalTo: navController.view.bottomAnchor),
-            vc.view.leadingAnchor.constraint(equalTo: navController.view.leadingAnchor),
-            vc.view.trailingAnchor.constraint(equalTo: navController.view.trailingAnchor),
-        ])
-
-        viewController.view.setNeedsLayout()
-        vc.view.setNeedsLayout()
-
-        viewController.view.layoutIfNeeded()
-        vc.view.layoutIfNeeded()
-    }
+//    if let navController = viewController as? UINavigationController, let vc = navController.viewControllers.first {
+//        NSLayoutConstraint.activate([
+//            vc.view.topAnchor.constraint(equalTo: navController.view.topAnchor),
+//            vc.view.bottomAnchor.constraint(equalTo: navController.view.bottomAnchor),
+//            vc.view.leadingAnchor.constraint(equalTo: navController.view.leadingAnchor),
+//            vc.view.trailingAnchor.constraint(equalTo: navController.view.trailingAnchor),
+//        ])
+//
+//        viewController.view.setNeedsLayout()
+//        vc.view.setNeedsLayout()
+//
+//        viewController.view.layoutIfNeeded()
+//        vc.view.layoutIfNeeded()
+//    }
 
 /*
     if let navController = viewController as? UINavigationController, let vc = navController.viewControllers.first {
@@ -1221,6 +1221,7 @@ func renderer(bounds: CGRect, for traits: UITraitCollection) -> UIGraphicsImageR
     return renderer
 }
 
+/*
 private func add(traits: UITraitCollection, viewController: UIViewController, to window: UIWindow) -> () -> Void {
     let rootViewController: UIViewController
     if viewController != window.rootViewController {
@@ -1265,9 +1266,9 @@ private func add(traits: UITraitCollection, viewController: UIViewController, to
         rootViewController.endAppearanceTransition()
         window.rootViewController = nil
     }
-}
+}*/
 
-/*
+
 //Prev
 
 
@@ -1333,7 +1334,7 @@ private func add(traits: UITraitCollection, viewController: UIViewController, to
         window.rootViewController = nil
     }*/
 }
- */
+
 
 /*
 private func add(traits: UITraitCollection, viewController: UIViewController, to window: UIWindow) -> () -> Void {
