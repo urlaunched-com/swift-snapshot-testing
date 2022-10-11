@@ -1090,6 +1090,15 @@ func prepareView(
 //    viewController.view.setNeedsLayout()
 //    viewController.view.layoutIfNeeded()
 
+    if let navController = viewController as? UINavigationController, let vc = navController.viewControllers.first {
+        NSLayoutConstraint.activate([
+            vc.view.topAnchor.constraint(equalTo: navController.view.topAnchor),
+            vc.view.bottomAnchor.constraint(equalTo: navController.view.bottomAnchor),
+            vc.view.leadingAnchor.constraint(equalTo: navController.view.leadingAnchor),
+            vc.view.trailingAnchor.constraint(equalTo: navController.view.trailingAnchor),
+        ])
+    }
+
 /*
     if let navController = viewController as? UINavigationController, let vc = navController.viewControllers.first {
 //        let safeArea = config.safeArea
