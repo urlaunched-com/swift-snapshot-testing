@@ -1177,6 +1177,7 @@ func snapshotView(
     if config.safeArea == .zero { view().frame.origin = .init(x: offscreen, y: offscreen) }
 
     return (view().snapshot ?? Async { callback in
+        ViewImageConfig.global = config
 //        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
             let viewToRender = view()
             addImagesForRenderedViews(viewToRender).sequence().run { views in
