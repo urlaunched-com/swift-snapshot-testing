@@ -97,20 +97,6 @@ func calculateTime(block : (() -> Void)) {
     print("Time: \(timeInterval) seconds")
 }
 
-//import iOSSnapshotTestCase
-
-//private func compare(_ old: UIImage, _ new: UIImage, precision: Float) -> Bool {
-//    var result = true
-//    do {
-//        try FBSnapshotTestController().compareReferenceImage(old, to: new, overallTolerance: CGFloat(1.0 - precision))
-//    } catch {
-//        Swift.print(error)
-//        result = false
-//    }
-//
-//    return result
-//}
-
 // remap snapshot & reference to same colorspace
 let imageContextColorSpace = CGColorSpace(name: CGColorSpace.sRGB)
 let imageContextBitsPerComponent = 8
@@ -259,83 +245,8 @@ final class ThresholdImageProcessorKernel: CIImageProcessorKernel {
 }
 #endif
 
-
-//private func compare(_ old: UIImage, _ new: UIImage, precision: Float, perceptualPrecision: Float) -> Bool {
-//    guard let oldCgImage = old.cgImage else { return false }
-//    guard let newCgImage = new.cgImage else { return false }
-//    guard oldCgImage.width != 0 else { return false }
-//    guard newCgImage.width != 0 else { return false }
-//    guard oldCgImage.width == newCgImage.width else { return false }
-//    guard oldCgImage.height != 0 else { return false }
-//    guard newCgImage.height != 0 else { return false }
-//    guard oldCgImage.height == newCgImage.height else { return false }
-//
-//    let byteCount = imageContextBytesPerPixel * oldCgImage.width * oldCgImage.height
-//    var oldBytes = [UInt8](repeating: 0, count: byteCount)
-//    guard let oldContext = context(for: oldCgImage, data: &oldBytes) else { return false }
-//    guard let oldData = oldContext.data else { return false }
-//    if let newContext = context(for: newCgImage), let newData = newContext.data {
-//        if memcmp(oldData, newData, byteCount) == 0 { return true }
-//    }
-//    let newer = UIImage(data: new.pngData()!)!
-//    guard let newerCgImage = newer.cgImage else { return false }
-//    var newerBytes = [UInt8](repeating: 0, count: byteCount)
-//    guard let newerContext = context(for: newerCgImage, data: &newerBytes) else { return false }
-//    guard let newerData = newerContext.data else { return false }
-//    if memcmp(oldData, newerData, byteCount) == 0 { return true }
-//    if precision >= 1 && perceptualPrecision == 0 { return false }
-//    var differentPixelCount = 0
-//    let threshold = Int(round((1.0 - precision) * Float(byteCount)))
-//
-//    var byte = 0
-//    while byte < byteCount {
-//        if oldBytes[byte].diff(between: newerBytes[byte]) > perceptualPrecision {
-//            differentPixelCount += 1
-//            if differentPixelCount >= threshold {
-//                return false
-//            }
-//        }
-//        byte += 1
-//    }
-//    return true
-//}
-
-//extension UInt8 {
-//    func diff(between other: UInt8) -> UInt8 {
-//        if other > self {
-//            return other - self
-//        } else {
-//            return self - other
-//        }
-//    }
-//}
-
-
 import CoreImage
 import CoreImage.CIFilterBuiltins
-
-func computeImageDifference(image1: UIImage, image2: UIImage) -> UIImage? {
-    guard
-        let ciImage1 = CIImage(image: image1),
-        let ciImage2 = CIImage(image: image2)
-    else {
-        return nil
-    }
-
-    let filter = CIFilter.colorAbsoluteDifference()
-    filter.inputImage = ciImage1
-    filter.inputImage2 = ciImage2
-
-    guard let output = filter.outputImage else {
-        return nil
-    }
-
-    let context = CIContext()
-    guard let cgImage = context.createCGImage(output, from: output.extent) else {
-        return nil
-    }
-    return UIImage(cgImage: cgImage, scale: image1.scale, orientation: image1.imageOrientation)
-}
 
 private func context(for cgImage: CGImage, data: UnsafeMutableRawPointer? = nil) -> CGContext? {
     let bytesPerRow = cgImage.width * imageContextBytesPerPixel
@@ -355,11 +266,6 @@ private func context(for cgImage: CGImage, data: UnsafeMutableRawPointer? = nil)
   context.draw(cgImage, in: CGRect(x: 0, y: 0, width: cgImage.width, height: cgImage.height))
   return context
 }
-
-//private func diff(_ old: UIImage, _ new: UIImage, scale: CGFloat) -> UIImage {
-//    let resultImage = computeImageDifference(image1: old, image2: new)
-//    return resultImage ?? old
-//}
 
 private func diff(_ old: UIImage, _ new: UIImage, scale: CGFloat) -> UIImage {
     let width = max(old.size.width, new.size.width)

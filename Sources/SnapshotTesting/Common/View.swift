@@ -6,7 +6,7 @@ import SceneKit
 import SpriteKit
 #if os(iOS) || os(tvOS)
 import UIKit
-import SnapKit
+//import SnapKit
 #endif
 #if os(iOS) || os(macOS)
 import WebKit
@@ -1090,7 +1090,7 @@ func prepareView(
 //    viewController.view.setNeedsLayout()
 //    viewController.view.layoutIfNeeded()
 
-
+/*
     if let navController = viewController as? UINavigationController, let vc = navController.viewControllers.first {
 //        let safeArea = config.safeArea
 
@@ -1127,6 +1127,7 @@ func prepareView(
         viewController.view.layoutIfNeeded()
         vc.view.layoutIfNeeded()
     }
+*/
 
     if size.width == 0 || size.height == 0 {
         // Try to call sizeToFit() if the view still has invalid size
@@ -1161,7 +1162,7 @@ func snapshotView(
     if config.safeArea == .zero { view().frame.origin = .init(x: offscreen, y: offscreen) }
 
     return (view().snapshot ?? Async { callback in
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
             addImagesForRenderedViews(view()).sequence().run { views in
                 ViewImageConfig.global = config
 
@@ -1189,7 +1190,7 @@ func snapshotView(
                 views.forEach { $0.removeFromSuperview() }
                 view().frame = initialFrame
             }
-        }
+//        }
     }).map { dispose(); return $0 }
 }
 

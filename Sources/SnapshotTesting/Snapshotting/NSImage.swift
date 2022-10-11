@@ -56,43 +56,6 @@ private func NSImageJPEGRepresentation(_ image: NSImage) -> Data? {
     return rep.representation(using: .jpeg, properties: [:])
 }
 
-//private func compare(_ old: NSImage, _ new: NSImage, precision: Float, png: Bool) -> Bool {
-//  guard let oldCgImage = old.cgImage(forProposedRect: nil, context: nil, hints: nil) else { return false }
-//  guard let newCgImage = new.cgImage(forProposedRect: nil, context: nil, hints: nil) else { return false }
-//  guard oldCgImage.width != 0 else { return false }
-//  guard newCgImage.width != 0 else { return false }
-//  guard oldCgImage.width == newCgImage.width else { return false }
-//  guard oldCgImage.height != 0 else { return false }
-//  guard newCgImage.height != 0 else { return false }
-//  guard oldCgImage.height == newCgImage.height else { return false }
-//  guard let oldContext = context(for: oldCgImage) else { return false }
-//  guard let newContext = context(for: newCgImage) else { return false }
-//  guard let oldData = oldContext.data else { return false }
-//  guard let newData = newContext.data else { return false }
-//  let byteCount = oldContext.height * oldContext.bytesPerRow
-//  if memcmp(oldData, newData, byteCount) == 0 { return true }
-//  let newer = NSImage(data: png ? NSImagePNGRepresentation(new)! : NSImageJPEGRepresentation(new)!)!
-//  guard let newerCgImage = newer.cgImage(forProposedRect: nil, context: nil, hints: nil) else { return false }
-//  guard let newerContext = context(for: newerCgImage) else { return false }
-//  guard let newerData = newerContext.data else { return false }
-//  if memcmp(oldData, newerData, byteCount) == 0 { return true }
-//  if precision >= 1 { return false }
-//  let oldRep = NSBitmapImageRep(cgImage: oldCgImage)
-//  let newRep = NSBitmapImageRep(cgImage: newerCgImage)
-//  var differentPixelCount = 0
-//  let pixelCount = oldRep.pixelsWide * oldRep.pixelsHigh
-//  let threshold = (1 - precision) * Float(pixelCount)
-//  let p1: UnsafeMutablePointer<UInt8> = oldRep.bitmapData!
-//  let p2: UnsafeMutablePointer<UInt8> = newRep.bitmapData!
-//  for offset in 0 ..< pixelCount * 4 {
-//    if p1[offset] != p2[offset] {
-//        differentPixelCount += 1
-//    }
-//    if Float(differentPixelCount) > threshold { return false }
-//  }
-//  return true
-//}
-
 private func compare(_ old: NSImage, _ new: NSImage, precision: Float, perceptualPrecision: Float) -> String? {
     guard let oldCgImage = old.cgImage(forProposedRect: nil, context: nil, hints: nil) else {
         return "Reference image could not be loaded."
