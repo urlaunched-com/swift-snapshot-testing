@@ -1097,6 +1097,12 @@ func prepareView(
             vc.view.leadingAnchor.constraint(equalTo: navController.view.leadingAnchor),
             vc.view.trailingAnchor.constraint(equalTo: navController.view.trailingAnchor),
         ])
+
+        viewController.view.setNeedsLayout()
+        vc.view.setNeedsLayout()
+
+        viewController.view.layoutIfNeeded()
+        vc.view.layoutIfNeeded()
     }
 
 /*
