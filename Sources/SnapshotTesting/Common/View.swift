@@ -101,19 +101,19 @@ public struct ViewImageConfig {
         case .landscape:
             safeArea = .init(top: 0, left: 47, bottom: 21, right: 47)
 
-            if options.contains(.navigationBarInline) || options.contains(.navigationBarLargeTitle) {
-                safeArea.top += 32
-            }
+//            if options.contains(.navigationBarInline) || options.contains(.navigationBarLargeTitle) {
+//                safeArea.top += 32
+//            }
 
             size = .init(width: 844, height: 390)
         case .portrait:
             safeArea = .init(top: 47, left: 0, bottom: 34, right: 0)
 
-            if options.contains(.navigationBarInline) {
-                safeArea.top += 44
-            } else if options.contains(.navigationBarLargeTitle) {
-                safeArea.top += 44 + 52
-            }
+//            if options.contains(.navigationBarInline) {
+//                safeArea.top += 44
+//            } else if options.contains(.navigationBarLargeTitle) {
+//                safeArea.top += 44 + 52
+//            }
 
             size = .init(width: 390, height: 844)
         }
@@ -128,19 +128,19 @@ public struct ViewImageConfig {
         case .landscape:
             safeArea = .init(top: 0, left: 50, bottom: 21, right: 50)
 
-            if options.contains(.navigationBarInline) || options.contains(.navigationBarLargeTitle) {
-                safeArea.top += 32
-            }
+//            if options.contains(.navigationBarInline) || options.contains(.navigationBarLargeTitle) {
+//                safeArea.top += 32
+//            }
 
             size = .init(width: 812, height: 375)
         case .portrait:
             safeArea = .init(top: 50, left: 0, bottom: 34, right: 0)
 
-            if options.contains(.navigationBarInline) {
-                safeArea.top += 44
-            } else if options.contains(.navigationBarLargeTitle) {
-                safeArea.top += 44 + 52
-            }
+//            if options.contains(.navigationBarInline) {
+//                safeArea.top += 44
+//            } else if options.contains(.navigationBarLargeTitle) {
+//                safeArea.top += 44 + 52
+//            }
 
             size = .init(width: 375, height: 812)
         }
@@ -155,19 +155,19 @@ public struct ViewImageConfig {
         case .landscape:
             safeArea = .init(top: 0, left: 47, bottom: 21, right: 47)
 
-            if options.contains(.navigationBarInline) || options.contains(.navigationBarLargeTitle) {
-                safeArea.top += 32
-            }
+//            if options.contains(.navigationBarInline) || options.contains(.navigationBarLargeTitle) {
+//                safeArea.top += 32
+//            }
 
             size = .init(width: 926, height: 428)
         case .portrait:
             safeArea = .init(top: 47, left: 0, bottom: 34, right: 0)
 
-            if options.contains(.navigationBarInline) {
-                safeArea.top += 44
-            } else if options.contains(.navigationBarLargeTitle) {
-                safeArea.top += 44 + 52
-            }
+//            if options.contains(.navigationBarInline) {
+//                safeArea.top += 44
+//            } else if options.contains(.navigationBarLargeTitle) {
+//                safeArea.top += 44 + 52
+//            }
 
             size = .init(width: 428, height: 926)
         }
@@ -183,19 +183,19 @@ public struct ViewImageConfig {
         case .landscape:
             safeArea = .zero
 
-            if options.contains(.navigationBarInline) || options.contains(.navigationBarLargeTitle) {
-                safeArea.top += 32
-            }
+//            if options.contains(.navigationBarInline) || options.contains(.navigationBarLargeTitle) {
+//                safeArea.top += 32
+//            }
 
             size = .init(width: 568, height: 320)
         case .portrait:
             safeArea = .init(top: 20, left: 0, bottom: 0, right: 0)
 
-            if options.contains(.navigationBarInline) {
-                safeArea.top += 44
-            } else if options.contains(.navigationBarLargeTitle) {
-                safeArea.top += 44 + 52
-            }
+//            if options.contains(.navigationBarInline) {
+//                safeArea.top += 44
+//            } else if options.contains(.navigationBarLargeTitle) {
+//                safeArea.top += 44 + 52
+//            }
 
             size = .init(width: 320, height: 568)
         }
@@ -210,19 +210,19 @@ public struct ViewImageConfig {
         case .landscape:
             safeArea = .zero
 
-            if options.contains(.navigationBarInline) || options.contains(.navigationBarLargeTitle) {
-                safeArea.top += 32
-            }
+//            if options.contains(.navigationBarInline) || options.contains(.navigationBarLargeTitle) {
+//                safeArea.top += 32
+//            }
 
             size = .init(width: 667, height: 375)
         case .portrait:
             safeArea = .init(top: 20, left: 0, bottom: 0, right: 0)
 
-            if options.contains(.navigationBarInline) {
-                safeArea.top += 44
-            } else if options.contains(.navigationBarLargeTitle) {
-                safeArea.top += 44 + 52
-            }
+//            if options.contains(.navigationBarInline) {
+//                safeArea.top += 44
+//            } else if options.contains(.navigationBarLargeTitle) {
+//                safeArea.top += 44 + 52
+//            }
 
             size = .init(width: 375, height: 667)
         }
@@ -238,19 +238,19 @@ public struct ViewImageConfig {
         case .landscape:
             safeArea = .zero
 
-            if options.contains(.navigationBarInline) || options.contains(.navigationBarLargeTitle) {
-                safeArea.top += 32
-            }
+//            if options.contains(.navigationBarInline) || options.contains(.navigationBarLargeTitle) {
+//                safeArea.top += 32
+//            }
 
             size = .init(width: 667, height: 375)
         case .portrait:
             safeArea = .init(top: 20, left: 0, bottom: 0, right: 0)
 
-            if options.contains(.navigationBarInline) {
-                safeArea.top += 44
-            } else if options.contains(.navigationBarLargeTitle) {
-                safeArea.top += 44 + 52
-            }
+//            if options.contains(.navigationBarInline) {
+//                safeArea.top += 44
+//            } else if options.contains(.navigationBarLargeTitle) {
+//                safeArea.top += 44 + 52
+//            }
 
             size = .init(width: 375, height: 667)
         }
@@ -266,19 +266,19 @@ public struct ViewImageConfig {
         case .landscape:
             safeArea = .zero
 
-            if options.contains(.navigationBarInline) || options.contains(.navigationBarLargeTitle) {
-                safeArea.top += 32
-            }
+//            if options.contains(.navigationBarInline) || options.contains(.navigationBarLargeTitle) {
+//                safeArea.top += 32
+//            }
 
             size = .init(width: 736, height: 414)
         case .portrait:
             safeArea = .init(top: 20, left: 0, bottom: 0, right: 0)
 
-            if options.contains(.navigationBarInline) {
-                safeArea.top += 44
-            } else if options.contains(.navigationBarLargeTitle) {
-                safeArea.top += 44 + 52
-            }
+//            if options.contains(.navigationBarInline) {
+//                safeArea.top += 44
+//            } else if options.contains(.navigationBarLargeTitle) {
+//                safeArea.top += 44 + 52
+//            }
 
             size = .init(width: 414, height: 736)
         }
@@ -294,19 +294,19 @@ public struct ViewImageConfig {
         case .landscape:
             safeArea = .init(top: 0, left: 44, bottom: 24, right: 44)
 
-            if options.contains(.navigationBarInline) || options.contains(.navigationBarLargeTitle) {
-                safeArea.top += 32
-            }
+//            if options.contains(.navigationBarInline) || options.contains(.navigationBarLargeTitle) {
+//                safeArea.top += 32
+//            }
 
             size = .init(width: 812, height: 375)
         case .portrait:
             safeArea = .init(top: 44, left: 0, bottom: 34, right: 0)
 
-            if options.contains(.navigationBarInline) {
-                safeArea.top += 44
-            } else if options.contains(.navigationBarLargeTitle) {
-                safeArea.top += 44 + 52
-            }
+//            if options.contains(.navigationBarInline) {
+//                safeArea.top += 44
+//            } else if options.contains(.navigationBarLargeTitle) {
+//                safeArea.top += 44 + 52
+//            }
 
             size = .init(width: 375, height: 812)
         }
@@ -322,19 +322,19 @@ public struct ViewImageConfig {
         case .landscape:
             safeArea = .init(top: 0, left: 44, bottom: 24, right: 44)
 
-            if options.contains(.navigationBarInline) || options.contains(.navigationBarLargeTitle) {
-                safeArea.top += 32
-            }
+//            if options.contains(.navigationBarInline) || options.contains(.navigationBarLargeTitle) {
+//                safeArea.top += 32
+//            }
 
             size = .init(width: 896, height: 414)
         case .portrait:
             safeArea = .init(top: 44, left: 0, bottom: 34, right: 0)
 
-            if options.contains(.navigationBarInline) {
-                safeArea.top += 44
-            } else if options.contains(.navigationBarLargeTitle) {
-                safeArea.top += 44 + 52
-            }
+//            if options.contains(.navigationBarInline) {
+//                safeArea.top += 44
+//            } else if options.contains(.navigationBarLargeTitle) {
+//                safeArea.top += 44 + 52
+//            }
 
             size = .init(width: 414, height: 896)
         }
@@ -352,19 +352,19 @@ public struct ViewImageConfig {
         case .landscape:
             safeArea = .init(top: 0, left: 44, bottom: 24, right: 44)
 
-            if options.contains(.navigationBarInline) || options.contains(.navigationBarLargeTitle) {
-                safeArea.top += 32
-            }
+//            if options.contains(.navigationBarInline) || options.contains(.navigationBarLargeTitle) {
+//                safeArea.top += 32
+//            }
 
             size = .init(width: 896, height: 414)
         case .portrait:
             safeArea = .init(top: 44, left: 0, bottom: 34, right: 0)
 
-            if options.contains(.navigationBarInline) {
-                safeArea.top += 44
-            } else if options.contains(.navigationBarLargeTitle) {
-                safeArea.top += 44 + 52
-            }
+//            if options.contains(.navigationBarInline) {
+//                safeArea.top += 44
+//            } else if options.contains(.navigationBarLargeTitle) {
+//                safeArea.top += 44 + 52
+//            }
 
             size = .init(width: 414, height: 896)
         }
@@ -1206,6 +1206,56 @@ func renderer(bounds: CGRect, for traits: UITraitCollection) -> UIGraphicsImageR
 }
 
 private func add(traits: UITraitCollection, viewController: UIViewController, to window: UIWindow) -> () -> Void {
+    let rootViewController: UIViewController
+    if viewController != window.rootViewController {
+        rootViewController = UIViewController()
+        rootViewController.view.backgroundColor = .clear
+        rootViewController.view.frame = window.frame
+        rootViewController.view.translatesAutoresizingMaskIntoConstraints =
+        viewController.view.translatesAutoresizingMaskIntoConstraints
+        rootViewController.preferredContentSize = rootViewController.view.frame.size
+        viewController.view.frame = rootViewController.view.frame
+        rootViewController.view.addSubview(viewController.view)
+        if viewController.view.translatesAutoresizingMaskIntoConstraints {
+            viewController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        } else {
+            NSLayoutConstraint.activate([
+                viewController.view.topAnchor.constraint(equalTo: rootViewController.view.topAnchor),
+                viewController.view.bottomAnchor.constraint(equalTo: rootViewController.view.bottomAnchor),
+                viewController.view.leadingAnchor.constraint(equalTo: rootViewController.view.leadingAnchor),
+                viewController.view.trailingAnchor.constraint(equalTo: rootViewController.view.trailingAnchor),
+            ])
+        }
+        rootViewController.addChild(viewController)
+    } else {
+        rootViewController = viewController
+    }
+    rootViewController.setOverrideTraitCollection(traits, forChild: viewController)
+    viewController.didMove(toParent: rootViewController)
+    window.rootViewController = rootViewController
+    rootViewController.beginAppearanceTransition(true, animated: false)
+    rootViewController.endAppearanceTransition()
+    rootViewController.view.setNeedsLayout()
+    rootViewController.view.layoutIfNeeded()
+    viewController.view.setNeedsLayout()
+    viewController.view.layoutIfNeeded()
+
+    return {
+        rootViewController.beginAppearanceTransition(false, animated: false)
+        viewController.willMove(toParent: nil)
+        viewController.view.removeFromSuperview()
+        viewController.removeFromParent()
+        viewController.didMove(toParent: nil)
+        rootViewController.endAppearanceTransition()
+        window.rootViewController = nil
+    }
+}
+
+/*
+//Prev
+
+
+private func add(traits: UITraitCollection, viewController: UIViewController, to window: UIWindow) -> () -> Void {
     window.rootViewController = viewController
 
     viewController.beginAppearanceTransition(true, animated: false)
@@ -1267,6 +1317,7 @@ private func add(traits: UITraitCollection, viewController: UIViewController, to
         window.rootViewController = nil
     }*/
 }
+ */
 
 /*
 private func add(traits: UITraitCollection, viewController: UIViewController, to window: UIWindow) -> () -> Void {
