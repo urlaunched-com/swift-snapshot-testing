@@ -1090,20 +1090,20 @@ func prepareView(
 //    viewController.view.setNeedsLayout()
 //    viewController.view.layoutIfNeeded()
 
-//    if let navController = viewController as? UINavigationController, let vc = navController.viewControllers.first {
-//        NSLayoutConstraint.activate([
-//            vc.view.topAnchor.constraint(equalTo: navController.view.topAnchor),
-//            vc.view.bottomAnchor.constraint(equalTo: navController.view.bottomAnchor),
-//            vc.view.leadingAnchor.constraint(equalTo: navController.view.leadingAnchor),
-//            vc.view.trailingAnchor.constraint(equalTo: navController.view.trailingAnchor),
-//        ])
-//
-//        viewController.view.setNeedsLayout()
-//        vc.view.setNeedsLayout()
-//
-//        viewController.view.layoutIfNeeded()
-//        vc.view.layoutIfNeeded()
-//    }
+    if let navController = viewController as? UINavigationController, let vc = navController.viewControllers.first {
+        NSLayoutConstraint.activate([
+            vc.view.topAnchor.constraint(equalTo: navController.view.topAnchor),
+            vc.view.bottomAnchor.constraint(equalTo: navController.view.bottomAnchor),
+            vc.view.leadingAnchor.constraint(equalTo: navController.view.leadingAnchor),
+            vc.view.trailingAnchor.constraint(equalTo: navController.view.trailingAnchor),
+        ])
+
+        viewController.view.setNeedsLayout()
+        vc.view.setNeedsLayout()
+
+        viewController.view.layoutIfNeeded()
+        vc.view.layoutIfNeeded()
+    }
 
 /*
     if let navController = viewController as? UINavigationController, let vc = navController.viewControllers.first {
@@ -1178,21 +1178,24 @@ func snapshotView(
 
     return (view().snapshot ?? Async { callback in
 //        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-            addImagesForRenderedViews(view()).sequence().run { views in
+            let viewToRender = view()
+            addImagesForRenderedViews(viewToRender).sequence().run { views in
                 ViewImageConfig.global = config
 
-                let old = renderer(bounds: view().bounds, for: traits).image { ctx in
+                let old = renderer(bounds: viewToRender.bounds, for: traits).image { ctx in
+
+
                     switch renderingMode {
                     case .snapshot(let afterScreenUpdates):
-                        view()
+                        viewToRender
                             .snapshotView(afterScreenUpdates: afterScreenUpdates)?
-                            .drawHierarchy(in: view().bounds, afterScreenUpdates: afterScreenUpdates)
+                            .drawHierarchy(in: viewToRender.bounds, afterScreenUpdates: afterScreenUpdates)
 
                     case .drawHierarchy(let afterScreenUpdates):
-                        view().drawHierarchy(in: view().bounds, afterScreenUpdates: afterScreenUpdates)
+                        viewToRender.drawHierarchy(in: viewToRender.bounds, afterScreenUpdates: afterScreenUpdates)
 
                     case .renderInContext:
-                        view().layer.render(in: ctx.cgContext)
+                        viewToRender.layer.render(in: ctx.cgContext)
                     }
                 }
 
@@ -1204,9 +1207,10 @@ func snapshotView(
                 )
                 views.forEach { $0.removeFromSuperview() }
                 view().frame = initialFrame
+                dispose();
             }
 //        }
-    }).map { dispose(); return $0 }
+    }).map { $0 }
 }
 
 private let offscreen: CGFloat = 10_000
