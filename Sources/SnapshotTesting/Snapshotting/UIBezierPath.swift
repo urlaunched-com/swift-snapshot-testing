@@ -4,14 +4,14 @@ import UIKit
 extension Snapshotting where Value == UIBezierPath, Format == UIImage {
     /// A snapshot strategy for comparing bezier paths based on pixel equality.
     public static var image: Snapshotting {
-        return .image(png: true, subpixelThreshold: 0)
+        return .image(png: true, perceptualPrecision: 0)
     }
 
     /// A snapshot strategy for comparing bezier paths based on pixel equality.
     ///
     /// - Parameter precision: The percentage of pixels that must match.
-    public static func image(precision: Float = 1, scale: CGFloat = 1, png: Bool, subpixelThreshold: UInt8 = 0) -> Snapshotting {
-        return SimplySnapshotting.image(precision: precision, scale: scale, png: png, subpixelThreshold: subpixelThreshold).pullback { path in
+    public static func image(precision: Float = 1, scale: CGFloat = 1, png: Bool, perceptualPrecision: Float = 0) -> Snapshotting {
+        return SimplySnapshotting.image(precision: precision, scale: scale, png: png, perceptualPrecision: perceptualPrecision).pullback { path in
             let bounds = path.bounds
             let format: UIGraphicsImageRendererFormat
             if #available(iOS 11.0, tvOS 11.0, *) {
