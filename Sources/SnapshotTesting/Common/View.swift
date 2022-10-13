@@ -1114,9 +1114,17 @@ func prepareView(
 
         vc.view.snp.makeConstraints { make in
             make.top.equalTo(config.safeArea.top)
-            make.bottom.equalTo(config.safeArea.bottom)
+//            make.bottom.equalTo(config.safeArea.bottom)
             make.leading.equalTo(config.safeArea.left)
             make.trailing.equalTo(config.safeArea.right)
+
+            if let size = config.size {
+                make.height.equalTo(size.height - (config.safeArea.top + config.safeArea.bottom))
+            } else {
+                make.bottom.equalTo(config.safeArea.bottom)
+            }
+
+
 //            make.top.equalTo(navController.view.safeAreaLayoutGuide)
 //            make.bottom.equalTo(navController.view.safeAreaLayoutGuide)
 //            make.leading.equalTo(navController.view.safeAreaLayoutGuide)
