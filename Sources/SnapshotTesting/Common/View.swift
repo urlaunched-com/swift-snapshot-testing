@@ -1189,30 +1189,32 @@ func snapshotView(
         ViewImageConfig.global = config
         let viewToRender = view()
 
-        let old = renderer(bounds: viewToRender.bounds, for: traits).image { ctx in
-            ViewImageConfig.global = config
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            let old = renderer(bounds: viewToRender.bounds, for: traits).image { ctx in
+                ViewImageConfig.global = config
 
-            switch renderingMode {
-            case .snapshot(let afterScreenUpdates):
-                viewToRender
-                    .snapshotView(afterScreenUpdates: afterScreenUpdates)?
-                    .drawHierarchy(in: viewToRender.bounds, afterScreenUpdates: afterScreenUpdates)
+                switch renderingMode {
+                case .snapshot(let afterScreenUpdates):
+                    viewToRender
+                        .snapshotView(afterScreenUpdates: afterScreenUpdates)?
+                        .drawHierarchy(in: viewToRender.bounds, afterScreenUpdates: afterScreenUpdates)
 
-            case .drawHierarchy(let afterScreenUpdates):
-                viewToRender.drawHierarchy(in: viewToRender.bounds, afterScreenUpdates: afterScreenUpdates)
+                case .drawHierarchy(let afterScreenUpdates):
+                    viewToRender.drawHierarchy(in: viewToRender.bounds, afterScreenUpdates: afterScreenUpdates)
 
-            case .renderInContext:
-                viewToRender.layer.render(in: ctx.cgContext)
+                case .renderInContext:
+                    viewToRender.layer.render(in: ctx.cgContext)
+                }
             }
-        }
 
-        var newImage: UIImage? = nil
-        if let oldCgImage = old.cgImage, let space = CGColorSpace(name: CGColorSpace.sRGB), let copy = oldCgImage.copy(colorSpace: space) {
-            newImage = UIImage(cgImage: copy)
-        }
+            var newImage: UIImage? = nil
+            if let oldCgImage = old.cgImage, let space = CGColorSpace(name: CGColorSpace.sRGB), let copy = oldCgImage.copy(colorSpace: space) {
+                newImage = UIImage(cgImage: copy)
+            }
 
-        callback(newImage ?? old)
-        dispose();
+            callback(newImage ?? old)
+            dispose();
+        }
     }
 }
 
