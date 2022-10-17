@@ -1059,27 +1059,27 @@ func prepareView(
      */
 
 
-    if let navController = viewController as? UINavigationController, let vc = navController.viewControllers.first {
-        vc.view.snp.makeConstraints { make in
-            make.top.equalTo(config.safeArea.top)
-            make.leading.equalTo(config.safeArea.left)
-            make.trailing.equalTo(config.safeArea.right)
-
-            if let size = config.size {
-                make.height.equalTo(size.height - (config.safeArea.top + config.safeArea.bottom))
-            } else {
-                make.bottom.equalTo(config.safeArea.bottom)
-            }
-        }
-
-        viewController.view.setNeedsLayout()
-        vc.view.setNeedsLayout()
-
-        viewController.view.layoutIfNeeded()
-        vc.view.layoutIfNeeded()
-    } else {
-        print("")
-    }
+//    if let navController = viewController as? UINavigationController, let vc = navController.viewControllers.first {
+//        vc.view.snp.makeConstraints { make in
+//            make.top.equalTo(config.safeArea.top)
+//            make.leading.equalTo(config.safeArea.left)
+//            make.trailing.equalTo(config.safeArea.right)
+//
+//            if let size = config.size {
+//                make.height.equalTo(size.height - (config.safeArea.top + config.safeArea.bottom))
+//            } else {
+//                make.bottom.equalTo(config.safeArea.bottom)
+//            }
+//        }
+//
+//        viewController.view.setNeedsLayout()
+//        vc.view.setNeedsLayout()
+//
+//        viewController.view.layoutIfNeeded()
+//        vc.view.layoutIfNeeded()
+//    } else {
+//        print("")
+//    }
 
 
     if size.width == 0 || size.height == 0 {
@@ -1116,7 +1116,7 @@ func snapshotView(
         let viewToRender = view()
 //        viewToRender.setNeedsLayout()
 //        viewToRender.layoutIfNeeded()
-        
+
         DispatchQueue.main.async {
             let old = renderer(bounds: viewToRender.bounds, for: traits).image { ctx in
                 ViewImageConfig.global = config
