@@ -1038,57 +1038,9 @@ func prepareView(
             viewController: viewController,
             interfaceStyle: interfaceStyle
         )
-//        window.makeKeyAndVisible()
     }
 
-//    viewController.view.frame = CGRect(
-//        origin: CGPoint(x: config.safeArea.left, y: config.safeArea.top),
-//        size: CGSize(
-//            width: size.width - (config.safeArea.left + config.safeArea.right),
-//            height: size.height - (config.safeArea.top + config.safeArea.bottom)
-//        )
-//    )
-//    viewController.view.translatesAutoresizingMaskIntoConstraints = false
-
     let dispose = add(traits: config.traits, viewController: viewController, to: window, size: size)
-
-//    viewController.view.translatesAutoresizingMaskIntoConstraints = false
-//
-//    viewController.view.topAnchor.constraint(equalTo: viewController.parent!.view.topAnchor, constant: config.safeArea.top).isActive = true
-//    viewController.view.leadingAnchor.constraint(equalTo: viewController.parent!.view.leadingAnchor, constant: config.safeArea.left).isActive = true
-//    viewController.view.trailingAnchor.constraint(equalTo: viewController.parent!.view.trailingAnchor, constant: config.safeArea.right).isActive = true
-//    viewController.view.bottomAnchor.constraint(equalTo: viewController.parent!.view.bottomAnchor, constant: config.safeArea.bottom).isActive = true
-//
-//    viewController.parent!.view.setNeedsLayout()
-//    viewController.view.setNeedsLayout()
-
-//    viewController.parent!.view.layoutSubviews()
-//    viewController.view.layoutSubviews()
-//
-//    viewController.view.frame = CGRect(
-//        origin: CGPoint(x: config.safeArea.left, y: config.safeArea.top),
-//        size: CGSize(
-//            width: size.width - (config.safeArea.left + config.safeArea.right),
-//            height: size.height - (config.safeArea.top + config.safeArea.bottom)
-//        )
-//    )
-
-//    viewController.parent!.view
-
-//    viewController.view. constraintEqualToAnchor(label.trailingAnchor, constant: 8.0).isActive = true
-
-
-//    NSLayoutConstraint.activate([
-//        viewController.view.topAnchor.constraint(equalTo: viewController.view.superview!.topAnchor, constant: config.safeArea.top),
-//        viewController.view.bottomAnchor.constraint(equalTo: viewController.view.superview!.bottomAnchor, constant: config.safeArea.bottom),
-//        viewController.view.leadingAnchor.constraint(equalTo: viewController.view.superview!.leadingAnchor, constant: config.safeArea.left),
-//        viewController.view.trailingAnchor.constraint(equalTo: viewController.view.superview!.trailingAnchor, constant: config.safeArea.right)
-//    ])
-
-
-//    viewController.view.setNeedsLayout()
-//    viewController.view.layoutIfNeeded()
-
     /*
     if let navController = viewController as? UINavigationController, let vc = navController.viewControllers.first {
         NSLayoutConstraint.activate([
@@ -1164,31 +1116,33 @@ func snapshotView(
         let viewToRender = view()
 //        viewToRender.setNeedsLayout()
 //        viewToRender.layoutIfNeeded()
+        
+        DispatchQueue.main.async {
+            let old = renderer(bounds: viewToRender.bounds, for: traits).image { ctx in
+                ViewImageConfig.global = config
 
-        let old = renderer(bounds: viewToRender.bounds, for: traits).image { ctx in
-            ViewImageConfig.global = config
+                switch renderingMode {
+                case .snapshot(let afterScreenUpdates):
+                    viewToRender
+                        .snapshotView(afterScreenUpdates: afterScreenUpdates)?
+                        .drawHierarchy(in: viewToRender.bounds, afterScreenUpdates: afterScreenUpdates)
 
-            switch renderingMode {
-            case .snapshot(let afterScreenUpdates):
-                viewToRender
-                    .snapshotView(afterScreenUpdates: afterScreenUpdates)?
-                    .drawHierarchy(in: viewToRender.bounds, afterScreenUpdates: afterScreenUpdates)
+                case .drawHierarchy(let afterScreenUpdates):
+                    viewToRender.drawHierarchy(in: viewToRender.bounds, afterScreenUpdates: afterScreenUpdates)
 
-            case .drawHierarchy(let afterScreenUpdates):
-                viewToRender.drawHierarchy(in: viewToRender.bounds, afterScreenUpdates: afterScreenUpdates)
-
-            case .renderInContext:
-                viewToRender.layer.render(in: ctx.cgContext)
+                case .renderInContext:
+                    viewToRender.layer.render(in: ctx.cgContext)
+                }
             }
-        }
 
-        var newImage: UIImage? = nil
-        if let oldCgImage = old.cgImage, let space = CGColorSpace(name: CGColorSpace.sRGB), let copy = oldCgImage.copy(colorSpace: space) {
-            newImage = UIImage(cgImage: copy)
-        }
+            var newImage: UIImage? = nil
+            if let oldCgImage = old.cgImage, let space = CGColorSpace(name: CGColorSpace.sRGB), let copy = oldCgImage.copy(colorSpace: space) {
+                newImage = UIImage(cgImage: copy)
+            }
 
-        callback(newImage ?? old)
-        dispose();
+            callback(newImage ?? old)
+            dispose()
+        }
     }
 }
 
