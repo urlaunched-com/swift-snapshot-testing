@@ -1050,7 +1050,7 @@ func prepareView(
 //    )
 //    viewController.view.translatesAutoresizingMaskIntoConstraints = false
 
-    let dispose = add(traits: config.traits, viewController: viewController, to: window)
+    let dispose = add(traits: config.traits, viewController: viewController, to: window, size: size)
 
 //    viewController.view.translatesAutoresizingMaskIntoConstraints = false
 //
@@ -1108,11 +1108,8 @@ func prepareView(
 
 
     if let navController = viewController as? UINavigationController, let vc = navController.viewControllers.first {
-//        let safeArea = config.safeArea
-
         vc.view.snp.makeConstraints { make in
             make.top.equalTo(config.safeArea.top)
-//            make.bottom.equalTo(config.safeArea.bottom)
             make.leading.equalTo(config.safeArea.left)
             make.trailing.equalTo(config.safeArea.right)
 
@@ -1121,33 +1118,7 @@ func prepareView(
             } else {
                 make.bottom.equalTo(config.safeArea.bottom)
             }
-
-
-//            make.top.equalTo(navController.view.safeAreaLayoutGuide)
-//            make.bottom.equalTo(navController.view.safeAreaLayoutGuide)
-//            make.leading.equalTo(navController.view.safeAreaLayoutGuide)
-//            make.trailing.equalTo(navController.view.safeAreaLayoutGuide)
         }
-
-
-//        vc.view.translatesAutoresizingMaskIntoConstraints = false
-//
-//        NSLayoutConstraint.activate([
-//            vc.view.topAnchor.constraint(equalTo: navController.view.topAnchor, constant: 250), //safeArea.top),
-//            vc.view.bottomAnchor.constraint(equalTo: navController.view.bottomAnchor, constant: safeArea.bottom),
-//            vc.view.leadingAnchor.constraint(equalTo: navController.view.leadingAnchor, constant: safeArea.left),
-//            vc.view.trailingAnchor.constraint(equalTo: navController.view.trailingAnchor, constant: safeArea.right),
-//        ])
-
-//        if let size = config.size {
-//            viewController.view.translatesAutoresizingMaskIntoConstraints = false
-//            NSLayoutConstraint.activate([
-//                viewController.view.widthAnchor.constraint(equalToConstant: size.width),
-//                viewController.view.heightAnchor.constraint(equalToConstant: size.height),
-//                viewController.view.centerXAnchor.constraint(equalTo: viewController.view.superview!.centerXAnchor),
-//                viewController.view.centerYAnchor.constraint(equalTo: viewController.view.superview!.centerYAnchor)
-//            ])
-//        }
 
         viewController.view.setNeedsLayout()
         vc.view.setNeedsLayout()
@@ -1191,8 +1162,8 @@ func snapshotView(
     return Async { callback in
         ViewImageConfig.global = config
         let viewToRender = view()
-        viewToRender.setNeedsLayout()
-        viewToRender.layoutIfNeeded()
+//        viewToRender.setNeedsLayout()
+//        viewToRender.layoutIfNeeded()
 
         let old = renderer(bounds: viewToRender.bounds, for: traits).image { ctx in
             ViewImageConfig.global = config
@@ -1284,8 +1255,9 @@ private func add(traits: UITraitCollection, viewController: UIViewController, to
 //Prev
 
 
-private func add(traits: UITraitCollection, viewController: UIViewController, to window: UIWindow) -> () -> Void {
+private func add(traits: UITraitCollection, viewController: UIViewController, to window: UIWindow, size: CGSize) -> () -> Void {
     window.rootViewController = viewController
+    window.frame.size = size
 
     viewController.beginAppearanceTransition(true, animated: false)
     viewController.endAppearanceTransition()
