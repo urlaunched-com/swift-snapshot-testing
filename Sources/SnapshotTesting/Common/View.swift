@@ -73,6 +73,7 @@ public struct ViewImageConfig {
     public var safeArea: UIEdgeInsets
     public var size: CGSize?
     public var traits: UITraitCollection
+    public var nativeScale: CGFloat
 
     public mutating func setInterfaceStyle(_ style: UIUserInterfaceStyle) {
         traits = .init(traitsFrom: [traits, .init(userInterfaceStyle: style)])
@@ -82,6 +83,7 @@ public struct ViewImageConfig {
         safeArea: UIEdgeInsets = .zero,
         size: CGSize? = nil,
         traits: UITraitCollection = .init(),
+        nativeScale: CGFloat? = nil,
         name: String,
         options: Options
     ) {
@@ -90,6 +92,7 @@ public struct ViewImageConfig {
         self.traits = traits
         self.name = name
         self.options = options
+        self.nativeScale = nativeScale ?? traits.displayScale
     }
 
 #if os(iOS)
@@ -145,7 +148,7 @@ public struct ViewImageConfig {
 
             size = .init(width: 375, height: 812)
         }
-        return .init(safeArea: safeArea, size: size, traits: .iPhone13Mini(orientation), name: Name.iPhone13Mini.rawValue + "_\(orientation)", options: options)
+        return .init(safeArea: safeArea, size: size, traits: .iPhone13Mini(orientation), nativeScale: 2.88, name: Name.iPhone13Mini.rawValue + "_\(orientation)", options: options)
     }
 
     public static let iPhone13ProMax = ViewImageConfig.iPhone13ProMax()
