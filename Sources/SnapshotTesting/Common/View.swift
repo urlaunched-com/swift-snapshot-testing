@@ -6,11 +6,9 @@ import SceneKit
 import SpriteKit
 #if os(iOS) || os(tvOS)
 import UIKit
-//import SnapKit
 #endif
 #if os(iOS) || os(macOS)
 import WebKit
-import SnapKit
 #endif
 
 #if os(iOS) || os(tvOS)
