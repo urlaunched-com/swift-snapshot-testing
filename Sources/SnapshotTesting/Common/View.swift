@@ -6,10 +6,11 @@ import SceneKit
 import SpriteKit
 #if os(iOS) || os(tvOS)
 import UIKit
-import SnapKit
+//import SnapKit
 #endif
 #if os(iOS) || os(macOS)
 import WebKit
+import SnapKit
 #endif
 
 #if os(iOS) || os(tvOS)
@@ -72,6 +73,7 @@ public struct ViewImageConfig {
     public var safeArea: UIEdgeInsets
     public var size: CGSize?
     public var traits: UITraitCollection
+    public var nativeScale: CGFloat
 
     public mutating func setInterfaceStyle(_ style: UIUserInterfaceStyle) {
         traits = .init(traitsFrom: [traits, .init(userInterfaceStyle: style)])
@@ -81,6 +83,7 @@ public struct ViewImageConfig {
         safeArea: UIEdgeInsets = .zero,
         size: CGSize? = nil,
         traits: UITraitCollection = .init(),
+        nativeScale: CGFloat? = nil,
         name: String,
         options: Options
     ) {
@@ -89,6 +92,7 @@ public struct ViewImageConfig {
         self.traits = traits
         self.name = name
         self.options = options
+        self.nativeScale = nativeScale ?? traits.displayScale
     }
 
 #if os(iOS)
@@ -144,7 +148,7 @@ public struct ViewImageConfig {
 
             size = .init(width: 375, height: 812)
         }
-        return .init(safeArea: safeArea, size: size, traits: .iPhone13Mini(orientation), name: Name.iPhone13Mini.rawValue + "_\(orientation)", options: options)
+        return .init(safeArea: safeArea, size: size, traits: .iPhone13Mini(orientation), nativeScale: 2.88, name: Name.iPhone13Mini.rawValue + "_\(orientation)", options: options)
     }
 
     public static let iPhone13ProMax = ViewImageConfig.iPhone13ProMax()
@@ -918,11 +922,6 @@ extension View {
 #endif
             return perform()
         }
-#if (os(iOS) && !targetEnvironment(macCatalyst)) || os(tvOS)
-        if let glkView = self as? GLKView {
-            return Async(value: inWindow { glkView.snapshot })
-        }
-#endif
         if let scnView = self as? SCNView {
             return Async(value: inWindow { scnView.snapshot() })
         } else if let skView = self as? SKView {
@@ -1039,94 +1038,9 @@ func prepareView(
             viewController: viewController,
             interfaceStyle: interfaceStyle
         )
-//        window.makeKeyAndVisible()
     }
 
-//    viewController.view.frame = CGRect(
-//        origin: CGPoint(x: config.safeArea.left, y: config.safeArea.top),
-//        size: CGSize(
-//            width: size.width - (config.safeArea.left + config.safeArea.right),
-//            height: size.height - (config.safeArea.top + config.safeArea.bottom)
-//        )
-//    )
-//    viewController.view.translatesAutoresizingMaskIntoConstraints = false
-
-    let dispose = add(traits: config.traits, viewController: viewController, to: window)
-
-//    viewController.view.translatesAutoresizingMaskIntoConstraints = false
-//
-//    viewController.view.topAnchor.constraint(equalTo: viewController.parent!.view.topAnchor, constant: config.safeArea.top).isActive = true
-//    viewController.view.leadingAnchor.constraint(equalTo: viewController.parent!.view.leadingAnchor, constant: config.safeArea.left).isActive = true
-//    viewController.view.trailingAnchor.constraint(equalTo: viewController.parent!.view.trailingAnchor, constant: config.safeArea.right).isActive = true
-//    viewController.view.bottomAnchor.constraint(equalTo: viewController.parent!.view.bottomAnchor, constant: config.safeArea.bottom).isActive = true
-//
-//    viewController.parent!.view.setNeedsLayout()
-//    viewController.view.setNeedsLayout()
-
-//    viewController.parent!.view.layoutSubviews()
-//    viewController.view.layoutSubviews()
-//
-//    viewController.view.frame = CGRect(
-//        origin: CGPoint(x: config.safeArea.left, y: config.safeArea.top),
-//        size: CGSize(
-//            width: size.width - (config.safeArea.left + config.safeArea.right),
-//            height: size.height - (config.safeArea.top + config.safeArea.bottom)
-//        )
-//    )
-
-//    viewController.parent!.view
-
-//    viewController.view. constraintEqualToAnchor(label.trailingAnchor, constant: 8.0).isActive = true
-
-
-//    NSLayoutConstraint.activate([
-//        viewController.view.topAnchor.constraint(equalTo: viewController.view.superview!.topAnchor, constant: config.safeArea.top),
-//        viewController.view.bottomAnchor.constraint(equalTo: viewController.view.superview!.bottomAnchor, constant: config.safeArea.bottom),
-//        viewController.view.leadingAnchor.constraint(equalTo: viewController.view.superview!.leadingAnchor, constant: config.safeArea.left),
-//        viewController.view.trailingAnchor.constraint(equalTo: viewController.view.superview!.trailingAnchor, constant: config.safeArea.right)
-//    ])
-
-
-//    viewController.view.setNeedsLayout()
-//    viewController.view.layoutIfNeeded()
-
-
-    if let navController = viewController as? UINavigationController, let vc = navController.viewControllers.first {
-//        let safeArea = config.safeArea
-
-        vc.view.snp.makeConstraints { make in
-            make.top.equalTo(navController.view.safeAreaLayoutGuide)
-            make.bottom.equalTo(navController.view.safeAreaLayoutGuide)
-            make.leading.equalTo(navController.view.safeAreaLayoutGuide)
-            make.trailing.equalTo(navController.view.safeAreaLayoutGuide)
-        }
-
-
-//        vc.view.translatesAutoresizingMaskIntoConstraints = false
-//
-//        NSLayoutConstraint.activate([
-//            vc.view.topAnchor.constraint(equalTo: navController.view.topAnchor, constant: 250), //safeArea.top),
-//            vc.view.bottomAnchor.constraint(equalTo: navController.view.bottomAnchor, constant: safeArea.bottom),
-//            vc.view.leadingAnchor.constraint(equalTo: navController.view.leadingAnchor, constant: safeArea.left),
-//            vc.view.trailingAnchor.constraint(equalTo: navController.view.trailingAnchor, constant: safeArea.right),
-//        ])
-
-//        if let size = config.size {
-//            viewController.view.translatesAutoresizingMaskIntoConstraints = false
-//            NSLayoutConstraint.activate([
-//                viewController.view.widthAnchor.constraint(equalToConstant: size.width),
-//                viewController.view.heightAnchor.constraint(equalToConstant: size.height),
-//                viewController.view.centerXAnchor.constraint(equalTo: viewController.view.superview!.centerXAnchor),
-//                viewController.view.centerYAnchor.constraint(equalTo: viewController.view.superview!.centerYAnchor)
-//            ])
-//        }
-
-        viewController.view.setNeedsLayout()
-        vc.view.setNeedsLayout()
-
-        viewController.view.layoutIfNeeded()
-        vc.view.layoutIfNeeded()
-    }
+    let dispose = add(traits: config.traits, viewController: viewController, to: window, size: size)
 
     if size.width == 0 || size.height == 0 {
         // Try to call sizeToFit() if the view still has invalid size
@@ -1140,7 +1054,7 @@ func prepareView(
 
 func snapshotView(
     config: ViewImageConfig,
-    renderingMode: RenderingMode = .snapshot(afterScreenUpdates: true),
+    renderingMode: RenderingMode = .drawHierarchy(afterScreenUpdates: true),
     traits: UITraitCollection,
     view: @escaping () -> UIView,
     viewController: UIViewController,
@@ -1149,48 +1063,45 @@ func snapshotView(
 -> Async<UIImage> {
     ViewImageConfig.global = config
 
-    let initialFrame = view().frame
     let dispose = prepareView(
         config: config,
-        drawHierarchyInKeyWindow: false,//drawHierarchyInKeyWindow,
+        drawHierarchyInKeyWindow: false,
         view: view(),
         viewController: viewController,
         interfaceStyle: interfaceStyle
     )
-    // NB: Avoid safe area influence.
-    if config.safeArea == .zero { view().frame.origin = .init(x: offscreen, y: offscreen) }
 
-    return (view().snapshot ?? Async { callback in
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-            addImagesForRenderedViews(view()).sequence().run { views in
+    return Async { callback in
+        ViewImageConfig.global = config
+        let viewToRender = view()
+
+        DispatchQueue.main.async {
+            let old = renderer(bounds: viewToRender.bounds, for: traits).image { ctx in
                 ViewImageConfig.global = config
 
-                let old = renderer(bounds: view().bounds, for: traits).image { ctx in
-                    switch renderingMode {
-                    case .snapshot(let afterScreenUpdates):
-                        view()
-                            .snapshotView(afterScreenUpdates: afterScreenUpdates)?
-                            .drawHierarchy(in: view().bounds, afterScreenUpdates: afterScreenUpdates)
+                switch renderingMode {
+                case .snapshot(let afterScreenUpdates):
+                    viewToRender
+                        .snapshotView(afterScreenUpdates: afterScreenUpdates)?
+                        .drawHierarchy(in: viewToRender.bounds, afterScreenUpdates: afterScreenUpdates)
 
-                    case .drawHierarchy(let afterScreenUpdates):
-                        view().drawHierarchy(in: view().bounds, afterScreenUpdates: afterScreenUpdates)
+                case .drawHierarchy(let afterScreenUpdates):
+                    viewToRender.drawHierarchy(in: viewToRender.bounds, afterScreenUpdates: afterScreenUpdates)
 
-                    case .renderInContext:
-                        view().layer.render(in: ctx.cgContext)
-                    }
+                case .renderInContext:
+                    viewToRender.layer.render(in: ctx.cgContext)
                 }
-
-                let srgb = UIImage(
-                    cgImage: old.cgImage!.copy(colorSpace: CGColorSpace(name: CGColorSpace.sRGB)!)!
-                )
-                callback(
-                    srgb
-                )
-                views.forEach { $0.removeFromSuperview() }
-                view().frame = initialFrame
             }
+
+            var newImage: UIImage? = nil
+            if let oldCgImage = old.cgImage, let space = CGColorSpace(name: CGColorSpace.sRGB), let copy = oldCgImage.copy(colorSpace: space) {
+                newImage = UIImage(cgImage: copy)
+            }
+
+            callback(newImage ?? old)
+            dispose()
         }
-    }).map { dispose(); return $0 }
+    }
 }
 
 private let offscreen: CGFloat = 10_000
@@ -1205,8 +1116,9 @@ func renderer(bounds: CGRect, for traits: UITraitCollection) -> UIGraphicsImageR
     return renderer
 }
 
-private func add(traits: UITraitCollection, viewController: UIViewController, to window: UIWindow) -> () -> Void {
+private func add(traits: UITraitCollection, viewController: UIViewController, to window: UIWindow, size: CGSize) -> () -> Void {
     window.rootViewController = viewController
+    window.frame.size = size
 
     viewController.beginAppearanceTransition(true, animated: false)
     viewController.endAppearanceTransition()
@@ -1218,126 +1130,7 @@ private func add(traits: UITraitCollection, viewController: UIViewController, to
         viewController.endAppearanceTransition()
         window.rootViewController = nil
     }
-    /*
-    let rootViewController: UIViewController
-    if viewController != window.rootViewController {
-        rootViewController = UIViewController()
-        rootViewController.view.backgroundColor = .clear
-        rootViewController.view.frame = window.frame
-        rootViewController.view.translatesAutoresizingMaskIntoConstraints =
-        viewController.view.translatesAutoresizingMaskIntoConstraints
-        rootViewController.preferredContentSize = rootViewController.view.frame.size
-        viewController.view.frame = rootViewController.view.frame
-        rootViewController.view.addSubview(viewController.view)
-        if viewController.view.translatesAutoresizingMaskIntoConstraints {
-            viewController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        } else {
-            NSLayoutConstraint.activate([
-                viewController.view.topAnchor.constraint(equalTo: rootViewController.view.topAnchor),
-                viewController.view.bottomAnchor.constraint(equalTo: rootViewController.view.bottomAnchor),
-                viewController.view.leadingAnchor.constraint(equalTo: rootViewController.view.leadingAnchor),
-                viewController.view.trailingAnchor.constraint(equalTo: rootViewController.view.trailingAnchor),
-            ])
-        }
-        rootViewController.addChild(viewController)
-    } else {
-        rootViewController = viewController
-    }
-    rootViewController.setOverrideTraitCollection(traits, forChild: viewController)
-    viewController.didMove(toParent: rootViewController)
-
-    window.rootViewController = rootViewController
-
-    rootViewController.beginAppearanceTransition(true, animated: false)
-    rootViewController.endAppearanceTransition()
-
-    rootViewController.view.setNeedsLayout()
-    rootViewController.view.layoutIfNeeded()
-
-    viewController.view.setNeedsLayout()
-    viewController.view.layoutIfNeeded()
-
-    return {
-        rootViewController.beginAppearanceTransition(false, animated: false)
-        viewController.willMove(toParent: nil)
-        viewController.view.removeFromSuperview()
-        viewController.removeFromParent()
-        viewController.didMove(toParent: nil)
-        rootViewController.endAppearanceTransition()
-        window.rootViewController = nil
-    }*/
 }
-
-/*
-private func add(traits: UITraitCollection, viewController: UIViewController, to window: UIWindow) -> () -> Void {
-    let rootViewController = UIViewController()
-//    if viewController != window.rootViewController {
-//        rootViewController = UIViewController()
-//        rootViewController.view.backgroundColor = .clear
-        rootViewController.view.frame = window.frame
-//        rootViewController.view.translatesAutoresizingMaskIntoConstraints =
-//        viewController.view.translatesAutoresizingMaskIntoConstraints
-        rootViewController.preferredContentSize = rootViewController.view.frame.size
-        viewController.view.frame = rootViewController.view.frame
-        rootViewController.view.addSubview(viewController.view)
-
-//        if viewController.view.translatesAutoresizingMaskIntoConstraints {
-//            viewController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-//        } else {
-//            NSLayoutConstraint.activate([
-//                viewController.view.topAnchor.constraint(equalTo: rootViewController.view.topAnchor),
-//                viewController.view.bottomAnchor.constraint(equalTo: rootViewController.view.bottomAnchor),
-//                viewController.view.leadingAnchor.constraint(equalTo: rootViewController.view.leadingAnchor),
-//                viewController.view.trailingAnchor.constraint(equalTo: rootViewController.view.trailingAnchor),
-//            ])
-//        }
-        rootViewController.addChild(viewController)
-//    } else {
-//        rootViewController = viewController
-//    }
-//    rootViewController.setOverrideTraitCollection(traits, forChild: viewController)
-    viewController.didMove(toParent: rootViewController)
-    window.rootViewController = rootViewController
-    rootViewController.beginAppearanceTransition(true, animated: false)
-    rootViewController.endAppearanceTransition()
-    rootViewController.view.setNeedsLayout()
-    rootViewController.view.layoutIfNeeded()
-    viewController.view.setNeedsLayout()
-    viewController.view.layoutIfNeeded()
-
-    return {
-        rootViewController.beginAppearanceTransition(false, animated: false)
-        viewController.willMove(toParent: nil)
-        viewController.view.removeFromSuperview()
-        viewController.removeFromParent()
-        viewController.didMove(toParent: nil)
-        rootViewController.endAppearanceTransition()
-        window.rootViewController = nil
-    }
-
-//    let rootViewController = UIViewController()
-//    rootViewController.view.addSubview(viewController.view)
-//    rootViewController.addChild(viewController)
-//    viewController.didMove(toParent: rootViewController)
-//
-//    window.rootViewController = rootViewController
-//
-//    rootViewController.beginAppearanceTransition(true, animated: false)
-//    rootViewController.endAppearanceTransition()
-//
-//    rootViewController.view.setNeedsLayout()
-//    rootViewController.view.layoutIfNeeded()
-//    return {
-//        rootViewController.beginAppearanceTransition(false, animated: false)
-//        rootViewController.willMove(toParent: nil)
-//        rootViewController.view.removeFromSuperview()
-//        rootViewController.removeFromParent()
-//        rootViewController.didMove(toParent: nil)
-//        rootViewController.endAppearanceTransition()
-//        window.rootViewController = nil
-//    }
-}
-*/
 
 private func getKeyWindow() -> UIWindow? {
     var window: UIWindow?
@@ -1357,25 +1150,12 @@ private final class Window: UIWindow {
         self.config = config
         super.init(frame: .init(origin: .zero, size: size))
 
-//        // NB: Safe area renders inaccurately for UI{Navigation,TabBar}Controller.
-//        // Fixes welcome!
-//        if viewController is UINavigationController {
-//            self.frame.size.height -= self.config.safeArea.top
-//            self.config.safeArea.top = 0
-//        } else if let viewController = viewController as? UITabBarController {
-//            self.frame.size.height -= self.config.safeArea.bottom
-//            self.config.safeArea.bottom = 0
-//            if viewController.selectedViewController is UINavigationController {
-//                self.frame.size.height -= self.config.safeArea.top
-//                self.config.safeArea.top = 0
-//            }
-//        }
         self.isHidden = false
         self.overrideUserInterfaceStyle = interfaceStyle
     }
 
     override var traitCollection: UITraitCollection {
-        let superTraits = super.traitCollection
+        let _ = super.traitCollection
         return config.traits
     }
 

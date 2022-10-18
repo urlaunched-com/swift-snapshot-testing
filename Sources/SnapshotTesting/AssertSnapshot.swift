@@ -182,6 +182,7 @@ public func verifySnapshot<Value, Format>(
 )
 -> String? {
 
+    CleanCounterBetweenTestCases.registerIfNeeded()
     let recording = recording || isRecording
 
     do {
@@ -276,7 +277,9 @@ public func verifySnapshot<Value, Format>(
 
 #if os(iOS) || os(tvOS)
         // If the image generation fails for the diffable part use the reference
-        if let localDiff = diffable as? UIImage, localDiff.size == .zero {
+        if let localDiff = diffable as? UIImage,
+           let refImage = reference as? UIImage,
+           localDiff.size == .zero && refImage.size == .zero {
             diffable = reference
         }
 #endif
@@ -315,9 +318,17 @@ public func verifySnapshot<Value, Format>(
         let diffMessage = diffTool
             .map { "\($0) \"\(snapshotFileUrl.path)\" \"\(failedSnapshotFileUrl.path)\"" }
         ?? "@\(minus)\n\"\(snapshotFileUrl.path)\"\n@\(plus)\n\"\(failedSnapshotFileUrl.path)\""
-        return """
-      Snapshot does not match reference.
 
+
+        let failureMessage: String
+        if let name = name {
+            failureMessage = "Snapshot \"\(name)\" does not match reference."
+        } else {
+            failureMessage = "Snapshot does not match reference."
+        }
+
+        return """
+      \(failureMessage)
       \(diffMessage)
 
       \(failure.trimmingCharacters(in: .whitespacesAndNewlines))
@@ -336,4 +347,24 @@ func sanitizePathComponent(_ string: String) -> String {
     return string
         .replacingOccurrences(of: "\\W+", with: "", options: .regularExpression)
         .replacingOccurrences(of: "^-|-$", with: "", options: .regularExpression)
+}
+
+private class CleanCounterBetweenTestCases: NSObject, XCTestObservation {
+    private static var registered = false
+    private static var registerQueue = DispatchQueue(label: "co.pointfree.SnapshotTesting.testObserver")
+
+    static func registerIfNeeded() {
+        registerQueue.sync {
+            if !registered {
+                registered = true
+                XCTestObservationCenter.shared.addTestObserver(CleanCounterBetweenTestCases())
+            }
+        }
+    }
+
+    func testCaseDidFinish(_ testCase: XCTestCase) {
+        counterQueue.sync {
+            counterMap = [:]
+        }
+    }
 }
