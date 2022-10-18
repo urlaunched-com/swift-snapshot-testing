@@ -15,7 +15,7 @@ extension Snapshotting where Value == UIView, Format == UIImage {
     ///   - size: A view size override.
     ///   - traits: A trait collection override.
     public static func image(
-        renderingMode: RenderingMode = .snapshot(afterScreenUpdates: true),
+        renderingMode: RenderingMode = .drawHierarchy(afterScreenUpdates: true),
         precision: Float = 1,
         perceptualPrecision: Float = 0,
         png: Bool,

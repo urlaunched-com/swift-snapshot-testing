@@ -20,7 +20,7 @@ extension Snapshotting where Value == UIViewController, Format == UIImage {
   ///   - traits: A trait collection override.
   public static func image(
     on config: ViewImageConfig,
-    renderingMode: RenderingMode = .snapshot(afterScreenUpdates: true),
+    renderingMode: RenderingMode = .drawHierarchy(afterScreenUpdates: true),
     precision: Float = 1,
     perceptualPrecision: Float = 0,
     png: Bool,
@@ -52,7 +52,7 @@ extension Snapshotting where Value == UIViewController, Format == UIImage {
   ///   - size: A view size override.
   ///   - traits: A trait collection override.
     public static func image(
-        renderingMode: RenderingMode = .snapshot(afterScreenUpdates: true),
+        renderingMode: RenderingMode = .drawHierarchy(afterScreenUpdates: true),
         precision: Float = 1,
         perceptualPrecision: Float = 0,
         png: Bool,
@@ -77,7 +77,7 @@ extension Snapshotting where Value == UIViewController, Format == UIImage {
     }
 
     public static func image(
-        renderingMode: RenderingMode = .snapshot(afterScreenUpdates: true),
+        renderingMode: RenderingMode = .drawHierarchy(afterScreenUpdates: true),
         precision: Float = 1,
         perceptualPrecision: Float = 0,
         png: Bool,

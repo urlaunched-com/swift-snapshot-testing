@@ -15,13 +15,13 @@ let package = Package(
             targets: ["SnapshotTesting"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/SnapKit/SnapKit.git", from: "5.6.0")
+//        .package(url: "https://github.com/SnapKit/SnapKit.git", from: "5.6.0")
     ],
     targets: [
         .target(
             name: "SnapshotTesting",
             dependencies: [
-                .byName(name: "SnapKit")
+//                .byName(name: "SnapKit")
             ]
         ),
         .testTarget(

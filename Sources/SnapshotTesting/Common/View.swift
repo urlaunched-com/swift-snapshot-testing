@@ -1041,46 +1041,6 @@ func prepareView(
     }
 
     let dispose = add(traits: config.traits, viewController: viewController, to: window, size: size)
-    /*
-    if let navController = viewController as? UINavigationController, let vc = navController.viewControllers.first {
-        NSLayoutConstraint.activate([
-            vc.view.topAnchor.constraint(equalTo: navController.view.topAnchor),
-            vc.view.bottomAnchor.constraint(equalTo: navController.view.bottomAnchor),
-            vc.view.leadingAnchor.constraint(equalTo: navController.view.leadingAnchor),
-            vc.view.trailingAnchor.constraint(equalTo: navController.view.trailingAnchor),
-        ])
-
-        viewController.view.setNeedsLayout()
-        vc.view.setNeedsLayout()
-
-        viewController.view.layoutIfNeeded()
-        vc.view.layoutIfNeeded()
-    }
-     */
-
-
-//    if let navController = viewController as? UINavigationController, let vc = navController.viewControllers.first {
-//        vc.view.snp.makeConstraints { make in
-//            make.top.equalTo(config.safeArea.top)
-//            make.leading.equalTo(config.safeArea.left)
-//            make.trailing.equalTo(config.safeArea.right)
-//
-//            if let size = config.size {
-//                make.height.equalTo(size.height - (config.safeArea.top + config.safeArea.bottom))
-//            } else {
-//                make.bottom.equalTo(config.safeArea.bottom)
-//            }
-//        }
-//
-//        viewController.view.setNeedsLayout()
-//        vc.view.setNeedsLayout()
-//
-//        viewController.view.layoutIfNeeded()
-//        vc.view.layoutIfNeeded()
-//    } else {
-//        print("")
-//    }
-
 
     if size.width == 0 || size.height == 0 {
         // Try to call sizeToFit() if the view still has invalid size
@@ -1094,7 +1054,7 @@ func prepareView(
 
 func snapshotView(
     config: ViewImageConfig,
-    renderingMode: RenderingMode = .snapshot(afterScreenUpdates: true),
+    renderingMode: RenderingMode = .drawHierarchy(afterScreenUpdates: true),
     traits: UITraitCollection,
     view: @escaping () -> UIView,
     viewController: UIViewController,
@@ -1114,8 +1074,6 @@ func snapshotView(
     return Async { callback in
         ViewImageConfig.global = config
         let viewToRender = view()
-//        viewToRender.setNeedsLayout()
-//        viewToRender.layoutIfNeeded()
 
         DispatchQueue.main.async {
             let old = renderer(bounds: viewToRender.bounds, for: traits).image { ctx in
