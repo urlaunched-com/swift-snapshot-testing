@@ -1116,57 +1116,6 @@ func renderer(bounds: CGRect, for traits: UITraitCollection) -> UIGraphicsImageR
     return renderer
 }
 
-/*
-private func add(traits: UITraitCollection, viewController: UIViewController, to window: UIWindow) -> () -> Void {
-    let rootViewController: UIViewController
-    if viewController != window.rootViewController {
-        rootViewController = UIViewController()
-        rootViewController.view.backgroundColor = .clear
-        rootViewController.view.frame = window.frame
-        rootViewController.view.translatesAutoresizingMaskIntoConstraints =
-        viewController.view.translatesAutoresizingMaskIntoConstraints
-        rootViewController.preferredContentSize = rootViewController.view.frame.size
-        viewController.view.frame = rootViewController.view.frame
-        rootViewController.view.addSubview(viewController.view)
-        if viewController.view.translatesAutoresizingMaskIntoConstraints {
-            viewController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        } else {
-            NSLayoutConstraint.activate([
-                viewController.view.topAnchor.constraint(equalTo: rootViewController.view.topAnchor),
-                viewController.view.bottomAnchor.constraint(equalTo: rootViewController.view.bottomAnchor),
-                viewController.view.leadingAnchor.constraint(equalTo: rootViewController.view.leadingAnchor),
-                viewController.view.trailingAnchor.constraint(equalTo: rootViewController.view.trailingAnchor),
-            ])
-        }
-        rootViewController.addChild(viewController)
-    } else {
-        rootViewController = viewController
-    }
-    rootViewController.setOverrideTraitCollection(traits, forChild: viewController)
-    viewController.didMove(toParent: rootViewController)
-    window.rootViewController = rootViewController
-    rootViewController.beginAppearanceTransition(true, animated: false)
-    rootViewController.endAppearanceTransition()
-    rootViewController.view.setNeedsLayout()
-    rootViewController.view.layoutIfNeeded()
-    viewController.view.setNeedsLayout()
-    viewController.view.layoutIfNeeded()
-
-    return {
-        rootViewController.beginAppearanceTransition(false, animated: false)
-        viewController.willMove(toParent: nil)
-        viewController.view.removeFromSuperview()
-        viewController.removeFromParent()
-        viewController.didMove(toParent: nil)
-        rootViewController.endAppearanceTransition()
-        window.rootViewController = nil
-    }
-}*/
-
-
-//Prev
-
-
 private func add(traits: UITraitCollection, viewController: UIViewController, to window: UIWindow, size: CGSize) -> () -> Void {
     window.rootViewController = viewController
     window.frame.size = size
@@ -1181,127 +1130,7 @@ private func add(traits: UITraitCollection, viewController: UIViewController, to
         viewController.endAppearanceTransition()
         window.rootViewController = nil
     }
-    /*
-    let rootViewController: UIViewController
-    if viewController != window.rootViewController {
-        rootViewController = UIViewController()
-        rootViewController.view.backgroundColor = .clear
-        rootViewController.view.frame = window.frame
-        rootViewController.view.translatesAutoresizingMaskIntoConstraints =
-        viewController.view.translatesAutoresizingMaskIntoConstraints
-        rootViewController.preferredContentSize = rootViewController.view.frame.size
-        viewController.view.frame = rootViewController.view.frame
-        rootViewController.view.addSubview(viewController.view)
-        if viewController.view.translatesAutoresizingMaskIntoConstraints {
-            viewController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        } else {
-            NSLayoutConstraint.activate([
-                viewController.view.topAnchor.constraint(equalTo: rootViewController.view.topAnchor),
-                viewController.view.bottomAnchor.constraint(equalTo: rootViewController.view.bottomAnchor),
-                viewController.view.leadingAnchor.constraint(equalTo: rootViewController.view.leadingAnchor),
-                viewController.view.trailingAnchor.constraint(equalTo: rootViewController.view.trailingAnchor),
-            ])
-        }
-        rootViewController.addChild(viewController)
-    } else {
-        rootViewController = viewController
-    }
-    rootViewController.setOverrideTraitCollection(traits, forChild: viewController)
-    viewController.didMove(toParent: rootViewController)
-
-    window.rootViewController = rootViewController
-
-    rootViewController.beginAppearanceTransition(true, animated: false)
-    rootViewController.endAppearanceTransition()
-
-    rootViewController.view.setNeedsLayout()
-    rootViewController.view.layoutIfNeeded()
-
-    viewController.view.setNeedsLayout()
-    viewController.view.layoutIfNeeded()
-
-    return {
-        rootViewController.beginAppearanceTransition(false, animated: false)
-        viewController.willMove(toParent: nil)
-        viewController.view.removeFromSuperview()
-        viewController.removeFromParent()
-        viewController.didMove(toParent: nil)
-        rootViewController.endAppearanceTransition()
-        window.rootViewController = nil
-    }*/
 }
-
-
-/*
-private func add(traits: UITraitCollection, viewController: UIViewController, to window: UIWindow) -> () -> Void {
-    let rootViewController = UIViewController()
-//    if viewController != window.rootViewController {
-//        rootViewController = UIViewController()
-//        rootViewController.view.backgroundColor = .clear
-        rootViewController.view.frame = window.frame
-//        rootViewController.view.translatesAutoresizingMaskIntoConstraints =
-//        viewController.view.translatesAutoresizingMaskIntoConstraints
-        rootViewController.preferredContentSize = rootViewController.view.frame.size
-        viewController.view.frame = rootViewController.view.frame
-        rootViewController.view.addSubview(viewController.view)
-
-//        if viewController.view.translatesAutoresizingMaskIntoConstraints {
-//            viewController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-//        } else {
-//            NSLayoutConstraint.activate([
-//                viewController.view.topAnchor.constraint(equalTo: rootViewController.view.topAnchor),
-//                viewController.view.bottomAnchor.constraint(equalTo: rootViewController.view.bottomAnchor),
-//                viewController.view.leadingAnchor.constraint(equalTo: rootViewController.view.leadingAnchor),
-//                viewController.view.trailingAnchor.constraint(equalTo: rootViewController.view.trailingAnchor),
-//            ])
-//        }
-        rootViewController.addChild(viewController)
-//    } else {
-//        rootViewController = viewController
-//    }
-//    rootViewController.setOverrideTraitCollection(traits, forChild: viewController)
-    viewController.didMove(toParent: rootViewController)
-    window.rootViewController = rootViewController
-    rootViewController.beginAppearanceTransition(true, animated: false)
-    rootViewController.endAppearanceTransition()
-    rootViewController.view.setNeedsLayout()
-    rootViewController.view.layoutIfNeeded()
-    viewController.view.setNeedsLayout()
-    viewController.view.layoutIfNeeded()
-
-    return {
-        rootViewController.beginAppearanceTransition(false, animated: false)
-        viewController.willMove(toParent: nil)
-        viewController.view.removeFromSuperview()
-        viewController.removeFromParent()
-        viewController.didMove(toParent: nil)
-        rootViewController.endAppearanceTransition()
-        window.rootViewController = nil
-    }
-
-//    let rootViewController = UIViewController()
-//    rootViewController.view.addSubview(viewController.view)
-//    rootViewController.addChild(viewController)
-//    viewController.didMove(toParent: rootViewController)
-//
-//    window.rootViewController = rootViewController
-//
-//    rootViewController.beginAppearanceTransition(true, animated: false)
-//    rootViewController.endAppearanceTransition()
-//
-//    rootViewController.view.setNeedsLayout()
-//    rootViewController.view.layoutIfNeeded()
-//    return {
-//        rootViewController.beginAppearanceTransition(false, animated: false)
-//        rootViewController.willMove(toParent: nil)
-//        rootViewController.view.removeFromSuperview()
-//        rootViewController.removeFromParent()
-//        rootViewController.didMove(toParent: nil)
-//        rootViewController.endAppearanceTransition()
-//        window.rootViewController = nil
-//    }
-}
-*/
 
 private func getKeyWindow() -> UIWindow? {
     var window: UIWindow?
@@ -1321,25 +1150,12 @@ private final class Window: UIWindow {
         self.config = config
         super.init(frame: .init(origin: .zero, size: size))
 
-//        // NB: Safe area renders inaccurately for UI{Navigation,TabBar}Controller.
-//        // Fixes welcome!
-//        if viewController is UINavigationController {
-//            self.frame.size.height -= self.config.safeArea.top
-//            self.config.safeArea.top = 0
-//        } else if let viewController = viewController as? UITabBarController {
-//            self.frame.size.height -= self.config.safeArea.bottom
-//            self.config.safeArea.bottom = 0
-//            if viewController.selectedViewController is UINavigationController {
-//                self.frame.size.height -= self.config.safeArea.top
-//                self.config.safeArea.top = 0
-//            }
-//        }
         self.isHidden = false
         self.overrideUserInterfaceStyle = interfaceStyle
     }
 
     override var traitCollection: UITraitCollection {
-        let superTraits = super.traitCollection
+        let _ = super.traitCollection
         return config.traits
     }
 
