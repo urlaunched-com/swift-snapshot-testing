@@ -6,7 +6,6 @@ import SceneKit
 import SpriteKit
 #if os(iOS) || os(tvOS)
 import UIKit
-//import SnapKit
 #endif
 #if os(iOS) || os(macOS)
 import WebKit
@@ -1075,7 +1074,7 @@ func snapshotView(
         ViewImageConfig.global = config
         let viewToRender = view()
 
-        DispatchQueue.main.async {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             let old = renderer(bounds: viewToRender.bounds, for: traits).image { ctx in
                 ViewImageConfig.global = config
 
