@@ -103,7 +103,7 @@ extension Snapshotting where Value: SwiftUI.View, Format == UIImage {
             ViewImageConfig.global = config
             let viewToRender = view()
 
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
                 let old = renderer(bounds: viewToRender.bounds, for: traits).image { ctx in
                     ViewImageConfig.global = config
 
