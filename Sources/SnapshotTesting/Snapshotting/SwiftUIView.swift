@@ -90,6 +90,7 @@ extension Snapshotting where Value: SwiftUI.View, Format == UIImage {
     ) -> Async<UIImage> {
 
         ViewImageConfig.global = config
+
         let dispose = prepareView(
             config: config,
             drawHierarchyInKeyWindow: false,
@@ -98,36 +99,37 @@ extension Snapshotting where Value: SwiftUI.View, Format == UIImage {
             interfaceStyle: interfaceStyle
         )
 
-        return (viewController.view.snapshot ?? Async { callback in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                addImagesForRenderedViews(view()).sequence().run { views in
+        return Async { callback in
+            ViewImageConfig.global = config
+            let viewToRender = view()
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                let old = renderer(bounds: viewToRender.bounds, for: traits).image { ctx in
                     ViewImageConfig.global = config
 
-                    let old = renderer(bounds: view().bounds, for: traits).image { ctx in
-                        switch renderingMode {
-                        case .snapshot(let afterScreenUpdates):
-                            view()
-                                .snapshotView(afterScreenUpdates: afterScreenUpdates)?
-                                .drawHierarchy(in: view().bounds, afterScreenUpdates: afterScreenUpdates)
+                    switch renderingMode {
+                    case .snapshot(let afterScreenUpdates):
+                        viewToRender
+                            .snapshotView(afterScreenUpdates: afterScreenUpdates)?
+                            .drawHierarchy(in: viewToRender.bounds, afterScreenUpdates: afterScreenUpdates)
 
-                        case .drawHierarchy(let afterScreenUpdates):
-                            view().drawHierarchy(in: view().bounds, afterScreenUpdates: afterScreenUpdates)
+                    case .drawHierarchy(let afterScreenUpdates):
+                        viewToRender.drawHierarchy(in: viewToRender.bounds, afterScreenUpdates: afterScreenUpdates)
 
-                        case .renderInContext:
-                            view().layer.render(in: ctx.cgContext)
-                        }
+                    case .renderInContext:
+                        viewToRender.layer.render(in: ctx.cgContext)
                     }
-
-                    let srgb = UIImage(
-                        cgImage: old.cgImage!.copy(colorSpace: CGColorSpace(name: CGColorSpace.sRGB)!)!
-                    )
-                    callback(
-                        srgb
-                    )
-                    views.forEach { $0.removeFromSuperview() }
                 }
+
+                var newImage: UIImage? = nil
+                if let oldCgImage = old.cgImage, let space = CGColorSpace(name: CGColorSpace.sRGB), let copy = oldCgImage.copy(colorSpace: space) {
+                    newImage = UIImage(cgImage: copy)
+                }
+
+                callback(newImage ?? old)
+                dispose()
             }
-        }).map { dispose(); return $0 }
+        }
     }
 }
 
