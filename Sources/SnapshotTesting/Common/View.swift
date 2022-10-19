@@ -9,7 +9,6 @@ import UIKit
 #endif
 #if os(iOS) || os(macOS)
 import WebKit
-import SnapKit
 #endif
 
 #if os(iOS) || os(tvOS)
