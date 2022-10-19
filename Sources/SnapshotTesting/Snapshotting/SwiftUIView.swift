@@ -94,7 +94,7 @@ extension Snapshotting where Value: SwiftUI.View, Format == UIImage {
         let dispose = prepareView(
             config: config,
             drawHierarchyInKeyWindow: false,
-            view: view(),
+            view: viewController.view,
             viewController: viewController,
             interfaceStyle: interfaceStyle
         )
@@ -103,7 +103,7 @@ extension Snapshotting where Value: SwiftUI.View, Format == UIImage {
             ViewImageConfig.global = config
             let viewToRender = view()
 
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 let old = renderer(bounds: viewToRender.bounds, for: traits).image { ctx in
                     ViewImageConfig.global = config
 
