@@ -1072,6 +1072,8 @@ func snapshotView(
     return Async { callback in
         ViewImageConfig.global = config
         let viewToRender = view()
+        viewToRender.setNeedsLayout()
+        viewToRender.layoutIfNeeded()
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             let old = renderer(bounds: viewToRender.bounds, for: traits).image { ctx in
