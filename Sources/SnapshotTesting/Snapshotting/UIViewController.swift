@@ -26,7 +26,8 @@ extension Snapshotting where Value == UIViewController, Format == UIImage {
     png: Bool,
     size: CGSize? = nil,
     traits: UITraitCollection = .init(),
-    interfaceStyle: UIUserInterfaceStyle = .light
+    interfaceStyle: UIUserInterfaceStyle = .light,
+    delayForLayout: Double = 0.1
     )
     -> Snapshotting {
 
@@ -39,7 +40,8 @@ extension Snapshotting where Value == UIViewController, Format == UIImage {
                     viewController.view
                 },
                 viewController: viewController,
-                interfaceStyle: interfaceStyle
+                interfaceStyle: interfaceStyle,
+                delayForLayout: delayForLayout
             )
         }
     }
@@ -58,7 +60,8 @@ extension Snapshotting where Value == UIViewController, Format == UIImage {
         png: Bool,
         size: CGSize? = nil,
         traits: UITraitCollection = .init(),
-        interfaceStyle: UIUserInterfaceStyle = .light
+        interfaceStyle: UIUserInterfaceStyle = .light,
+        delayForLayout: Double = 0.1
     )
     -> Snapshotting {
 
@@ -71,7 +74,8 @@ extension Snapshotting where Value == UIViewController, Format == UIImage {
                     viewController.view
                 },
                 viewController: viewController,
-                interfaceStyle: interfaceStyle
+                interfaceStyle: interfaceStyle,
+                delayForLayout: delayForLayout
             )
         }
     }
@@ -84,7 +88,8 @@ extension Snapshotting where Value == UIViewController, Format == UIImage {
         size: CGSize? = nil,
         scale: CGFloat,
         traits: UITraitCollection = .init(),
-        interfaceStyle: UIUserInterfaceStyle = .light
+        interfaceStyle: UIUserInterfaceStyle = .light,
+        delayForLayout: Double = 0.1
     )
     -> Snapshotting {
 
@@ -97,7 +102,8 @@ extension Snapshotting where Value == UIViewController, Format == UIImage {
                     viewController.view
                 },
                 viewController: viewController,
-                interfaceStyle: interfaceStyle
+                interfaceStyle: interfaceStyle,
+                delayForLayout: delayForLayout
             )
         }
     }

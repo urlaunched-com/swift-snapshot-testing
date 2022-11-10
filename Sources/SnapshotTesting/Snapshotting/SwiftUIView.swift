@@ -37,7 +37,8 @@ extension Snapshotting where Value: SwiftUI.View, Format == UIImage {
         png: Bool,
         layout: SwiftUISnapshotLayout = .sizeThatFits,
         traits: UITraitCollection = .init(),
-        interfaceStyle: UIUserInterfaceStyle = .light
+        interfaceStyle: UIUserInterfaceStyle = .light,
+        delayForLayout: Double = 0.1
     )
     -> Snapshotting {
         let config: ViewImageConfig
@@ -64,7 +65,8 @@ extension Snapshotting where Value: SwiftUI.View, Format == UIImage {
                     renderingMode: renderingMode,
                     config: config,
                     traits: traits,
-                    interfaceStyle: interfaceStyle
+                    interfaceStyle: interfaceStyle,
+                    delayForLayout: delayForLayout
                 )
             }
 
@@ -75,7 +77,8 @@ extension Snapshotting where Value: SwiftUI.View, Format == UIImage {
                 renderingMode: renderingMode,
                 config: config,
                 traits: traits,
-                interfaceStyle: interfaceStyle
+                interfaceStyle: interfaceStyle,
+                delayForLayout: delayForLayout
             )
         }
     }
@@ -86,7 +89,8 @@ extension Snapshotting where Value: SwiftUI.View, Format == UIImage {
         renderingMode: RenderingMode,
         config: ViewImageConfig,
         traits: UITraitCollection,
-        interfaceStyle: UIUserInterfaceStyle
+        interfaceStyle: UIUserInterfaceStyle,
+        delayForLayout: Double
     ) -> Async<UIImage> {
 
         ViewImageConfig.global = config
@@ -105,7 +109,7 @@ extension Snapshotting where Value: SwiftUI.View, Format == UIImage {
             viewToRender.setNeedsLayout()
             viewToRender.layoutIfNeeded()
 
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + delayForLayout) {
                 let old = renderer(bounds: viewToRender.bounds, for: traits).image { ctx in
                     ViewImageConfig.global = config
 

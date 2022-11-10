@@ -21,7 +21,8 @@ extension Snapshotting where Value == UIView, Format == UIImage {
         png: Bool,
         size: CGSize? = nil,
         traits: UITraitCollection = .init(),
-        interfaceStyle: UIUserInterfaceStyle = .light
+        interfaceStyle: UIUserInterfaceStyle = .light,
+        delayForLayout: Double = 0.1
     )
     -> Snapshotting {
 
@@ -32,7 +33,8 @@ extension Snapshotting where Value == UIView, Format == UIImage {
                 traits: traits,
                 view: { view },
                 viewController: .init(),
-                interfaceStyle: interfaceStyle
+                interfaceStyle: interfaceStyle,
+                delayForLayout: delayForLayout
             )
         }
     }
