@@ -1056,7 +1056,8 @@ func snapshotView(
     traits: UITraitCollection,
     view: @escaping () -> UIView,
     viewController: UIViewController,
-    interfaceStyle: UIUserInterfaceStyle = .light
+    interfaceStyle: UIUserInterfaceStyle = .light,
+    delayForLayout: Double
 )
 -> Async<UIImage> {
     ViewImageConfig.global = config
@@ -1075,7 +1076,7 @@ func snapshotView(
         viewToRender.setNeedsLayout()
         viewToRender.layoutIfNeeded()
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + delayForLayout) {
             let old = renderer(bounds: viewToRender.bounds, for: traits).image { ctx in
                 ViewImageConfig.global = config
 
