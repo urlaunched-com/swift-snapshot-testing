@@ -39,6 +39,7 @@ public struct ViewImageConfig {
         case iPhoneX = "iPhoneX"
         case iPhoneXsMax = "iPhoneXsMax"
         case iPhoneXr = "iPhoneXr"
+        case iPhone15Pro = "iPhone15Pro"
         case iPadMini = "iPadMini"
         case iPadPro10_5 = "iPadPro10_5"
         case iPadPro11 = "iPadPro11"
@@ -94,6 +95,33 @@ public struct ViewImageConfig {
     }
 
 #if os(iOS)
+
+    public static let iPhone15Pro = ViewImageConfig.iPhone15Pro()
+    public static func iPhone15Pro(_ orientation: Orientation = .portrait, options: Options = .none) -> ViewImageConfig {
+        var safeArea: UIEdgeInsets
+        let size: CGSize
+        switch orientation {
+        case .landscape:
+            safeArea = .init(top: 0, left: 59, bottom: 21, right: 59)
+
+            if options.contains(.navigationBarInline) || options.contains(.navigationBarLargeTitle) {
+                safeArea.top += 32
+            }
+
+            size = .init(width: 844, height: 390)
+        case .portrait:
+            safeArea = .init(top: 59, left: 0, bottom: 34, right: 0)
+
+            if options.contains(.navigationBarInline) {
+                safeArea.top += 44
+            } else if options.contains(.navigationBarLargeTitle) {
+                safeArea.top += 44 + 52
+            }
+
+            size = .init(width: 390, height: 844)
+        }
+        return .init(safeArea: safeArea, size: size, traits: .iPhone15Pro(orientation), name: Name.iPhone15Pro.rawValue + "_\(orientation)", options: options)
+    }
 
     public static let iPhone13 = ViewImageConfig.iPhone13()
     public static func iPhone13(_ orientation: Orientation = .portrait, options: Options = .none) -> ViewImageConfig {
@@ -841,6 +869,34 @@ extension UITraitCollection {
             return .init(
                 traitsFrom: base + [
                     .init(horizontalSizeClass: .regular),
+                    .init(verticalSizeClass: .compact)
+                ]
+            )
+        case .portrait:
+            return .init(
+                traitsFrom: base + [
+                    .init(horizontalSizeClass: .compact),
+                    .init(verticalSizeClass: .regular)
+                ]
+            )
+        }
+    }
+
+    public static func iPhone15Pro(_ orientation: ViewImageConfig.Orientation)
+    -> UITraitCollection {
+        let base: [UITraitCollection] = [
+            //        .init(displayGamut: .P3),
+            .init(displayScale: 3),
+            .init(forceTouchCapability: .available),
+            .init(layoutDirection: .leftToRight),
+            .init(preferredContentSizeCategory: .medium),
+            .init(userInterfaceIdiom: .phone)
+        ]
+        switch orientation {
+        case .landscape:
+            return .init(
+                traitsFrom: base + [
+                    .init(horizontalSizeClass: .compact),
                     .init(verticalSizeClass: .compact)
                 ]
             )
