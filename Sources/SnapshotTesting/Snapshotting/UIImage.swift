@@ -149,8 +149,14 @@ private func compare(_ old: UIImage, _ new: UIImage, precision: Float, perceptua
     } else {
         let byteCountThreshold = Int((1 - precision) * Float(byteCount))
         var differentByteCount = 0
-        for offset in 0..<byteCount {
-            if oldBytes[offset] != newerBytes[offset] {
+        // NB: We are purposely using a verbose 'while' loop instead of a 'for in' loop.  When the
+        //     compiler doesn't have optimizations enabled, like in test targets, a `while` loop is
+        //     significantly faster than a `for` loop for iterating through the elements of a memory
+        //     buffer. Details can be found in [SR-6983](https://github.com/apple/swift/issues/49531)
+        var index = 0
+        while index < byteCount {
+            defer { index += 1 }
+            if oldBytes[index] != newerBytes[index] {
                 differentByteCount += 1
             }
         }
