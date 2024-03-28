@@ -1037,6 +1037,7 @@ func prepareView(
             interfaceStyle: interfaceStyle
         )
     }
+    window.layer.speed = 100
 
     let dispose = add(traits: config.traits, viewController: viewController, to: window, size: size)
 
